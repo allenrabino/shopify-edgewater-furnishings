@@ -7,7 +7,6 @@
   assign rating = rating_metafield.rating
   assign scale_max = rating_metafield.scale_max | default: 5
   assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
-  assign using_fallback = false
 
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
@@ -17,11 +16,14 @@
     assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
   endif
 
+  if rating_count == blank
+    assign rating_count = 0
+  endif
+
   if rating == blank and block_settings.show_when_no_reviews
-    assign rating = block_settings.fallback_rating
-    assign rating_count = block_settings.fallback_review_count
+    assign rating = 0
+    assign rating_count = 0
     assign scale_max = 5
-    assign using_fallback = true
   endif
 -%}
 
@@ -41,13 +43,15 @@
     assign svg_filled_stars = rating | floor | plus: decimal_rounded
     assign half_gradient_id = 'half-' | append: block.id
     assign show_rating_value = false
-    if block_settings.show_rating_value or block_settings.stars_style == 'single'
-      assign show_rating_value = true
+    if rating > 0
+      if block_settings.show_rating_value or block_settings.stars_style == 'single'
+        assign show_rating_value = true
+      endif
     endif
   %}
 
   <div
-    class="rating-wrapper rating-color--{{ block_settings.rating_color }} justify-{{ block_settings.alignment }} size-style{% if using_fallback %} rating-wrapper--fallback{% endif %}"
+    class="rating-wrapper rating-color--{{ block_settings.rating_color }} justify-{{ block_settings.alignment }} size-style"
     style="{% render 'size-style', settings: block_settings %}"
     {{ block.shopify_attributes }}
   >
@@ -110,7 +114,7 @@
         <span class="rating-value" aria-hidden="true">{{ rating | round: 1 }}</span>
       {%- endif -%}
 
-      {%- if block_settings.show_number and rating_count != blank -%}
+      {%- if block_settings.show_number -%}
         {%- capture reviews_label -%}
           {{- 'content.reviews_count' | t: count: rating_count -}}
         {%- endcapture -%}
@@ -256,25 +260,8 @@
       "type": "checkbox",
       "id": "show_when_no_reviews",
       "label": "t:settings.show_when_no_reviews",
-      "info": "t:info.show_when_no_reviews",
+      "info": "Shows empty stars and 0 reviews when the product has no review metafields.",
       "default": true
-    },
-    {
-      "type": "range",
-      "id": "fallback_rating",
-      "label": "t:settings.fallback_rating",
-      "min": 0,
-      "max": 5,
-      "step": 0.1,
-      "default": 4.8,
-      "visible_if": "{{ block.settings.show_when_no_reviews }}"
-    },
-    {
-      "type": "number",
-      "id": "fallback_review_count",
-      "label": "t:settings.fallback_review_count",
-      "default": 215,
-      "visible_if": "{{ block.settings.show_when_no_reviews }}"
     },
     {
       "type": "select",
