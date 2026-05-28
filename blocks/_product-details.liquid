@@ -45,7 +45,97 @@
   .product-details {
     display: flex;
     align-self: start;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: none;
+  }
+
+  .product-details > .group-block {
+    width: 100%;
+    gap: var(--gap-md);
+  }
+
+  .product-details product-price .price {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .product-details .installments {
+    margin-top: var(--gap-2xs);
+  }
+
+  .product-details .product-details__purchase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    padding-block: var(--gap-sm);
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+    margin-top: var(--gap-xs);
+  }
+
+  .product-details:has(modular-add-piece) .quantity-selector-wrapper {
+    display: none;
+  }
+
+  .product-details:has(modular-add-piece) .product-form-buttons {
+    flex-direction: column;
+    gap: var(--gap-sm);
+  }
+
+  .product-details:has(modular-add-piece) .add-to-cart-button,
+  .product-details:has(modular-add-piece) .product-form-buttons > add-to-cart-component {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .product-details:has(modular-add-piece) accelerated-checkout-block,
+  .product-details:has(modular-add-piece) shopify-accelerated-checkout {
+    display: none;
+  }
+
+  .product-details .buy-buttons-block {
+    width: 100%;
+  }
+
+  .product-details .fabric-picker,
+  .product-details .modular-add-piece {
+    width: 100%;
+  }
+
+  .product-details .accordion {
+    width: 100%;
+    margin-top: var(--gap-sm);
+  }
+
+  .add-to-cart-button--loading {
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .add-to-cart-button--loading .add-to-cart-text {
+    visibility: hidden;
+  }
+
+  .add-to-cart-button--loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgb(var(--color-foreground-rgb) / 0.2);
+    border-top-color: var(--color-foreground);
+    border-radius: 50%;
+    animation: product-atc-spin 0.65s linear infinite;
+  }
+
+  @keyframes product-atc-spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @media screen and (min-width: 750px) {
@@ -104,6 +194,12 @@
     },
     {
       "type": "price"
+    },
+    {
+      "type": "fabric-picker"
+    },
+    {
+      "type": "modular-add-piece"
     },
     {
       "type": "variant-picker"

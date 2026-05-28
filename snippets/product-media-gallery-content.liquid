@@ -99,6 +99,27 @@
     endif
   endif
 
+  assign fabric_keys_delimited = ''
+  assign default_fabric_key = ''
+  for media in selected_product.media
+    capture fabric_key
+      render 'fabric-key-from-media', media: media
+    endcapture
+    assign fabric_key = fabric_key | strip
+    if fabric_key != blank
+      if default_fabric_key == blank
+        assign default_fabric_key = fabric_key
+      endif
+      unless fabric_keys_delimited contains fabric_key
+        if fabric_keys_delimited != blank
+          assign fabric_keys_delimited = fabric_keys_delimited | append: '||'
+        endif
+        assign fabric_keys_delimited = fabric_keys_delimited | append: fabric_key
+      endunless
+    endif
+  endfor
+  assign fabric_keys = fabric_keys_delimited | split: '||'
+
   assign sorted_media = '' | split: ','
   if selected_variant_media
     assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
@@ -350,6 +371,9 @@
     "
     style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px;{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
     data-presentation="{{ media_presentation }}"
+    {% if default_fabric_key != blank %}
+      data-default-fabric="{{ default_fabric_key }}"
+    {% endif %}
     {{ block_shopify_attributes }}
   >
     {% capture slides %}
@@ -379,11 +403,26 @@
             --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};
           {% endcapture %}
         {% endif %}
-        {% if block_settings.zoom and media.media_type == 'model' %}
-          {%- capture attributes -%}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
-        {% elsif block_settings.zoom %}
-          {%- capture attributes -%}on:click="#zoom-dialog-{{ block_id }}/open/{{ forloop.index0 }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
-        {% endif %}
+        {% liquid
+          assign slide_attributes = ''
+          if block_settings.zoom and media.media_type == 'model'
+            if settings.transition_to_main_product and forloop.first
+              assign slide_attributes = 'data-view-transition-type="product-image-transition"'
+            endif
+          elsif block_settings.zoom
+            assign slide_attributes = 'on:click="#zoom-dialog-' | append: block_id | append: '/open/' | append: forloop.index0 | append: '"'
+            if settings.transition_to_main_product and forloop.first
+              assign slide_attributes = slide_attributes | append: ' data-view-transition-type="product-image-transition"'
+            endif
+          endif
+        %}
+        {% capture fabric_key %}
+          {% render 'fabric-key-from-media', media: media %}
+        {% endcapture %}
+        {% assign fabric_key = fabric_key | strip %}
+        {% capture attributes %}
+          {{ slide_attributes }} data-fabric-key="{{ fabric_key }}"
+        {% endcapture %}
 
         {% render 'slideshow-slide',
           index: forloop.index0,
@@ -751,7 +790,7 @@
   /* Mobile thumbnails styling */
   @media screen and (max-width: 749px) {
     .media-gallery__mobile-controls[thumbnails] {
-      --thumbnail-width: 44px;
+      --thumbnail-width: 56px;
     }
 
     .media-gallery__mobile-controls[thumbnails] .slideshow-controls__thumbnail {

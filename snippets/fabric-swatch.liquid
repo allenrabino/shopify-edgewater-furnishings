@@ -1,0 +1,46 @@
+{%- doc -%}
+  Renders a circular solid-color fabric swatch option.
+
+  @param {string} fabric_key
+  @param {string} color_name
+  @param {string} fabric_type
+  @param {string} swatch_color - CSS color for the swatch circle
+  @param {string} input_name
+  @param {boolean} [checked]
+  @param {string} [input_ref] - defaults to inputs[]
+  @param {string} [shopify_attributes]
+{%- enddoc -%}
+
+{%- liquid
+  assign swatch_bg = swatch_color | default: '#ffffff'
+  assign is_light_swatch = false
+  assign swatch_downcase = swatch_bg | downcase
+  if swatch_downcase == '#fff' or swatch_downcase == '#ffffff' or swatch_downcase == 'white' or swatch_downcase contains 'f5f0' or swatch_downcase contains 'faf'
+    assign is_light_swatch = true
+  endif
+-%}
+
+<label class="fabric-picker__item" {{ shopify_attributes }}>
+  <input
+    type="radio"
+    name="{{ input_name }}"
+    value="{{ fabric_key }}"
+    data-fabric-key="{{ fabric_key }}"
+    data-fabric-name="{{ color_name | escape }}"
+    aria-label="{{ color_name }}, {{ fabric_type }}"
+    ref="{{ input_ref | default: 'inputs[]' }}"
+    {% if checked %}
+      checked
+    {% endif %}
+  >
+  <span
+    class="fabric-picker__swatch{% if is_light_swatch %} fabric-picker__swatch--light{% endif %}"
+    style="--fabric-swatch-bg: {{ swatch_bg }};"
+  ></span>
+  <span class="fabric-picker__text">
+    <span class="fabric-picker__color-name">{{ color_name }}</span>
+    {%- if fabric_type != blank -%}
+      <span class="fabric-picker__fabric-type">{{ fabric_type }}</span>
+    {%- endif -%}
+  </span>
+</label>

@@ -23,7 +23,7 @@
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
-            "thumbnail_width": 44,
+            "thumbnail_width": 72,
             "aspect_ratio": "1/1.25",
             "constrain_to_viewport": false,
             "media_fit": "cover",
@@ -129,6 +129,54 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "white_glove_delivery": {
+              "type": "white-glove-delivery",
+              "settings": {
+                "message": "White glove delivery options available",
+                "info_text": "White glove service includes delivery, assembly in your space and empty box haul away.",
+                "show_truck_icon": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "fabric_picker": {
+              "type": "fabric-picker",
+              "settings": {
+                "heading": "1. Choose Your Fabric",
+                "default_fabric_type": "Performance",
+                "allowed_fabric_keys": "",
+                "columns": 5,
+                "swatch_size": 56,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "fabric_white": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "White",
+                    "fabric_key": "cream-oatmeal",
+                    "swatch_color": "#ffffff",
+                    "fabric_type": "Performance"
+                  }
+                },
+                "fabric_black": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Black",
+                    "fabric_key": "sand",
+                    "swatch_color": "#1a1a1a",
+                    "fabric_type": "Performance"
+                  }
+                }
+              },
+              "block_order": ["fabric_white", "fabric_black"]
             },
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
@@ -327,6 +375,8 @@
             "text_WE3K4w",
             "reviews",
             "price_a7krng",
+            "white_glove_delivery",
+            "fabric_picker",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
             "accordion_Yd4U4w"

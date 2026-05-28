@@ -36,7 +36,7 @@
 %}
 
 <span
-  class="buy-buttons-block buy-buttons-block--{{ block.id }}"
+  class="product-details__purchase buy-buttons-block buy-buttons-block--{{ block.id }}"
   {{ block.shopify_attributes }}
 >
   {%- if product != blank -%}
@@ -451,8 +451,18 @@
   }
 
   .add-to-cart-button {
+    position: relative;
     height: var(--height-buy-buttons);
+    min-height: 3.25rem;
     text-transform: var(--button-text-case-primary);
+  }
+
+  .product-details__purchase .product-form-buttons {
+    width: 100%;
+  }
+
+  .product-details__purchase .add-to-cart-component {
+    width: 100%;
   }
 
   .add-to-cart-button.button-secondary {

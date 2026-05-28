@@ -1,75 +1,17 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "main-page",
-      "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Title",
-          "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "page-content": {
-          "type": "page-content",
-          "settings": {},
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "heading",
-        "page-content"
-      ],
-      "disabled": true,
-      "settings": {
-        "content_direction": "column",
-        "gap": 32,
-        "color_scheme": "",
-        "padding-block-start": 40,
-        "padding-block-end": 80
-      }
-    },
-    "collection_list_E773Qt": {
+    "collections_hub": {
       "type": "collection-list",
       "blocks": {
-        "group_iyFEVD": {
+        "header": {
           "type": "group",
-          "name": "t:names.header",
           "settings": {
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
+            "horizontal_alignment_flex_direction_column": "center",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
             "width": "fill",
@@ -100,15 +42,14 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "text_fKGa9t": {
+            "title": {
               "type": "text",
-              "name": "t:names.text",
               "settings": {
-                "text": "<h3>Shop by collection</h3>",
-                "width": "fit-content",
+                "text": "<h1>Collections</h1>",
+                "width": "100%",
                 "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
+                "alignment": "center",
+                "type_preset": "h2",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -127,13 +68,10 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "text_fKGa9t"
-          ]
+          "block_order": ["title"]
         },
         "static-collection-card": {
           "type": "_collection-card",
-          "name": "t:names.collection_card",
           "static": true,
           "settings": {
             "placement": "on_image",
@@ -148,14 +86,13 @@
             "border_radius": 0
           },
           "blocks": {
-            "collection_title_crrVCg": {
+            "collection_title": {
               "type": "collection-title",
-              "name": "t:names.collection_title",
               "settings": {
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "h4",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -166,19 +103,18 @@
                 "background": true,
                 "background_color": "#ffffff",
                 "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 4,
-                "padding-inline-start": 8,
-                "padding-inline-end": 8
+                "padding-block-start": 8,
+                "padding-block-end": 8,
+                "padding-inline-start": 12,
+                "padding-inline-end": 12
               },
               "blocks": {}
             },
             "collection-card-image": {
               "type": "_collection-card-image",
-              "name": "t:names.collection_card_image",
               "static": true,
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "portrait",
                 "toggle_overlay": false,
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
@@ -191,26 +127,26 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "collection_title_crrVCg"
-          ]
+          "block_order": ["collection_title"]
         }
       },
-      "block_order": [
-        "group_iyFEVD"
-      ],
+      "block_order": ["header"],
       "name": "t:names.collections_grid",
       "settings": {
-        "collection_list": [],
+        "collection_list": [
+          "dream-cloud-collection",
+          "xl-cloud-collection",
+          "the-west-coast-collection"
+        ],
         "layout_type": "grid",
         "carousel_on_mobile": false,
         "columns": 3,
-        "mobile_columns": "2",
+        "mobile_columns": "1",
         "mobile_card_size": "60cqw",
-        "columns_gap": 8,
+        "columns_gap": 24,
         "bento_gap": 8,
-        "rows_gap": 8,
-        "max_collections": 4,
+        "rows_gap": 24,
+        "max_collections": 3,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
@@ -221,8 +157,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "collection_list_E773Qt"
-  ]
+  "order": ["collections_hub"]
 }

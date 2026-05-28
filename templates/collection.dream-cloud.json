@@ -1,0 +1,139 @@
+{
+  "sections": {
+    "configurations": {
+      "type": "collection-configurations",
+      "blocks": {
+        "config_4pc_sofa_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "4pc-sofa-ottoman",
+            "title": "4pc Sofa + Ottoman",
+            "price_display": "$1,900 CAD"
+          }
+        },
+        "config_5pc_l_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "5pc-l-shape-ottoman",
+            "title": "5pc L-shape + Ottoman",
+            "price_display": "$2,375 CAD"
+          }
+        },
+        "config_6pc_corner_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "6pc-corner-sectional-ottoman",
+            "title": "6pc Corner Sectional + Ottoman",
+            "price_display": "$2,800 CAD"
+          }
+        },
+        "config_4pc_l": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "4pc-l-shape",
+            "title": "4pc L-shape",
+            "price_display": "$1,900 CAD"
+          }
+        },
+        "config_5pc_double": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "5pc-double-ottoman",
+            "title": "5pc Double Ottoman",
+            "price_display": "$2,375 CAD"
+          }
+        },
+        "config_6pc_pit": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "6pc-pit",
+            "title": "6pc Pit",
+            "price_display": "$2,800 CAD"
+          }
+        },
+        "config_3pc_sofa": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "3pc-sofa",
+            "title": "3pc Sofa",
+            "price_display": "$1,425 CAD"
+          }
+        },
+        "config_5pc_corner": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "5pc-corner-sectional",
+            "title": "5pc Corner Sectional",
+            "price_display": "$2,375 CAD"
+          }
+        },
+        "config_3pc_sofa_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "3pc-sofa-ottoman",
+            "title": "3pc Sofa + Ottoman",
+            "price_display": "$1,425 CAD"
+          }
+        },
+        "config_2pc_sofa": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "2pc-sofa",
+            "title": "2pc Sofa",
+            "price_display": "$950 CAD"
+          }
+        },
+        "config_1pc_armless": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "1pc-armless-chair",
+            "title": "1pc Armless Chair",
+            "price_display": "$475 CAD"
+          }
+        },
+        "config_1pc_corner": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "1pc-corner",
+            "title": "1pc Corner",
+            "price_display": "$475 CAD"
+          }
+        },
+        "config_1pc_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "1pc-ottoman",
+            "title": "1pc Ottoman",
+            "price_display": "$475 CAD"
+          }
+        }
+      },
+      "block_order": [
+        "config_4pc_sofa_ottoman",
+        "config_5pc_l_ottoman",
+        "config_6pc_corner_ottoman",
+        "config_4pc_l",
+        "config_5pc_double",
+        "config_6pc_pit",
+        "config_3pc_sofa",
+        "config_5pc_corner",
+        "config_3pc_sofa_ottoman",
+        "config_2pc_sofa",
+        "config_1pc_armless",
+        "config_1pc_corner",
+        "config_1pc_ottoman"
+      ],
+      "settings": {
+        "eyebrow": "Modular comfort",
+        "heading": "Dream Cloud Collection",
+        "description": "<p>A modular silhouette with soft pillow cushions and a relaxed profile. Choose your configuration and customize the fabric.</p>",
+        "columns": 3,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": ["configurations"]
+}

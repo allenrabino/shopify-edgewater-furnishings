@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "configurations": {
+      "type": "collection-configurations",
+      "blocks": {
+        "config_4pc_sofa_ottoman": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "4pc-sofa-ottoman-configuration",
+            "title": "4pc Sofa + Ottoman",
+            "price_display": "$2,500 CAD"
+          }
+        }
+      },
+      "block_order": ["config_4pc_sofa_ottoman"],
+      "settings": {
+        "eyebrow": "Extra spacious",
+        "heading": "XL Cloud Collection",
+        "description": "<p>Our XL Cloud model is available in the 4pc Sofa + Ottoman configuration with four performance fabric colors.</p>",
+        "columns": 2,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": ["configurations"]
+}

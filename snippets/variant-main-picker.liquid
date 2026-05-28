@@ -5,9 +5,13 @@
   @param {object} [block] - The block object
 {%- enddoc -%}
 
-{% assign block_settings = block.settings %}
+{% if block == blank %}
+  {% assign block_settings = nil %}
+{% else %}
+  {% assign block_settings = block.settings %}
+{% endif %}
 
-{% unless product_resource.has_only_default_variant %}
+{% unless product_resource.has_only_default_variant or block == blank %}
   {% liquid
     assign button_background_brightness = section.settings.color_scheme.settings.foreground | color_brightness
     if button_background_brightness < 105
@@ -53,17 +57,32 @@
           endif
         -%}
 
-        {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- liquid
+          assign option_name_downcase = product_option.name | downcase
+          assign is_fabric_option = false
+          if option_name_downcase contains 'fabric' or option_name_downcase contains 'color' or option_name_downcase contains 'colour' or option_name_downcase contains 'material'
+            assign is_fabric_option = true
+          endif
+          assign option_variant_style = variant_style
+          if is_fabric_option and swatch_count > 0
+            assign option_variant_style = 'swatch'
+          endif
+        -%}
+        {%- if option_variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
           <fieldset
-            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
+            class="variant-option variant-option--buttons{% if option_variant_style == 'swatch' %} variant-option--swatches{% if is_fabric_option %} variant-option--fabric-grid{% endif %}{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
             <legend>
-              {{ product_option.name | escape -}}
-              {%- if variant_style == 'swatch' -%}
+              {%- if is_fabric_option -%}
+                1. Choose Your Fabric
+              {%- else -%}
+                {{ product_option.name | escape }}
+              {%- endif -%}
+              {%- if option_variant_style == 'swatch' -%}
                 <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
               {%- endif %}
             </legend>
@@ -72,7 +91,7 @@
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
               <label
-                class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
+                class="variant-option__button-label{% if option_variant_style == 'swatch' %} variant-option__button-label--has-swatch{% if is_fabric_option %} fabric-picker__item{% endif %}{% endif %}"
               >
                 <input
                   type="radio"
@@ -99,22 +118,46 @@
                     data-current-checked="false"
                   {% endif %}
                 >
-                {% if variant_style == 'swatch' %}
+                {% if option_variant_style == 'swatch' %}
                   {% liquid
                     assign featured_media = product_option_value.variant.featured_media
 
-                    # If the variant has no featured media, and we have a combined listing product, then fall back to
-                    # using the featured media of the child product that is linked to this option value.
                     if featured_media == blank and product_option_value.product_url
                       assign featured_media = product_option_value.variant.product.featured_media
                     endif
                   %}
 
-                  {% render 'swatch',
-                    swatch: product_option_value.swatch,
-                    variant_image: featured_media,
-                    mode: 'unscaled'
-                  %}
+                  {%- if is_fabric_option -%}
+                    <span class="fabric-picker__swatch">
+                      {%- if featured_media != nil -%}
+                        {{
+                          featured_media.preview_image
+                          | image_url: width: 160
+                          | image_tag:
+                            loading: 'lazy',
+                            alt: product_option_value.name,
+                            class: 'fabric-picker__swatch-image'
+                        }}
+                      {%- else -%}
+                        {% render 'swatch',
+                          swatch: product_option_value.swatch,
+                          variant_image: featured_media,
+                          mode: 'unscaled'
+                        %}
+                      {%- endif -%}
+                    </span>
+                    <span class="fabric-picker__text">
+                      <span class="fabric-picker__color-name">{{ product_option_value.name }}</span>
+                      <span class="fabric-picker__fabric-type">{{ block_settings.default_fabric_type | default: 'Performance Velvet' }}</span>
+                    </span>
+                  {%- else -%}
+                    {% render 'swatch',
+                      swatch: product_option_value.swatch,
+                      variant_image: featured_media,
+                      mode: 'unscaled'
+                    %}
+                    <span class="variant-option__swatch-label">{{ product_option_value | escape }}</span>
+                  {%- endif -%}
                 {% else %}
                   {% if product_option_value.available == true %}
                     <span
@@ -293,5 +336,31 @@
   .variant-picker--right .variant-option {
     text-align: right;
     justify-content: right;
+  }
+
+  .variant-option--fabric-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--gap-lg) var(--gap-sm);
+    border: none;
+    width: 100%;
+  }
+
+  .variant-option--fabric-grid legend {
+    grid-column: 1 / -1;
+    font-size: var(--font-size--md);
+    font-weight: 600;
+    margin-bottom: var(--gap-md);
+    padding: 0;
+  }
+
+  .variant-option--fabric-grid .fabric-picker__item {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .variant-option--fabric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
 {% endstylesheet %}

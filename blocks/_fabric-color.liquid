@@ -1,0 +1,45 @@
+
+{%- comment -%}
+  Fabric color swatches are rendered by the parent fabric-picker block.
+  This file defines the block schema for the theme editor.
+{%- endcomment -%}
+<div class="visually-hidden" {{ block.shopify_attributes }}></div>
+
+{% schema %}
+{
+  "name": "t:names.fabric_color",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "color_name",
+      "label": "t:settings.color_name",
+      "default": "White"
+    },
+    {
+      "type": "text",
+      "id": "fabric_key",
+      "label": "t:settings.fabric_key",
+      "info": "t:info.fabric_key",
+      "default": "cream-oatmeal"
+    },
+    {
+      "type": "color",
+      "id": "swatch_color",
+      "label": "t:settings.swatch_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "fabric_type",
+      "label": "t:settings.fabric_type_label",
+      "default": "Performance Velvet"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.fabric_color"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,61 @@
+{%- doc -%}
+  Parses fabric metadata from a media filename.
+
+  @param {object} media - Product media object
+  @param {string} [default_fabric_type] - Fallback fabric type label
+  @param {string} [part] - 'key', 'color', or 'type'
+
+  @example
+  {% render 'fabric-meta-from-media', media: media, part: 'color', default_fabric_type: 'Performance Velvet' %}
+{%- enddoc -%}
+
+{%- liquid
+  assign part = part | default: 'key'
+  assign default_fabric_type = default_fabric_type | default: 'Performance Velvet'
+  assign fabric_key = ''
+  assign color_name = ''
+  assign fabric_type = default_fabric_type
+
+  assign media_src = media.preview_image.src | default: media.src | default: ''
+  assign filename = media_src | split: '/' | last | split: '?' | first | downcase
+
+  if filename contains 'basketweave'
+    assign fabric_type = 'Performance Basketweave'
+  elsif filename contains 'chenille'
+    assign fabric_type = 'Performance Chenille'
+  elsif filename contains 'velvet'
+    assign fabric_type = 'Performance Velvet'
+  elsif filename contains 'linen'
+    assign fabric_type = 'Performance Linen'
+  endif
+
+  if filename contains 'performance_'
+    assign after_performance = filename | split: 'performance_' | last
+    assign fabric_part = after_performance | split: '__cloud' | first | split: '_cloud' | first | split: '.png' | first | split: '.jpg' | first | split: '.webp' | first | strip
+
+    if fabric_part != blank
+      assign fabric_key = fabric_part | replace: '_', '-'
+      assign color_words = fabric_part | split: '_'
+      assign color_name = ''
+      for word in color_words
+        if word != blank
+          assign capitalized_word = word | capitalize
+          if color_name == blank
+            assign color_name = capitalized_word
+          else
+            assign color_name = color_name | append: ' ' | append: capitalized_word
+          endif
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+{%- case part -%}
+  {%- when 'color' -%}
+    {{- color_name -}}
+  {%- when 'type' -%}
+    {{- fabric_type -}}
+  {%- else -%}
+    {{- fabric_key -}}
+{%- endcase -%}

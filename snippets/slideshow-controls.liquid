@@ -107,11 +107,15 @@
         >
           <div class="slideshow-controls__thumbnails">
             {% for media in thumbnails %}
+              {% capture thumbnail_fabric_key %}
+                {% render 'fabric-key-from-media', media: media %}
+              {% endcapture %}
               <button
                 class="slideshow-control button button-unstyled slideshow-controls__thumbnail"
                 aria-label="{{ 'accessibility.slide_status' | t: index: forloop.index, length: forloop.length }}"
                 on:click="/select/{{ forloop.index0 }}"
                 style="--aspect-ratio: {% if aspect_ratio == 'adapt' %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% else %}{{ aspect_ratio }}{% endif %};"
+                data-thumbnail-fabric-key="{{ thumbnail_fabric_key | strip }}"
                 ref="thumbnails[]"
                 {% if forloop.first %}
                   aria-selected="true"
@@ -125,7 +129,7 @@
                 %}
                 {{
                   media.preview_image
-                  | image_url: width: 144
+                  | image_url: width: 192
                   | image_tag: loading: 'lazy', alt: media.alt, style: focal_point_style
                   | escape
                 }}
@@ -338,6 +342,22 @@
     }
   }
 
+  slideshow-controls[thumbnails]:is([pagination-position='left'], [pagination-position='right']) .slideshow-controls__arrows {
+    button {
+      width: 2.75rem;
+      height: 2.75rem;
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
+
+    .svg-wrapper,
+    .icon,
+    svg {
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+  }
+
   .slideshow-controls__dots,
   .slideshow-controls__counter {
     display: inline-flex;
@@ -488,13 +508,14 @@
     display: inline-flex;
     padding-inline: var(--slideshow-thumbnails-padding-inline, var(--padding-sm));
     padding-block: var(--slideshow-thumbnails-padding-block, var(--padding-sm));
-    gap: var(--gap-xs);
+    gap: var(--gap-sm);
     margin-inline: auto;
     height: fit-content;
 
     .slideshow-control {
       border-radius: var(--thumbnail-radius, var(--media-radius));
-      width: clamp(44px, 7vw, var(--thumbnail-width));
+      width: var(--thumbnail-width, 72px);
+      min-width: var(--thumbnail-width, 72px);
       height: auto;
       aspect-ratio: var(--aspect-ratio);
 

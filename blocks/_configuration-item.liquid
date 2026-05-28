@@ -1,0 +1,140 @@
+
+{%- liquid
+  assign block_settings = block.settings
+  assign config_product = block_settings.product
+  assign display_title = block_settings.title
+  if display_title == blank and config_product != blank
+    assign display_title = config_product.title
+  endif
+  assign display_price = block_settings.price_display
+  assign config_image = block_settings.image
+  if config_image == blank and config_product != blank
+    assign config_image = config_product.featured_image
+  endif
+-%}
+
+{%- if config_product != blank -%}
+  <a
+    href="{{ config_product.url }}"
+    class="configuration-card"
+    {{ block.shopify_attributes }}
+  >
+    <div class="configuration-card__media">
+      {%- if config_image != blank -%}
+        {{
+          config_image
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            sizes: '(min-width: 990px) 30vw, 45vw',
+            widths: '352, 832, 900',
+            alt: display_title,
+            class: 'configuration-card__image'
+        }}
+      {%- else -%}
+        {{ 'product-apparel-2' | placeholder_svg_tag: 'configuration-card__placeholder' }}
+      {%- endif -%}
+    </div>
+    <div class="configuration-card__info">
+      <h3 class="configuration-card__title">{{ display_title }}</h3>
+      {%- if display_price != blank -%}
+        <p class="configuration-card__price">{{ display_price }}</p>
+      {%- elsif config_product.price > 0 -%}
+        <p class="configuration-card__price">{{ config_product.price | money_with_currency }}</p>
+      {%- endif -%}
+    </div>
+  </a>
+{%- endif -%}
+
+{% stylesheet %}
+  .configuration-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    transition: transform 0.2s ease;
+  }
+
+  .configuration-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .configuration-card__media {
+    aspect-ratio: 4 / 3;
+    background: rgb(var(--color-foreground-rgb) / 0.03);
+    border-radius: var(--style-border-radius-popover, 4px);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .configuration-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .configuration-card__placeholder {
+    width: 60%;
+    height: auto;
+    opacity: 0.3;
+  }
+
+  .configuration-card__info {
+    padding-block: var(--padding-md);
+    text-align: center;
+  }
+
+  .configuration-card__title {
+    margin: 0 0 var(--gap-2xs);
+    font-size: var(--font-size--sm);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .configuration-card__price {
+    margin: 0;
+    font-size: var(--font-size--sm);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.configuration_item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:settings.product"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.title",
+      "info": "t:info.configuration_title"
+    },
+    {
+      "type": "text",
+      "id": "price_display",
+      "label": "t:settings.price_display",
+      "info": "t:info.configuration_price"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image",
+      "info": "t:info.configuration_image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.configuration_item"
+    }
+  ]
+}
+{% endschema %}

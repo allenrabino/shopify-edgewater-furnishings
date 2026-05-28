@@ -1,0 +1,28 @@
+{%- doc -%}
+  Fallback hex color when no swatch color is set in the theme editor.
+
+  @param {string} fabric_key
+{%- enddoc -%}
+
+{%- liquid
+  assign key = fabric_key | downcase | strip
+  assign hex = '#cccccc'
+
+  case key
+    when 'cream-oatmeal', 'cream', 'white'
+      assign hex = '#f5f0e8'
+    when 'sand', 'beige', 'tan'
+      assign hex = '#c4b8a8'
+    when 'sage-green', 'sage'
+      assign hex = '#8a9a7b'
+    when 'mocha', 'brown'
+      assign hex = '#6b5344'
+    when 'grey', 'gray'
+      assign hex = '#8c8c8c'
+    when 'black'
+      assign hex = '#1a1a1a'
+    else
+      assign hex = '#cccccc'
+  endcase
+-%}
+{{- hex -}}

@@ -23,7 +23,7 @@
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
-            "thumbnail_width": 44,
+            "thumbnail_width": 72,
             "aspect_ratio": "1/1.25",
             "constrain_to_viewport": false,
             "media_fit": "cover",
@@ -129,6 +129,72 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "white_glove_delivery": {
+              "type": "white-glove-delivery",
+              "settings": {
+                "message": "White glove delivery options available",
+                "info_text": "White glove service includes delivery, assembly in your space and empty box haul away.",
+                "show_truck_icon": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "fabric_picker": {
+              "type": "fabric-picker",
+              "settings": {
+                "heading": "1. Choose Your Fabric",
+                "default_fabric_type": "Performance",
+                "allowed_fabric_keys": "",
+                "columns": 4,
+                "swatch_size": 56,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "fabric_cream": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Performance Cream",
+                    "fabric_key": "cream",
+                    "swatch_color": "#f5f0e8",
+                    "fabric_type": "Performance"
+                  }
+                },
+                "fabric_sage": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Sage Green",
+                    "fabric_key": "sage-green",
+                    "swatch_color": "#8a9a7b",
+                    "fabric_type": "Performance"
+                  }
+                },
+                "fabric_mocha": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Mocha",
+                    "fabric_key": "mocha",
+                    "swatch_color": "#6b5344",
+                    "fabric_type": "Performance"
+                  }
+                },
+                "fabric_grey": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Grey",
+                    "fabric_key": "grey",
+                    "swatch_color": "#8c8c8c",
+                    "fabric_type": "Performance"
+                  }
+                }
+              },
+              "block_order": ["fabric_cream", "fabric_sage", "fabric_mocha", "fabric_grey"]
             },
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
@@ -327,6 +393,8 @@
             "text_WE3K4w",
             "reviews",
             "price_a7krng",
+            "white_glove_delivery",
+            "fabric_picker",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
             "accordion_Yd4U4w"

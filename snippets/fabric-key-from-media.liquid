@@ -1,0 +1,23 @@
+{%- doc -%}
+  Returns a normalized fabric key from a media filename (e.g. performance-cream-oatmeal).
+
+  @param {object} media - Product media object
+
+  @example
+  {% render 'fabric-key-from-media', media: media %}
+{%- enddoc -%}
+
+{%- liquid
+  assign fabric_key = ''
+  assign media_src = media.preview_image.src | default: media.src | default: ''
+  assign filename = media_src | split: '/' | last | split: '?' | first | downcase
+
+  if filename contains 'performance_'
+    assign after_performance = filename | split: 'performance_' | last
+    assign fabric_part = after_performance | split: '__cloud' | first | split: '_cloud' | first | split: '.png' | first | split: '.jpg' | first | split: '.webp' | first | strip
+    if fabric_part != blank
+      assign fabric_key = fabric_part | replace: '_', '-'
+    endif
+  endif
+-%}
+{{- fabric_key -}}

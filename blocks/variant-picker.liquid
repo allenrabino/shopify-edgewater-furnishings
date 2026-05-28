@@ -7,8 +7,8 @@
   endif
 -%}
 
-{% unless product_resource == blank %}
-  {% render 'variant-main-picker', product_resource: product_resource %}
+{% unless product_resource == blank or product_resource.has_only_default_variant %}
+  {% render 'variant-main-picker', product_resource: product_resource, block: block %}
 {% endunless %}
 
 {% schema %}
@@ -45,6 +45,13 @@
       "id": "show_swatches",
       "label": "t:settings.swatches",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "default_fabric_type",
+      "label": "t:settings.default_fabric_type",
+      "default": "Performance Velvet",
+      "info": "t:info.default_fabric_type"
     },
     {
       "type": "text_alignment",

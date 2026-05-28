@@ -19,9 +19,15 @@ export class MediaGallery extends Component {
     const target = this.closest('.shopify-section, dialog');
 
     target?.addEventListener(ThemeEvents.variantUpdate, this.#handleVariantUpdate, { signal });
+    target?.addEventListener(ThemeEvents.fabricSelected, this.#handleFabricSelected, { signal });
     this.refs.zoomDialogComponent?.addEventListener(ThemeEvents.zoomMediaSelected, this.#handleZoomMediaSelected, {
       signal,
     });
+
+    const defaultFabric = this.dataset.defaultFabric;
+    if (defaultFabric) {
+      this.#applyFabricFilter(defaultFabric);
+    }
   }
 
   #controller = new AbortController();
@@ -46,6 +52,53 @@ export class MediaGallery extends Component {
     if (!newMediaGallery) return;
 
     this.replaceWith(newMediaGallery);
+  };
+
+  /**
+   * @param {CustomEvent} event
+   */
+  #handleFabricSelected = (event) => {
+    const fabricKey = event.detail?.fabricKey;
+    if (typeof fabricKey !== 'string') return;
+    this.#applyFabricFilter(fabricKey);
+  };
+
+  /**
+   * Shows media slides matching the fabric key; shared slides (no key) stay visible.
+   *
+   * @param {string} fabricKey
+   */
+  #applyFabricFilter(fabricKey) {
+    const slides = /** @type {HTMLElement[]} */ (Array.from(this.querySelectorAll('slideshow-slide[data-fabric-key]')));
+    if (!slides.length) return;
+
+    let firstVisibleIndex = -1;
+
+    slides.forEach((slide, index) => {
+      const slideFabric = slide.dataset.fabricKey ?? '';
+      const isShared = slideFabric === '';
+      const isMatch = slideFabric === fabricKey;
+      const visible = isShared || isMatch;
+
+      slide.toggleAttribute('hidden', !visible);
+      slide.setAttribute('aria-hidden', String(!visible));
+
+      if (visible && firstVisibleIndex === -1) {
+        firstVisibleIndex = index;
+      }
+    });
+
+    const thumbnails = this.querySelectorAll('[data-thumbnail-fabric-key]');
+    thumbnails.forEach((thumb) => {
+      if (!(thumb instanceof HTMLElement)) return;
+      const thumbFabric = thumb.dataset.thumbnailFabricKey ?? '';
+      const visible = thumbFabric === '' || thumbFabric === fabricKey;
+      thumb.toggleAttribute('hidden', !visible);
+    });
+
+    if (firstVisibleIndex >= 0) {
+      this.slideshow?.select(firstVisibleIndex, undefined, { animate: false });
+    }
   };
 
   /**

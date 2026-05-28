@@ -420,6 +420,24 @@ p:empty {
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
 }
 
+/* Cap site content at 1444px on large screens — centered with flexible side margins */
+@media screen and (min-width: 1444px) {
+  .page-width-wide,
+  .page-width-normal,
+  .page-width-narrow,
+  .page-width-content {
+    --page-content-width: var(--site-max-content-width, 1444px);
+    --page-width: var(--site-max-content-width, 1444px);
+  }
+
+  .section {
+    --full-page-grid-central-column-width: var(--site-max-content-width, 1444px);
+    --full-page-grid-margin: minmax(0px, 1fr);
+    --full-page-grid-with-margins: var(--full-page-grid-margin) var(--full-page-grid-central-column-width)
+      var(--full-page-grid-margin);
+  }
+}
+
 /* Section width full vs. page
    The reason we use a grid to contain the section is to allow for the section to have a
    full-width background image even if the section content is constrained by the page width. Do not try

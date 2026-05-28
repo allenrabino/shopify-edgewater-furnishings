@@ -1,0 +1,58 @@
+{
+  "sections": {
+    "configurations": {
+      "type": "collection-configurations",
+      "blocks": {
+        "config_pacific": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "pacific-l-shape-ottoman",
+            "title": "Pacific L-shape + Ottoman",
+            "price_display": "$3,375 CAD"
+          }
+        },
+        "config_coastal": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "coastal-chaise-sectional",
+            "title": "Coastal Chaise Sectional",
+            "price_display": "$2,890 CAD"
+          }
+        },
+        "config_juniper": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "juniper-l-shape-ottoman",
+            "title": "Juniper L-shape + Ottoman",
+            "price_display": "$2,875 CAD"
+          }
+        },
+        "config_cove": {
+          "type": "_configuration-item",
+          "settings": {
+            "product": "cove-reversible-chaise-sofa",
+            "title": "Cove Reversible Chaise Sofa",
+            "price_display": "$1,490 CAD"
+          }
+        }
+      },
+      "block_order": [
+        "config_pacific",
+        "config_coastal",
+        "config_juniper",
+        "config_cove"
+      ],
+      "settings": {
+        "eyebrow": "West coast living",
+        "heading": "West Coast Collection",
+        "description": "<p>Four distinct models designed for relaxed west coast living. Each configuration is available in multiple fabric colors.</p>",
+        "columns": 2,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": ["configurations"]
+}

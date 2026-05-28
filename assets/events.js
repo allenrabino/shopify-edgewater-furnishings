@@ -26,6 +26,8 @@ export class ThemeEvents {
   static discountUpdate = 'discount:update';
   /** @static @constant {string} Event triggered when changing collection filters */
   static FilterUpdate = 'filter:update';
+  /** @static @constant {string} Event triggered when a fabric swatch is selected */
+  static fabricSelected = 'fabric:selected';
 }
 
 /**

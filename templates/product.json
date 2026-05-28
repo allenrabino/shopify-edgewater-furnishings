@@ -24,7 +24,7 @@
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "left",
-            "thumbnail_width": 44,
+            "thumbnail_width": 72,
             "thumbnail_radius": 0,
             "aspect_ratio": "2/1",
             "constrain_to_viewport": true,
@@ -141,55 +141,6 @@
               },
               "blocks": {}
             },
-            "text_PJyHN6": {
-              "type": "text",
-              "name": "t:names.text",
-              "settings": {
-                "text": "<p>Starting at$202/mo with</p>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_zY8DQY": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": false,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
             "reviews": {
               "type": "review",
               "settings": {
@@ -220,13 +171,51 @@
               },
               "blocks": {}
             },
-            "variant_picker_R3rGDr": {
-              "type": "variant-picker",
+            "fabric_picker": {
+              "type": "fabric-picker",
               "settings": {
-                "variant_style": "buttons",
-                "show_swatches": false,
-                "alignment": "center",
+                "heading": "1. Choose Your Fabric",
+                "default_fabric_type": "Performance Velvet",
+                "columns": 5,
+                "swatch_size": 56,
                 "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "fabric_white": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "White",
+                    "fabric_key": "cream-oatmeal",
+                    "swatch_color": "#ffffff",
+                    "fabric_type": "Performance Velvet"
+                  }
+                },
+                "fabric_black": {
+                  "type": "_fabric-color",
+                  "settings": {
+                    "color_name": "Black",
+                    "fabric_key": "sand",
+                    "swatch_color": "#1a1a1a",
+                    "fabric_type": "Performance Velvet"
+                  }
+                }
+              },
+              "block_order": ["fabric_white", "fabric_black"]
+            },
+            "modular_add_piece": {
+              "type": "modular-add-piece",
+              "settings": {
+                "heading": "2. Add a Piece",
+                "subheading": "Choose your pieces and quantity to build your perfect configuration.",
+                "total_label": "Configuration total",
+                "single_corner_label": "Single Corner",
+                "armless_chair_label": "Armless Chair",
+                "ottoman_label": "Ottoman",
+                "hide_on_collection_templates": true,
+                "padding-block-start": 16,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -237,12 +226,12 @@
               "type": "buy-buttons",
               "settings": {
                 "stacking": true,
-                "show_pickup_availability": true,
-                "gift_card_form": true,
-                "padding-block-start": 0,
+                "show_pickup_availability": false,
+                "gift_card_form": false,
+                "padding-block-start": 8,
                 "padding-block-end": 0,
-                "padding-inline-start": 11,
-                "padding-inline-end": 7
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
               },
               "blocks": {
                 "quantity": {
@@ -290,7 +279,7 @@
                 "accordion_row_P46NdC": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Details",
+                    "heading": "Description",
                     "open_by_default": true,
                     "icon": "none",
                     "width": 20
@@ -330,7 +319,7 @@
                 "accordion_row_HUWbDi": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Materials + Care",
+                    "heading": "Dimensions +",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -369,7 +358,7 @@
                 "accordion_row_GTWFgP": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Shipping + Returns",
+                    "heading": "Assembly Instructions +",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -404,12 +393,52 @@
                   "block_order": [
                     "text_Nrxfg8"
                   ]
+                },
+                "accordion_row_why_choose": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Why Choose the Dream Cloud?",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_why_choose": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Content coming soon.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-primary--family)",
+                        "font_size": "",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_why_choose"
+                  ]
                 }
               },
               "block_order": [
                 "accordion_row_P46NdC",
                 "accordion_row_HUWbDi",
-                "accordion_row_GTWFgP"
+                "accordion_row_GTWFgP",
+                "accordion_row_why_choose"
               ]
             }
           },
@@ -417,25 +446,21 @@
             "collection_title_wkrELh",
             "text_WE3K4w",
             "price_a7krng",
-            "text_PJyHN6",
-            "price_zY8DQY",
             "reviews",
             "white_glove_delivery",
-            "variant_picker_R3rGDr",
+            "fabric_picker",
+            "modular_add_piece",
             "buy_buttons_eYQEYi",
             "accordion_Yd4U4w"
           ]
         }
       },
-      "custom_css": [
-        ".product-information {padding: 50px;}"
-      ],
       "settings": {
-        "content_width": "content-full-width",
+        "content_width": "content-center-aligned",
         "desktop_media_position": "left",
-        "equal_columns": false,
-        "limit_details_width": true,
-        "gap": 24,
+        "equal_columns": true,
+        "limit_details_width": false,
+        "gap": 32,
         "enable_sticky_add_to_cart": true,
         "color_scheme": "",
         "padding-block-start": 30,

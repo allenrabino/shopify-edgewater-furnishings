@@ -1,0 +1,382 @@
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+  assign show_block = true
+
+  assign template_suffix = template.suffix | downcase
+  assign fixed_config_handles = 'pacific-l-shape-ottoman,juniper-l-shape-ottoman,cove-reversible-chaise-sofa,4pc-sofa-ottoman-configuration' | split: ','
+
+  if fixed_config_handles contains product_resource.handle
+    assign show_block = false
+  endif
+
+  if block_settings.hide_on_collection_templates
+    if template_suffix == 'xlcloud' or template_suffix == 'xl-cloud' or template_suffix == 'westcoastcloud' or template_suffix == 'west-coast'
+      assign show_block = false
+    endif
+  endif
+
+  assign single_corner = block_settings.single_corner_product | default: all_products['1pc-corner']
+  assign armless_chair = block_settings.armless_chair_product | default: all_products['1pc-armless-chair']
+  assign ottoman = block_settings.ottoman_product | default: all_products['1pc-ottoman']
+
+  assign corner_qty = 0
+  assign armless_qty = 0
+  assign ottoman_qty = 0
+  assign current_handle = product_resource.handle | downcase
+
+  if current_handle contains 'corner' and current_handle contains '1pc'
+    assign corner_qty = 1
+  endif
+  if current_handle contains 'armless'
+    assign armless_qty = 1
+  endif
+  if current_handle contains 'ottoman' and current_handle contains '1pc'
+    assign ottoman_qty = 1
+  endif
+
+  assign base_price = product_resource.selected_or_first_available_variant.price
+  assign pieces_total = 0
+  if single_corner != blank
+    assign pieces_total = pieces_total | plus: single_corner.selected_or_first_available_variant.price | times: corner_qty
+  endif
+  if armless_chair != blank
+    assign pieces_total = pieces_total | plus: armless_chair.selected_or_first_available_variant.price | times: armless_qty
+  endif
+  if ottoman != blank
+    assign pieces_total = pieces_total | plus: ottoman.selected_or_first_available_variant.price | times: ottoman_qty
+  endif
+  assign display_total = base_price | plus: pieces_total
+-%}
+
+{%- if show_block -%}
+  <modular-add-piece
+    class="modular-add-piece spacing-style"
+    style="{% render 'spacing-style', settings: block_settings %}"
+    data-base-price="{{ base_price }}"
+    data-currency="{{ cart.currency.iso_code }}"
+    {{ block.shopify_attributes }}
+  >
+    <div class="modular-add-piece__header">
+      <h3 class="modular-add-piece__heading">{{ block_settings.heading }}</h3>
+      {%- if block_settings.subheading != blank -%}
+        <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="modular-add-piece__pieces">
+      {%- if single_corner != blank -%}
+        <div
+          class="modular-add-piece__row"
+          data-piece-row
+          data-variant-id="{{ single_corner.selected_or_first_available_variant.id }}"
+          data-unit-price="{{ single_corner.selected_or_first_available_variant.price }}"
+        >
+          <span class="modular-add-piece__label">
+            {{ block_settings.single_corner_label }}
+            <span class="modular-add-piece__unit-price">{{ single_corner.selected_or_first_available_variant.price | money }}</span>
+          </span>
+          <div class="modular-add-piece__qty" data-qty-control>
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
+            <input type="number" class="modular-add-piece__qty-input" value="{{ corner_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_corner_label }} quantity">
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if armless_chair != blank -%}
+        <div
+          class="modular-add-piece__row"
+          data-piece-row
+          data-variant-id="{{ armless_chair.selected_or_first_available_variant.id }}"
+          data-unit-price="{{ armless_chair.selected_or_first_available_variant.price }}"
+        >
+          <span class="modular-add-piece__label">
+            {{ block_settings.armless_chair_label }}
+            <span class="modular-add-piece__unit-price">{{ armless_chair.selected_or_first_available_variant.price | money }}</span>
+          </span>
+          <div class="modular-add-piece__qty" data-qty-control>
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
+            <input type="number" class="modular-add-piece__qty-input" value="{{ armless_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_armless_label }} quantity">
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if ottoman != blank -%}
+        <div
+          class="modular-add-piece__row"
+          data-piece-row
+          data-variant-id="{{ ottoman.selected_or_first_available_variant.id }}"
+          data-unit-price="{{ ottoman.selected_or_first_available_variant.price }}"
+        >
+          <span class="modular-add-piece__label">
+            {{ block_settings.ottoman_label }}
+            <span class="modular-add-piece__unit-price">{{ ottoman.selected_or_first_available_variant.price | money }}</span>
+          </span>
+          <div class="modular-add-piece__qty" data-qty-control>
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
+            <input type="number" class="modular-add-piece__qty-input" value="{{ ottoman_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_ottoman_label }} quantity">
+            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="modular-add-piece__total">
+      <span>{{ block_settings.total_label }}</span>
+      <strong data-total-display>{{ display_total | money_with_currency }}</strong>
+    </div>
+  </modular-add-piece>
+
+  <script src="{{ 'modular-add-piece.js' | asset_url }}" type="module"></script>
+{%- endif -%}
+
+{% stylesheet %}
+  .modular-add-piece {
+    width: 100%;
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    padding-top: var(--padding-lg);
+  }
+
+  .modular-add-piece__heading {
+    margin: 0 0 var(--gap-2xs);
+    font-size: var(--font-size--md);
+    font-weight: 600;
+  }
+
+  .modular-add-piece__subheading {
+    margin: 0 0 var(--gap-md);
+    font-size: var(--font-size--sm);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .modular-add-piece__pieces {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+  }
+
+  .modular-add-piece__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+  }
+
+  .modular-add-piece__label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+    font-size: var(--font-size--sm);
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .modular-add-piece__unit-price {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .modular-add-piece__qty {
+    --modular-qty-width: 7.75rem;
+
+    display: inline-flex;
+    align-items: stretch;
+    justify-content: space-between;
+    width: var(--modular-qty-width);
+    min-width: var(--modular-qty-width);
+    flex-shrink: 0;
+    color: var(--color-input-text, var(--color-foreground));
+    background-color: var(--color-input-background, rgb(var(--color-foreground-rgb) / 0.04));
+    border: var(--style-border-width-inputs, 1px) solid var(--color-input-border, rgb(var(--color-foreground-rgb) / 0.85));
+    border-radius: var(--style-border-radius-buttons-primary, 999px);
+    overflow: hidden;
+    transition: background-color 0.15s ease;
+  }
+
+  .modular-add-piece__qty:hover {
+    background-color: var(--color-input-hover-background, rgb(var(--color-foreground-rgb) / 0.06));
+  }
+
+  .modular-add-piece__qty-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2.5rem;
+    width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1;
+    color: inherit;
+    transition: opacity 0.15s ease;
+  }
+
+  .modular-add-piece__qty-btn:hover {
+    opacity: 0.65;
+  }
+
+  .modular-add-piece__qty-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .modular-add-piece__qty-input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: var(--font-size--sm);
+    font-weight: 500;
+    color: inherit;
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  .modular-add-piece__qty-input::-webkit-inner-spin-button,
+  .modular-add-piece__qty-input::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .modular-add-piece__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--gap-md);
+    padding-top: var(--gap-md);
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    font-size: var(--font-size--md);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.modular_add_piece",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "2. Add a Piece"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Choose your pieces and quantity to build your perfect configuration."
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "t:settings.total_label",
+      "default": "Configuration total"
+    },
+    {
+      "type": "text",
+      "id": "single_corner_label",
+      "label": "t:settings.single_corner_label",
+      "default": "Single Corner"
+    },
+    {
+      "type": "text",
+      "id": "armless_chair_label",
+      "label": "t:settings.armless_chair_label",
+      "default": "Armless Chair"
+    },
+    {
+      "type": "text",
+      "id": "ottoman_label",
+      "label": "t:settings.ottoman_label",
+      "default": "Ottoman"
+    },
+    {
+      "type": "product",
+      "id": "single_corner_product",
+      "label": "t:settings.single_corner_product"
+    },
+    {
+      "type": "product",
+      "id": "armless_chair_product",
+      "label": "t:settings.armless_chair_product"
+    },
+    {
+      "type": "product",
+      "id": "ottoman_product",
+      "label": "t:settings.ottoman_product"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_collection_templates",
+      "label": "t:settings.hide_on_xl_cloud",
+      "default": true,
+      "info": "t:info.hide_modular_xl_cloud"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.modular_add_piece",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
