@@ -1,0 +1,366 @@
+
+{% liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+
+  assign rating_metafield = product.metafields.reviews.rating.value
+  assign rating = rating_metafield.rating
+  assign scale_max = rating_metafield.scale_max | default: 5
+  assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
+  assign using_fallback = false
+
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+    assign rating_metafield = product.metafields.reviews.rating.value
+    assign rating = rating_metafield.rating
+    assign scale_max = rating_metafield.scale_max | default: 5
+    assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
+  endif
+
+  if rating == blank and block_settings.show_when_no_reviews
+    assign rating = block_settings.fallback_rating
+    assign rating_count = block_settings.fallback_review_count
+    assign scale_max = 5
+    assign using_fallback = true
+  endif
+-%}
+
+{%- if rating != blank -%}
+  {% liquid
+    assign star_count_rating = scale_max
+    assign decimal_rating = 0
+    assign decimal = rating | modulo: 1
+
+    if decimal >= 0.3 and decimal <= 0.7
+      assign decimal_rating = 0.5
+    elsif decimal > 0.7
+      assign decimal_rating = 1
+    endif
+
+    assign decimal_rounded = decimal_rating | ceil
+    assign svg_filled_stars = rating | floor | plus: decimal_rounded
+    assign half_gradient_id = 'half-' | append: block.id
+    assign show_rating_value = false
+    if block_settings.show_rating_value or block_settings.stars_style == 'single'
+      assign show_rating_value = true
+    endif
+  %}
+
+  <div
+    class="rating-wrapper rating-color--{{ block_settings.rating_color }} justify-{{ block_settings.alignment }} size-style{% if using_fallback %} rating-wrapper--fallback{% endif %}"
+    style="{% render 'size-style', settings: block_settings %}"
+    {{ block.shopify_attributes }}
+  >
+    <svg
+      class="visually-hidden"
+      style="width: 0; height: 0;"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      role="presentation"
+    >
+      <defs>
+        <linearGradient id="{{ half_gradient_id }}" x1="0" x2="100%" y1="0" y2="0">
+          <stop offset="50%" stop-color="var(--star-fill-color)"></stop>
+          <stop offset="50%" stop-color="{% if block_settings.stars_style == 'outline' %}transparent{% else %}rgb(var(--star-fill-color-rgb) / var(--opacity-20)){% endif %}"></stop>
+        </linearGradient>
+
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="star-{{ block.id }}">
+          <path d="M31.547 12a.848.848 0 00-.677-.577l-9.427-1.376-4.224-8.532a.847.847 0 00-1.516 0l-4.218 8.534-9.427 1.355a.847.847 0 00-.467 1.467l6.823 6.664-1.612 9.375a.847.847 0 001.23.893l8.428-4.434 8.432 4.432a.847.847 0 001.229-.894l-1.615-9.373 6.822-6.665a.845.845 0 00.214-.869z" />
+        </symbol>
+      </defs>
+    </svg>
+    <div
+      class="rating"
+      style="--star-size: calc(var(--font-{{ block_settings.type_preset }}--size) * 1.1);"
+      aria-label="{{ 'accessibility.rating' | t: rating: rating }}"
+    >
+      {% if block_settings.stars_style == 'single' %}
+        <svg
+          class="stars {% if svg_filled_stars > 0 %}filled-star{% endif %}"
+          viewBox="0 0 32 32"
+          style="--empty-star-fill-color: rgb(var(--star-fill-color-rgb) / var(--opacity-20))"
+          role="presentation"
+        >
+          <use xlink:href="#star-{{ block.id }}"></use>
+        </svg>
+      {% else %}
+        {%- for star in (1..star_count_rating) -%}
+          <svg
+            class="stars {% if star <= svg_filled_stars %}filled-star{% endif %}"
+            viewBox="0 0 32 32"
+            style="--empty-star-fill-color:{% if block_settings.stars_style == 'outline' %}transparent{% else %}rgb(var(--star-fill-color-rgb) / var(--opacity-20)){% endif %}"
+            role="presentation"
+          >
+            <use
+              xlink:href="#star-{{ block.id }}"
+              {% if decimal_rating == 0.5 and star == svg_filled_stars %}
+                fill="url(#{{ half_gradient_id }})"
+              {% endif %}
+            ></use>
+            {% if block_settings.stars_style == 'outline' %}
+              <use xlink:href="#star-{{ block.id }}" fill="none" stroke="var(--star-fill-color)" stroke-width="var(--icon-stroke-width)"></use>
+            {% endif %}
+          </svg>
+        {%- endfor -%}
+      {% endif %}
+    </div>
+
+    <div class="rating-summary {{ block_settings.type_preset }}">
+      {%- if show_rating_value -%}
+        <span class="rating-value" aria-hidden="true">{{ rating | round: 1 }}</span>
+      {%- endif -%}
+
+      {%- if block_settings.show_number and rating_count != blank -%}
+        {%- capture reviews_label -%}
+          {{- 'content.reviews_count' | t: count: rating_count -}}
+        {%- endcapture -%}
+        {%- if block_settings.reviews_link != blank -%}
+          <a class="rating-count rating-count--link" href="{{ block_settings.reviews_link }}">
+            ({{ reviews_label }})
+          </a>
+        {%- else -%}
+          <span class="rating-count">({{ reviews_label }})</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .rating-wrapper {
+    gap: var(--gap-xs);
+    min-width: fit-content;
+    flex-wrap: wrap;
+  }
+
+  .rating-color--primary {
+    --star-fill-color: var(--color-primary);
+    --star-fill-color-rgb: var(--color-primary-rgb);
+    --color: var(--color-primary);
+  }
+
+  .rating-color--foreground {
+    --star-fill-color: var(--color-foreground);
+    --star-fill-color-rgb: var(--color-foreground-rgb);
+    --color: var(--color-foreground);
+  }
+
+  .rating-wrapper,
+  .rating,
+  .rating-summary {
+    display: flex;
+    align-items: center;
+  }
+
+  .rating-wrapper.justify-right {
+    flex-direction: row-reverse;
+  }
+
+  .rating-wrapper.justify-right .rating-summary {
+    flex-direction: row-reverse;
+  }
+
+  .rating {
+    gap: var(--gap-3xs);
+  }
+
+  .rating-summary {
+    gap: var(--gap-2xs);
+    color: var(--star-fill-color);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .rating-value {
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .rating-count {
+    margin: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .rating-count--link {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .rating-count--link:hover {
+    opacity: var(--opacity-subdued-text);
+  }
+
+  .stars {
+    height: var(--star-size);
+    fill: var(--empty-star-fill-color);
+  }
+
+  .filled-star {
+    fill: var(--star-fill-color);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.product_review_stars",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.resource_reference_product_review"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:content.app_required_for_ratings"
+    },
+    {
+      "type": "select",
+      "id": "stars_style",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "outline",
+          "label": "t:options.outline"
+        },
+        {
+          "value": "shaded",
+          "label": "t:options.shaded"
+        },
+        {
+          "value": "single",
+          "label": "t:options.single"
+        }
+      ],
+      "default": "shaded"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating_value",
+      "label": "t:settings.show_rating_value",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_number",
+      "label": "t:settings.review_count",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "reviews_link",
+      "label": "t:settings.reviews_link",
+      "info": "t:info.reviews_link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_when_no_reviews",
+      "label": "t:settings.show_when_no_reviews",
+      "info": "t:info.show_when_no_reviews",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "fallback_rating",
+      "label": "t:settings.fallback_rating",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.8,
+      "visible_if": "{{ block.settings.show_when_no_reviews }}"
+    },
+    {
+      "type": "number",
+      "id": "fallback_review_count",
+      "label": "t:settings.fallback_review_count",
+      "default": 215,
+      "visible_if": "{{ block.settings.show_when_no_reviews }}"
+    },
+    {
+      "type": "select",
+      "id": "rating_color",
+      "label": "t:settings.color",
+      "options": [
+        {
+          "value": "foreground",
+          "label": "t:options.text"
+        },
+        {
+          "value": "primary",
+          "label": "t:options.link"
+        }
+      ],
+      "default": "foreground"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit"
+        },
+        {
+          "value": "100%",
+          "label": "t:options.fill"
+        }
+      ],
+      "default": "100%"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "t:settings.alignment",
+      "default": "left",
+      "visible_if": "{{ block.settings.width != 'fit-content' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.product_review_stars",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
