@@ -149,8 +149,35 @@
     aspect-ratio: unset;
   }
 
-  .collection-card__image.resource-image {
+  .ui-test-collection-list .collection-card__inner {
+    align-items: stretch;
+  }
+
+  .ui-test-collection-list .collection-card:not(.collection-card--image-bg) .collection-card__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ui-test-collection-list .collection-card:not(.collection-card--image-bg) .collection-card__content .text-block {
+    width: 100%;
+    max-width: 100%;
+    --text-align: center;
+    text-align: center;
+  }
+
+  .ui-test-collection-list .collection-card:not(.collection-card--image-bg) .collection-card__content .text-block :is(p, h1, h2, h3, h4, h5, h6) {
+    width: 100%;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .ui-test-collection-list .collection-card__image.resource-image {
     background-color: rgb(var(--color-foreground-rgb) / 0.03);
+    width: 100%;
+    margin-inline: auto;
   }
 
   .collection-card__image .image-block__image {
@@ -202,33 +229,13 @@
       align-items: center;
     }
 
-    .ui-test-collection-list .collection-card__content {
-      width: 100%;
+    .ui-test-collection-list .collection-card:not(.collection-card--image-bg) .collection-card__content {
       padding-block-start: var(--padding-sm);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .ui-test-collection-list .collection-card__content .text-block {
-      width: 100%;
-      max-width: 100%;
-      --text-align: center;
-      text-align: center;
-    }
-
-    .ui-test-collection-list .collection-card__content .text-block :is(p, h1, h2, h3, h4, h5, h6) {
-      width: 100%;
-      text-align: center;
-      margin-inline: auto;
     }
 
     .ui-test-collection-list .collection-card__image.resource-image {
       width: min(100%, var(--collection-card-mobile-image-size));
       max-height: var(--collection-card-mobile-image-size);
-      margin-inline: auto;
     }
   }
 {% endstylesheet %}
