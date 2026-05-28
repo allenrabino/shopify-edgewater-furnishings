@@ -120,9 +120,13 @@
     data-section-id="{{ section.id }}"
     {{ block.shopify_attributes }}
   >
-    <fieldset class="fabric-picker__fieldset" ref="fieldsets[]">
-      <legend class="fabric-picker__heading">{{ block_settings.heading }}</legend>
-      <div class="fabric-picker__swatches">
+    {% capture fabric_picker_body %}
+      <fieldset
+        class="fabric-picker__fieldset"
+        ref="fieldsets[]"
+        aria-labelledby="product-step-summary-{{ block.id }}"
+      >
+        <div class="fabric-picker__swatches">
         {%- if use_admin_colors -%}
           {%- assign is_first_visible = true -%}
           {%- for child_block in block.blocks -%}
@@ -199,8 +203,17 @@
             %}
           {%- endfor -%}
         {%- endif -%}
-      </div>
-    </fieldset>
+        </div>
+      </fieldset>
+    {% endcapture %}
+
+    {% render 'product-step-disclosure',
+      heading: block_settings.heading,
+      content: fabric_picker_body,
+      open_by_default: block_settings.open_by_default | default: true, allow_false: true,
+      disclosure_id: block.id,
+      class: 'fabric-picker__disclosure'
+    %}
   </fabric-picker>
 {%- endunless -%}
 
@@ -210,14 +223,6 @@
     margin: 0;
     padding: 0;
     min-width: 0;
-    width: 100%;
-  }
-
-  .fabric-picker__heading {
-    font-size: var(--font-size--md);
-    font-weight: 600;
-    margin-bottom: var(--gap-md);
-    padding: 0;
     width: 100%;
   }
 
@@ -325,6 +330,12 @@
       "id": "heading",
       "label": "t:settings.heading",
       "default": "1. Choose Your Fabric"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open section by default",
+      "default": true
     },
     {
       "type": "text",

@@ -48,6 +48,11 @@
     assign pieces_total = pieces_total | plus: ottoman.selected_or_first_available_variant.price | times: ottoman_qty
   endif
   assign display_total = base_price | plus: pieces_total
+
+  assign money_format = shop.money_format
+  if settings.currency_code_enabled_product_pages
+    assign money_format = shop.money_with_currency_format
+  endif
 -%}
 
 {%- if show_block -%}
@@ -56,16 +61,15 @@
     style="{% render 'spacing-style', settings: block_settings %}"
     data-base-price="{{ base_price }}"
     data-currency="{{ cart.currency.iso_code }}"
+    data-money-format="{{ money_format | escape }}"
     {{ block.shopify_attributes }}
   >
-    <div class="modular-add-piece__header">
-      <h3 class="modular-add-piece__heading">{{ block_settings.heading }}</h3>
+    {% capture modular_add_piece_body %}
       {%- if block_settings.subheading != blank -%}
         <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
       {%- endif -%}
-    </div>
 
-    <div class="modular-add-piece__pieces">
+      <div class="modular-add-piece__pieces">
       {%- if single_corner != blank -%}
         <div
           class="modular-add-piece__row"
@@ -122,12 +126,21 @@
           </div>
         </div>
       {%- endif -%}
-    </div>
+      </div>
 
-    <div class="modular-add-piece__total">
-      <span>{{ block_settings.total_label }}</span>
-      <strong data-total-display>{{ display_total | money_with_currency }}</strong>
-    </div>
+      <div class="modular-add-piece__total">
+        <span>{{ block_settings.total_label }}</span>
+        <strong data-total-display>{{ display_total | money_with_currency }}</strong>
+      </div>
+    {% endcapture %}
+
+    {% render 'product-step-disclosure',
+      heading: block_settings.heading,
+      content: modular_add_piece_body,
+      open_by_default: block_settings.open_by_default | default: true, allow_false: true,
+      disclosure_id: block.id,
+      class: 'modular-add-piece__disclosure'
+    %}
   </modular-add-piece>
 
   <script src="{{ 'modular-add-piece.js' | asset_url }}" type="module"></script>
@@ -136,14 +149,6 @@
 {% stylesheet %}
   .modular-add-piece {
     width: 100%;
-    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
-    padding-top: var(--padding-lg);
-  }
-
-  .modular-add-piece__heading {
-    margin: 0 0 var(--gap-2xs);
-    font-size: var(--font-size--md);
-    font-weight: 600;
   }
 
   .modular-add-piece__subheading {
@@ -274,6 +279,12 @@
       "id": "heading",
       "label": "t:settings.heading",
       "default": "2. Add a Piece"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open section by default",
+      "default": true
     },
     {
       "type": "text",

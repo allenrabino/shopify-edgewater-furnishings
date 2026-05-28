@@ -1,0 +1,76 @@
+{%- doc -%}
+  Collapsible product configuration step (e.g. fabric picker, add a piece).
+
+  @param {string} heading - Step title in the summary row
+  @param {string} content - HTML for the expandable body (pass via capture)
+  @param {boolean} [open_by_default] - Start expanded when true
+  @param {string} [disclosure_id] - Unique suffix for summary id / a11y
+  @param {string} [class] - Extra class on the accordion-custom wrapper
+{%- enddoc -%}
+
+{%- liquid
+  assign open_by_default = open_by_default | default: true, allow_false: true
+  assign disclosure_id = disclosure_id | default: 'step'
+  assign wrapper_class = class | default: ''
+-%}
+
+<accordion-custom
+  class="product-step-disclosure accordion--caret {{ wrapper_class }}"
+  {% if open_by_default %}
+    open-by-default-on-desktop
+    open-by-default-on-mobile
+  {% endif %}
+>
+  <details
+    class="details product-step-disclosure__details"
+    {% if open_by_default %}
+      open
+    {% endif %}
+  >
+    <summary
+      class="details__header product-step-disclosure__summary"
+      id="product-step-summary-{{ disclosure_id }}"
+    >
+      <span class="product-step-disclosure__heading">{{ heading }}</span>
+      <span class="svg-wrapper icon-caret icon-animated">
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </span>
+      <span class="svg-wrapper icon-plus">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
+      </span>
+    </summary>
+
+    <div class="details-content product-step-disclosure__content">
+      {{ content }}
+    </div>
+  </details>
+</accordion-custom>
+
+{% stylesheet %}
+  .product-step-disclosure {
+    width: 100%;
+  }
+
+  .product-step-disclosure.accordion--caret .icon-plus {
+    display: none;
+  }
+
+  .product-step-disclosure__details {
+    border-block-start: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+  }
+
+  .product-step-disclosure__summary {
+    font-size: var(--font-size--md);
+    font-weight: 600;
+    padding-block: var(--padding-md);
+  }
+
+  .product-step-disclosure__heading {
+    flex: 1;
+    text-align: start;
+  }
+
+  .product-step-disclosure__content {
+    padding-block-end: var(--padding-md);
+  }
+{% endstylesheet %}

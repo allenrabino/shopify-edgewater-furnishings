@@ -11,7 +11,8 @@
   assign show_unit_price = show_unit_price | default: false
   assign show_sale_price_first = show_sale_price_first | default: false
   assign selected_variant = product_resource.selected_or_first_available_variant
-  assign price = selected_variant.price
+  assign price_cents = selected_variant.price
+  assign price = price_cents
   assign compare_at_price = selected_variant.compare_at_price
 
   assign show_compare_price = false
@@ -20,7 +21,8 @@
   endif
 
   if product_resource == blank
-    assign price = 1999
+    assign price_cents = 1999
+    assign price = price_cents
   endif
 
   # Check if variant has volume pricing
@@ -97,10 +99,10 @@
     {% if show_compare_price %}
       <span role="group">
         <span class="visually-hidden">{{ 'content.price_sale' | t }}&nbsp;</span>
-        <span class="price">{{ price | default: '&nbsp;' }}</span>
+        <span class="price" data-price-cents="{{ price_cents }}">{{ price | default: '&nbsp;' }}</span>
       </span>
     {% else %}
-      <span class="price">{{ price | default: '&nbsp;' }}</span>
+      <span class="price" data-price-cents="{{ price_cents }}">{{ price | default: '&nbsp;' }}</span>
     {% endif %}
 
     {% if show_sale_price_first == true and show_compare_price %}

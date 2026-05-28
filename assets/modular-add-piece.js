@@ -1,4 +1,6 @@
 import { Component } from '@theme/component';
+import { ThemeEvents } from '@theme/events';
+import { formatMoney } from '@theme/money-formatting';
 
 /**
  * Dynamic pricing for modular add-a-piece quantities.
@@ -8,11 +10,34 @@ import { Component } from '@theme/component';
 class ModularAddPiece extends Component {
   connectedCallback() {
     super.connectedCallback();
+    this.#moneyFormat = this.dataset.moneyFormat || '{{amount}}';
+    this.#currency = this.dataset.currency || 'CAD';
     this.#basePrice = Number(this.dataset.basePrice) || 0;
+    this.#syncBasePriceFromProductPrice();
+
     this.addEventListener('click', this.#onClick);
+
+    const section = this.closest('.shopify-section');
+    section?.addEventListener(ThemeEvents.variantUpdate, this.#onVariantUpdate);
+
     this.querySelectorAll('[data-piece-row]').forEach((row) => this.#syncQtyButtons(row));
     this.#updateTotal();
   }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    const section = this.closest('.shopify-section');
+    section?.removeEventListener(ThemeEvents.variantUpdate, this.#onVariantUpdate);
+  }
+
+  /** @type {number} */
+  #basePrice = 0;
+
+  /** @type {string} */
+  #moneyFormat = '{{amount}}';
+
+  /** @type {string} */
+  #currency = 'CAD';
 
   /**
    * @param {Element} row
@@ -25,9 +50,6 @@ class ModularAddPiece extends Component {
     const qty = Number(input.value) || 0;
     decrease.disabled = qty <= 0;
   }
-
-  /** @type {number} */
-  #basePrice = 0;
 
   #onClick = (event) => {
     const button = event.target.closest('[data-qty-action]');
@@ -48,6 +70,51 @@ class ModularAddPiece extends Component {
     this.#updateTotal();
   };
 
+  #onVariantUpdate = (event) => {
+    if (!(event instanceof CustomEvent) || !event.detail?.data?.html) return;
+
+    const productPrice = this.#getProductPriceElement();
+    const blockId = productPrice?.dataset.blockId;
+    if (!blockId) return;
+
+    const newProductPrice = event.detail.data.html.querySelector(
+      `product-price[data-block-id="${blockId}"]`
+    );
+    const newCents = newProductPrice?.querySelector('[ref="priceContainer"] .price')?.getAttribute('data-price-cents');
+
+    if (newCents == null || newCents === '') return;
+
+    const parsed = Number(newCents);
+    if (Number.isNaN(parsed)) return;
+
+    this.#basePrice = parsed;
+    this.dataset.basePrice = String(parsed);
+    this.#updateTotal();
+  };
+
+  #syncBasePriceFromProductPrice() {
+    const centsAttr = this.#getProductPriceElement()
+      ?.querySelector('[ref="priceContainer"] .price')
+      ?.getAttribute('data-price-cents');
+
+    if (centsAttr == null || centsAttr === '') return;
+
+    const parsed = Number(centsAttr);
+    if (Number.isNaN(parsed)) return;
+
+    this.#basePrice = parsed;
+    this.dataset.basePrice = String(parsed);
+  }
+
+  /**
+   * @returns {HTMLElement | null}
+   */
+  #getProductPriceElement() {
+    const productDetails = this.closest('.product-details');
+    const productPrice = productDetails?.querySelector('product-price');
+    return productPrice instanceof HTMLElement ? productPrice : null;
+  }
+
   #updateTotal() {
     let piecesTotal = 0;
     this.querySelectorAll('[data-piece-row]').forEach((row) => {
@@ -58,18 +125,23 @@ class ModularAddPiece extends Component {
     });
 
     const total = this.#basePrice + piecesTotal;
+    const formatted = this.#formatMoney(total);
+
     const display = this.querySelector('[data-total-display]');
     if (display) {
-      display.textContent = this.#formatMoney(total);
+      display.textContent = formatted;
     }
 
-    const productDetails = this.closest('.product-details');
-    const productPrice = productDetails?.querySelector('product-price .price');
-    if (productPrice instanceof HTMLElement) {
-      productPrice.textContent = this.#formatMoney(total);
+    const productPrice = this.#getProductPriceElement();
+    if (productPrice) {
+      productPrice.querySelectorAll('[ref="priceContainer"] .price').forEach((priceEl) => {
+        priceEl.textContent = formatted;
+      });
+      productPrice.dataset.configurationTotalCents = String(total);
+      productPrice.dataset.configurationPiecesCents = String(piecesTotal);
     }
 
-    const installmentForm = productDetails?.querySelector('form.payment-terms');
+    const installmentForm = this.closest('.product-details')?.querySelector('form.payment-terms');
     if (installmentForm instanceof HTMLFormElement) {
       installmentForm.dispatchEvent(new Event('change', { bubbles: true }));
     }
@@ -96,15 +168,7 @@ class ModularAddPiece extends Component {
    * @param {number} cents
    */
   #formatMoney(cents) {
-    const amount = cents / 100;
-    try {
-      return new Intl.NumberFormat(document.documentElement.lang || 'en-CA', {
-        style: 'currency',
-        currency: this.dataset.currency || 'CAD',
-      }).format(amount);
-    } catch {
-      return `$${amount.toFixed(2)}`;
-    }
+    return formatMoney(cents, this.#moneyFormat, this.#currency);
   }
 }
 
