@@ -231,6 +231,8 @@
     grid-template-columns: repeat(var(--fabric-columns, 5), minmax(0, 1fr));
     gap: var(--gap-lg) var(--gap-sm);
     width: 100%;
+    padding-block-start: 0.25rem;
+    padding-inline: 0.25rem;
   }
 
   .fabric-picker__item {
@@ -239,12 +241,21 @@
     align-items: center;
     gap: var(--gap-xs);
     margin: 0;
-    padding: 0;
+    padding: 0.25rem;
     border: none;
     background: transparent;
     cursor: pointer;
     text-align: center;
     min-width: 0;
+  }
+
+  .fabric-picker__swatch-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 0;
+    flex-shrink: 0;
   }
 
   .fabric-picker__item::before,
@@ -277,13 +288,17 @@
     border-color: rgb(var(--color-foreground-rgb) / 0.22);
   }
 
-  .fabric-picker__item:has(:checked) .fabric-picker__swatch {
+  .fabric-picker__item:has(:checked) .fabric-picker__swatch-ring {
     box-shadow:
       0 0 0 2px var(--color-background),
       0 0 0 3px var(--color-foreground);
   }
 
-  .fabric-picker__item:has(:focus-visible) .fabric-picker__swatch {
+  .fabric-picker__item:has(:checked) .fabric-picker__swatch {
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  }
+
+  .fabric-picker__item:has(:focus-visible) .fabric-picker__swatch-ring {
     outline: 2px solid var(--color-foreground);
     outline-offset: 2px;
   }

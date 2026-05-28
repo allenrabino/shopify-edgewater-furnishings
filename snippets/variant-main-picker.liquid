@@ -128,23 +128,25 @@
                   %}
 
                   {%- if is_fabric_option -%}
-                    <span class="fabric-picker__swatch">
-                      {%- if featured_media != nil -%}
-                        {{
-                          featured_media.preview_image
-                          | image_url: width: 160
-                          | image_tag:
-                            loading: 'lazy',
-                            alt: product_option_value.name,
-                            class: 'fabric-picker__swatch-image'
-                        }}
-                      {%- else -%}
-                        {% render 'swatch',
-                          swatch: product_option_value.swatch,
-                          variant_image: featured_media,
-                          mode: 'unscaled'
-                        %}
-                      {%- endif -%}
+                    <span class="fabric-picker__swatch-ring">
+                      <span class="fabric-picker__swatch">
+                        {%- if featured_media != nil -%}
+                          {{
+                            featured_media.preview_image
+                            | image_url: width: 160
+                            | image_tag:
+                              loading: 'lazy',
+                              alt: product_option_value.name,
+                              class: 'fabric-picker__swatch-image'
+                          }}
+                        {%- else -%}
+                          {% render 'swatch',
+                            swatch: product_option_value.swatch,
+                            variant_image: featured_media,
+                            mode: 'unscaled'
+                          %}
+                        {%- endif -%}
+                      </span>
                     </span>
                     <span class="fabric-picker__text">
                       <span class="fabric-picker__color-name">{{ product_option_value.name }}</span>

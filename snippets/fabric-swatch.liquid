@@ -33,10 +33,12 @@
       checked
     {% endif %}
   >
-  <span
-    class="fabric-picker__swatch{% if is_light_swatch %} fabric-picker__swatch--light{% endif %}"
-    style="--fabric-swatch-bg: {{ swatch_bg }};"
-  ></span>
+  <span class="fabric-picker__swatch-ring">
+    <span
+      class="fabric-picker__swatch{% if is_light_swatch %} fabric-picker__swatch--light{% endif %}"
+      style="--fabric-swatch-bg: {{ swatch_bg }};"
+    ></span>
+  </span>
   <span class="fabric-picker__text">
     <span class="fabric-picker__color-name">{{ color_name }}</span>
     {%- if fabric_type != blank -%}

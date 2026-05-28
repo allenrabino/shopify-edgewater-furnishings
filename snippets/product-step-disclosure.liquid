@@ -73,4 +73,9 @@
   .product-step-disclosure__content {
     padding-block-end: var(--padding-md);
   }
+
+  /* accordion-custom clips overflow on .details-content; keep swatch selection rings visible */
+  accordion-custom.product-step-disclosure details[open] .product-step-disclosure__content {
+    overflow: visible;
+  }
 {% endstylesheet %}
