@@ -19,6 +19,17 @@
   </div>
 </div>
 
+{% stylesheet %}
+  .page-width-content .text-block--align-center rte-formatter :is(h1, h2, h3, h4, h5, h6, p) {
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .page-width-content .text-block--align-center rte-formatter h3 + h3 {
+    margin-block-start: var(--gap-sm);
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "t:names.page",

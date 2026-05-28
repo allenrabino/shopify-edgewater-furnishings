@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "main-page",
@@ -27,6 +28,32 @@
             "case": "none",
             "wrap": "pretty",
             "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "contact_info": {
+          "type": "text",
+          "name": "Contact info",
+          "settings": {
+            "text": "<h3><strong>Email:</strong> email@email.com</h3><h3><strong>CALL US AT:</strong> 403-671-6650</h3>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -66,6 +93,7 @@
       },
       "block_order": [
         "title",
+        "contact_info",
         "content"
       ],
       "settings": {
@@ -79,6 +107,32 @@
     "form": {
       "type": "section",
       "blocks": {
+        "text_KhbrM3": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<p>Send Us A Message</p>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h4",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
         "contact_form_UwiCkQ": {
           "type": "contact-form",
           "settings": {
@@ -112,6 +166,7 @@
         }
       },
       "block_order": [
+        "text_KhbrM3",
         "contact_form_UwiCkQ"
       ],
       "name": "t:names.contact_form",
@@ -139,7 +194,7 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 0,
+        "padding-block-start": 50,
         "padding-block-end": 70
       }
     }
