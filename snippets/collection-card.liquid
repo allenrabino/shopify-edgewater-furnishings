@@ -100,6 +100,20 @@
     }
   }
 
+  /* Title below image: no extra gap between image and label */
+  .collection-card:not(.collection-card--image-bg) .collection-card__inner {
+    gap: 0;
+  }
+
+  .collection-card:not(.collection-card--image-bg) .collection-card__content {
+    height: auto;
+    padding-block-start: var(--padding-xs);
+  }
+
+  .collection-card:not(.collection-card--image-bg) .collection-card__content .text-block {
+    margin: 0;
+  }
+
   /* allow all blocks to be selectable in editor preview */
   .shopify-design-mode .collection-card__content * {
     pointer-events: auto;
@@ -135,8 +149,13 @@
     aspect-ratio: unset;
   }
 
+  .collection-card__image.resource-image {
+    background-color: rgb(var(--color-foreground-rgb) / 0.03);
+  }
+
   .collection-card__image .image-block__image {
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -157,6 +176,59 @@
     &.collection-card.collection-card--image-bg,
     &.collection-card .placeholder-svg {
       aspect-ratio: 99;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .ui-test-collection-list {
+      --collection-card-mobile-image-size: 14.25rem;
+    }
+
+    .ui-test-collection-list .resource-list--grid {
+      grid-template-columns: 1fr;
+      gap: var(--gap-lg);
+    }
+
+    .ui-test-collection-list .resource-list__item {
+      width: 100%;
+    }
+
+    .ui-test-collection-list .collection-card {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .ui-test-collection-list .collection-card__inner {
+      align-items: center;
+    }
+
+    .ui-test-collection-list .collection-card__content {
+      width: 100%;
+      padding-block-start: var(--padding-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .ui-test-collection-list .collection-card__content .text-block {
+      width: 100%;
+      max-width: 100%;
+      --text-align: center;
+      text-align: center;
+    }
+
+    .ui-test-collection-list .collection-card__content .text-block :is(p, h1, h2, h3, h4, h5, h6) {
+      width: 100%;
+      text-align: center;
+      margin-inline: auto;
+    }
+
+    .ui-test-collection-list .collection-card__image.resource-image {
+      width: min(100%, var(--collection-card-mobile-image-size));
+      max-height: var(--collection-card-mobile-image-size);
+      margin-inline: auto;
     }
   }
 {% endstylesheet %}

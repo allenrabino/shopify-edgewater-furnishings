@@ -66,6 +66,31 @@
             "padding-inline-end": 12
           },
           "blocks": {
+            "collection_title_wkrELh": {
+              "type": "collection-title",
+              "name": "t:names.collection_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "text_WE3K4w": {
               "type": "text",
               "name": "t:names.title",
@@ -372,6 +397,7 @@
             }
           },
           "block_order": [
+            "collection_title_wkrELh",
             "text_WE3K4w",
             "reviews",
             "price_a7krng",
