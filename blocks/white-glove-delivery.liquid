@@ -1,0 +1,250 @@
+
+{%- liquid
+  assign block_settings = block.settings
+  assign popover_id = 'white-glove-info-' | append: block.id
+  assign anchor_name = '--white-glove-info-trigger-' | append: block.id
+  assign info_text = block_settings.info_text
+  if info_text == blank
+    assign info_text = 'content.white_glove_info' | t
+  endif
+-%}
+
+<div
+  class="white-glove-delivery spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  {{ block.shopify_attributes }}
+>
+  <p class="white-glove-delivery__message">
+    {%- if block_settings.show_truck_icon -%}
+      <span class="white-glove-delivery__icon svg-wrapper" aria-hidden="true">
+        {% render 'icon-or-image', icon: 'truck', image_upload: blank, width: 16, class_name: 'white-glove-delivery__truck' %}
+      </span>
+    {%- endif -%}
+    <span>
+      {%- if block_settings.message != blank -%}
+        {{- block_settings.message -}}
+      {%- else -%}
+        {{- 'content.white_glove_message' | t -}}
+      {%- endif -%}
+    </span>
+  </p>
+
+  <anchored-popover-component class="white-glove-delivery__info">
+    <button
+      type="button"
+      class="white-glove-delivery__info-button button-unstyled"
+      aria-label="{{ 'accessibility.white_glove_info' | t }}"
+      ref="trigger"
+      popovertarget="{{ popover_id }}"
+      popovertargetaction="toggle"
+      style="anchor-name: {{ anchor_name }};"
+    >
+      <span class="svg-wrapper">{{- 'icon-info.svg' | inline_asset_content -}}</span>
+    </button>
+
+    <div
+      id="{{ popover_id }}"
+      class="white-glove-delivery__popover color-{{ settings.popover_color_scheme }}"
+      ref="popover"
+      popover="auto"
+      role="tooltip"
+      style="position-anchor: {{ anchor_name }};"
+    >
+      <p class="white-glove-delivery__popover-text">{{ info_text }}</p>
+    </div>
+  </anchored-popover-component>
+</div>
+
+{% stylesheet %}
+  .white-glove-delivery {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-2xs);
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .white-glove-delivery__message {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-2xs);
+    margin: 0;
+    font-size: var(--font-size--sm);
+    line-height: 1.4;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .white-glove-delivery__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: currentColor;
+  }
+
+  .white-glove-delivery__truck {
+    display: block;
+  }
+
+  .white-glove-delivery__info {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .white-glove-delivery__info-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--minimum-touch-target);
+    height: var(--minimum-touch-target);
+    margin: calc((var(--minimum-touch-target) - var(--icon-size-sm)) / -2);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    cursor: pointer;
+    transition: color var(--animation-speed) var(--animation-easing);
+  }
+
+  .white-glove-delivery__info-button:hover,
+  .white-glove-delivery__info-button:focus-visible {
+    color: var(--color-foreground);
+  }
+
+  .white-glove-delivery__info-button .svg-wrapper {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+  }
+
+  .white-glove-delivery__popover {
+    --white-glove-popover-max-width: 280px;
+    --white-glove-popover-spacing: 8px;
+    --white-glove-popover-viewport-margin: 16px;
+
+    min-inline-size: 220px;
+    max-inline-size: var(--white-glove-popover-max-width);
+    background: var(--color-background);
+    border: var(--style-border-popover);
+    border-radius: var(--style-border-radius-popover, 0);
+    box-shadow: var(--shadow-popover);
+    padding: var(--padding-md);
+    margin: 0;
+    transition-property: display, opacity, translate;
+    transition-duration: 0.3s;
+    transition-timing-function: var(--ease-out-quad);
+    transition-behavior: allow-discrete;
+    translate: 0 12px;
+    opacity: 0;
+  }
+
+  .white-glove-delivery__popover {
+    inset: unset;
+    top: calc(anchor(bottom) + var(--white-glove-popover-spacing));
+    left: anchor(left);
+  }
+
+  @supports not (position-anchor: --white-glove-info-trigger) {
+    .white-glove-delivery__popover {
+      position: fixed;
+      top: calc(var(--anchor-bottom) * 1px + var(--white-glove-popover-spacing));
+      left: max(
+        var(--white-glove-popover-viewport-margin),
+        min(
+          var(--anchor-left) * 1px,
+          100vw - var(--white-glove-popover-max-width) - var(--white-glove-popover-viewport-margin)
+        )
+      );
+    }
+  }
+
+  .white-glove-delivery__popover:popover-open {
+    translate: 0 0;
+    opacity: 1;
+  }
+
+  @starting-style {
+    .white-glove-delivery__popover:popover-open {
+      translate: 0 12px;
+      opacity: 0;
+    }
+  }
+
+  .white-glove-delivery__popover-text {
+    margin: 0;
+    font-size: var(--font-size--sm);
+    line-height: 1.5;
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.white_glove_delivery",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "t:settings.message",
+      "default": "White glove delivery options available"
+    },
+    {
+      "type": "textarea",
+      "id": "info_text",
+      "label": "t:settings.white_glove_info_text",
+      "default": "White glove service includes delivery, assembly in your space and empty box haul away."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_truck_icon",
+      "label": "t:settings.show_truck_icon",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.white_glove_delivery",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
