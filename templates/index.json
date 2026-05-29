@@ -285,7 +285,7 @@
         "gap": 12,
         "color_scheme": "",
         "padding-block-start": 20,
-        "padding-block-end": 24
+        "padding-block-end": 75
       }
     },
     "customer_reviews_home": {
@@ -299,9 +299,11 @@
             "verified_label": "(Verified Buyer)",
             "detail": "",
             "product": "6pc-pit",
+            "product_url": "",
             "button_label": "View Product",
             "rating": 5
-          }
+          },
+          "blocks": {}
         },
         "review_2": {
           "type": "_customer-review",
@@ -311,9 +313,11 @@
             "verified_label": "(Verified Buyer)",
             "detail": "",
             "product": "5pc-l-shape-ottoman",
+            "product_url": "",
             "button_label": "View Product",
             "rating": 5
-          }
+          },
+          "blocks": {}
         },
         "review_3": {
           "type": "_customer-review",
@@ -323,9 +327,11 @@
             "verified_label": "(Verified Buyer)",
             "detail": "",
             "product": "4pc-sofa-ottoman-configuration",
+            "product_url": "",
             "button_label": "View Product",
             "rating": 5
-          }
+          },
+          "blocks": {}
         }
       },
       "block_order": [
