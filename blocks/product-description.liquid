@@ -1,14 +1,51 @@
 
-
 {% liquid
-  assign product = block.settings.product
-  if request.visual_preview_mode and product == blank
-    assign product = collections.all.products.first
-    assign text = product.description
+  assign product = closest.product
+
+  assign linked_collection = closest.collection
+  if linked_collection == blank
+    assign linked_collection = collection
+  endif
+  if linked_collection == blank and product != blank and product.collections.size > 0
+    assign template_suffix = template.suffix | downcase
+    for coll in product.collections
+      assign coll_handle = coll.handle | downcase
+      if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
+        if coll_handle contains 'dream-cloud'
+          assign linked_collection = coll
+          break
+        endif
+      elsif template_suffix contains 'xlcloud' or template_suffix contains 'xl-cloud'
+        if coll_handle contains 'xl-cloud'
+          assign linked_collection = coll
+          break
+        endif
+      elsif template_suffix contains 'westcoast' or template_suffix contains 'west-coast'
+        if coll_handle contains 'west-coast'
+          assign linked_collection = coll
+          break
+        endif
+      endif
+    endfor
+    if linked_collection == blank
+      assign linked_collection = product.collections.first
+    endif
+  endif
+
+  assign description_text = linked_collection.description
+  if description_text == blank and product != blank
+    assign description_text = product.description
+  endif
+
+  if request.visual_preview_mode and description_text == blank
+    assign preview_product = collections.all.products.first
+    if preview_product != blank
+      assign description_text = preview_product.collections.first.description | default: preview_product.description
+    endif
   endif
 %}
 
-{% render 'text', fallback_text: text, block: block %}
+{% render 'text', fallback_text: description_text, block: block %}
 
 {% schema %}
 {
@@ -18,7 +55,8 @@
     {
       "type": "richtext",
       "id": "text",
-      "label": "t:settings.text"
+      "label": "t:settings.text",
+      "info": "Leave empty to show the linked collection description (falls back to product description)."
     },
     {
       "type": "header",
@@ -298,29 +336,15 @@
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
-      "type": "select",
-      "id": "color",
-      "label": "t:settings.color",
-      "options": [
-        {
-          "value": "var(--color-foreground)",
-          "label": "t:options.text"
-        },
-        {
-          "value": "var(--color-foreground-heading)",
-          "label": "t:options.heading"
-        },
-        {
-          "value": "var(--color-primary)",
-          "label": "t:options.link"
-        }
-      ],
-      "default": "var(--color-foreground)",
-      "visible_if": "{{ block.settings.type_preset != 'rte' }}"
-    },
-    {
       "type": "header",
       "content": "t:content.appearance"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "t:settings.color",
+      "alpha": true,
+      "visible_if": "{{ block.settings.type_preset != 'rte' }}"
     },
     {
       "type": "checkbox",
@@ -340,10 +364,11 @@
       "type": "range",
       "id": "corner_radius",
       "label": "t:settings.corner_radius",
-      "default": 0,
       "min": 0,
       "max": 50,
       "step": 1,
+      "unit": "px",
+      "default": 0,
       "visible_if": "{{ block.settings.background }}"
     },
     {
@@ -396,7 +421,7 @@
       "name": "t:names.product_description",
       "category": "t:categories.product",
       "settings": {
-        "text": "{{ closest.product.description }}"
+        "text": ""
       }
     }
   ]

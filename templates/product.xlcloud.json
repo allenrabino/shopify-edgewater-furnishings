@@ -301,7 +301,7 @@
                       "type": "product-description",
                       "name": "t:names.product_description",
                       "settings": {
-                        "text": "{{ closest.product.description }}<p></p>",
+                        "text": "",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
