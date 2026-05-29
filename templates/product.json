@@ -178,6 +178,7 @@
                 "open_by_default": true,
                 "default_fabric_type": "Performance Velvet",
                 "allowed_fabric_keys": "",
+                "hidden_product_handles": "",
                 "columns": "4",
                 "swatch_size": 56,
                 "padding-block-start": 0,
@@ -216,6 +217,7 @@
               "type": "modular-add-piece",
               "settings": {
                 "heading": "2. Add a Piece",
+                "heading_without_fabric": "1. Add a Piece",
                 "open_by_default": true,
                 "subheading": "Choose your pieces and quantity to build your perfect configuration.",
                 "total_label": "Configuration total",
@@ -378,7 +380,7 @@
                     "text_Nrxfg8": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>We strive to process and ship all orders in a timely manner, working diligently to ensure that your items are on their way to you as soon as possible.</p>",
+                        "text": "<p>Local white glove delivery is optional and includes: delivery, unboxing, assembly, and empty box haul away.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -408,7 +410,7 @@
                 "accordion_row_why_choose": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Why Choose the Dream Cloud?",
+                    "heading": "Why choose us?",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -417,7 +419,7 @@
                     "text_why_choose": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Content coming soon.</p>",
+                        "text": "<p>At Edgewater Furnishings, we’re a locally owned Alberta business focused on offering premium, comfortable sectionals without the inflated showroom prices or commissioned sales pressure.<br/>Every piece is selected with real families in mind — deep seating, durable fabrics, modular layouts, and practical features like washable cushion covers on select models.<br/>We keep the buying experience simple with honest pricing, personal service, and the ability to view many of our sectionals in person before you buy. <br/>From helping you choose the right configuration to offering white-glove delivery, assembly, and box removal, we aim to make the entire process easy from start to finish.​</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -443,13 +445,53 @@
                   "block_order": [
                     "text_why_choose"
                   ]
+                },
+                "accordion_row_z4qcPU": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Delivery/ turnaround times",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_dLgGPE": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Local delivery is 2-5 days depending on location</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-primary--family)",
+                        "font_size": "",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_dLgGPE"
+                  ]
                 }
               },
               "block_order": [
                 "accordion_row_P46NdC",
                 "accordion_row_HUWbDi",
                 "accordion_row_GTWFgP",
-                "accordion_row_why_choose"
+                "accordion_row_why_choose",
+                "accordion_row_z4qcPU"
               ]
             }
           },
