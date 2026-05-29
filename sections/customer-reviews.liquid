@@ -16,21 +16,23 @@
 
       {%- if section.settings.show_summary -%}
         <div class="customer-reviews__summary">
-          <div class="customer-reviews__summary-stars" aria-hidden="true">
-            {%- assign summary_rating = section.settings.summary_rating | round -%}
-            {%- for i in (1..5) -%}
-              <span class="customer-reviews__summary-star{% if i <= summary_rating %} customer-reviews__summary-star--filled{% endif %}">★</span>
-            {%- endfor -%}
+          <div class="customer-reviews__summary-rating-row">
+            <div class="customer-reviews__summary-stars" aria-hidden="true">
+              {%- assign summary_rating = section.settings.summary_rating | round -%}
+              {%- for i in (1..5) -%}
+                <span class="customer-reviews__summary-star{% if i <= summary_rating %} customer-reviews__summary-star--filled{% endif %}">★</span>
+              {%- endfor -%}
+            </div>
+            <p class="customer-reviews__summary-text">
+              <span class="customer-reviews__summary-rating">{{ section.settings.summary_rating }}</span>
+              {%- if section.settings.review_count > 0 -%}
+                <span class="customer-reviews__summary-count">({{ section.settings.review_count }} reviews)</span>
+              {%- endif -%}
+            </p>
           </div>
-          <p class="customer-reviews__summary-text">
-            <span class="customer-reviews__summary-rating">{{ section.settings.summary_rating }}</span>
-            {%- if section.settings.review_count > 0 -%}
-              <span class="customer-reviews__summary-count">({{ section.settings.review_count }} reviews)</span>
-            {%- endif -%}
-            {%- if section.settings.source_label != blank -%}
-              <span class="customer-reviews__summary-source">{{ section.settings.source_label }}</span>
-            {%- endif -%}
-          </p>
+          {%- if section.settings.source_label != blank -%}
+            <p class="customer-reviews__summary-source">{{ section.settings.source_label }}</p>
+          {%- endif -%}
         </div>
       {%- endif -%}
 
@@ -84,6 +86,14 @@
     margin-bottom: var(--gap-md);
   }
 
+  .customer-reviews__summary-rating-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem 0.5rem;
+  }
+
   .customer-reviews__summary-stars {
     display: flex;
     gap: 0.2rem;
@@ -101,12 +111,13 @@
 
   .customer-reviews__summary-text {
     margin: 0;
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem 0.5rem;
+    align-items: baseline;
+    gap: 0.25rem 0.35rem;
     font-size: var(--font-size--sm);
     color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    white-space: nowrap;
   }
 
   .customer-reviews__summary-rating {
@@ -115,8 +126,11 @@
   }
 
   .customer-reviews__summary-source {
+    margin: 0;
     width: 100%;
+    text-align: center;
     font-size: var(--font-size--xs);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
   }
 
   .customer-reviews__description {
@@ -125,21 +139,39 @@
     line-height: 1.6;
   }
 
+  .shopify-section:has(.customer-reviews),
+  .shopify-section:has(.customer-reviews) .section-background {
+    background-color: #f4efe8;
+  }
+
+  .customer-reviews {
+    background-color: transparent;
+  }
+
   .customer-reviews__grid {
     display: grid;
     grid-template-columns: repeat(var(--review-columns, 3), minmax(0, 1fr));
-    gap: var(--gap-lg);
+    gap: var(--gap-xl);
+    align-items: stretch;
   }
 
-  @media screen and (max-width: 989px) {
+  @media screen and (min-width: 1000px) {
     .customer-reviews__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: auto auto 1fr auto auto;
+      column-gap: var(--gap-xl);
+      row-gap: var(--gap-xs);
+      justify-items: center;
     }
   }
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 999px) {
     .customer-reviews__grid {
       grid-template-columns: 1fr;
+      justify-items: center;
+    }
+
+    .customer-reviews__grid .customer-review {
+      width: min(100%, 22rem);
     }
   }
 {% endstylesheet %}
@@ -165,12 +197,6 @@
       "id": "heading",
       "label": "Heading",
       "default": "What our customers say"
-    },
-    {
-      "type": "richtext",
-      "id": "description",
-      "label": "Description",
-      "default": "<p>Reviews from verified Facebook Marketplace buyers. Full gallery can be expanded as more are added.</p>"
     },
     {
       "type": "header",
