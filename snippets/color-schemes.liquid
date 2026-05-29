@@ -92,6 +92,18 @@
       }
   {% endfor %}
 
+  {%- comment -%} Announcement bar (header-announcements) uses scheme-2 — expose for review stars site-wide {%- endcomment -%}
+  {% for scheme in settings.color_schemes %}
+    {% if scheme.id == 'scheme-2' %}
+      :root {
+        --announcement-bar-color: rgb({{ scheme.settings.background.rgba }});
+        --announcement-bar-color-rgb: {{ scheme.settings.background.rgb }};
+        --announcement-bar-text: rgb({{ scheme.settings.foreground_heading.rgba }});
+        --announcement-bar-color-hover: rgb({{ scheme.settings.selected_variant_hover_background_color.rgba }});
+      }
+    {% endif %}
+  {% endfor %}
+
   {{ scheme_classes | prepend: 'body' }} {
     color: var(--color-foreground);
     background-color: var(--color-background);

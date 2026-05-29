@@ -71,11 +71,30 @@
   }
 
   .product-step-disclosure__content {
+    padding-block-start: var(--gap-lg);
     padding-block-end: var(--padding-md);
   }
 
-  /* accordion-custom clips overflow on .details-content; keep swatch selection rings visible */
+  /* Stable layout when folding — hide swatches cleanly, no overflow bleed */
+  accordion-custom.product-step-disclosure {
+    display: block;
+    width: 100%;
+  }
+
+  accordion-custom.product-step-disclosure .product-step-disclosure__details {
+    overflow: hidden;
+  }
+
+  accordion-custom.product-step-disclosure details:not([open]) .product-step-disclosure__content {
+    overflow: hidden;
+    padding-block: 0;
+    margin: 0;
+    visibility: hidden;
+  }
+
+  /* Keep swatch selection rings visible only while open */
   accordion-custom.product-step-disclosure details[open] .product-step-disclosure__content {
     overflow: visible;
+    visibility: visible;
   }
 {% endstylesheet %}

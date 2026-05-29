@@ -7,7 +7,6 @@
   assign rating = rating_metafield.rating
   assign scale_max = rating_metafield.scale_max | default: 5
   assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
-  assign using_fallback = false
 
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
@@ -17,16 +16,16 @@
     assign rating_count = product.metafields.reviews.rating_count.value | default: product.metafields.reviews.rating_count
   endif
 
-  if rating == blank and block_settings.show_when_no_reviews
-    assign rating = block_settings.fallback_rating
-    assign rating_count = block_settings.fallback_review_count
+  if rating == blank
+    assign rating = 0
+    assign rating_count = 0
     assign scale_max = 5
-    assign using_fallback = true
+  elsif rating_count == blank
+    assign rating_count = 0
   endif
 -%}
 
-{%- if rating != blank -%}
-  {% liquid
+{% liquid
     assign star_count_rating = scale_max
     assign decimal_rating = 0
     assign decimal = rating | modulo: 1
@@ -43,11 +42,11 @@
     assign show_rating_value = false
     if block_settings.show_rating_value or block_settings.stars_style == 'single'
       assign show_rating_value = true
-    endif
-  %}
+  endif
+%}
 
-  <div
-    class="rating-wrapper rating-color--{{ block_settings.rating_color }} justify-{{ block_settings.alignment }} size-style{% if using_fallback %} rating-wrapper--fallback{% endif %}"
+<div
+    class="rating-wrapper rating-color--{{ block_settings.rating_color }} justify-{{ block_settings.alignment }} size-style"
     style="{% render 'size-style', settings: block_settings %}"
     {{ block.shopify_attributes }}
   >
@@ -110,7 +109,7 @@
         <span class="rating-value" aria-hidden="true">{{ rating | round: 1 }}</span>
       {%- endif -%}
 
-      {%- if block_settings.show_number and rating_count != blank -%}
+      {%- if block_settings.show_number -%}
         {%- capture reviews_label -%}
           {{- 'content.reviews_count' | t: count: rating_count -}}
         {%- endcapture -%}
@@ -124,7 +123,6 @@
       {%- endif -%}
     </div>
   </div>
-{%- endif -%}
 
 {% stylesheet %}
   .rating-wrapper {
@@ -143,6 +141,12 @@
     --star-fill-color: var(--color-foreground);
     --star-fill-color-rgb: var(--color-foreground-rgb);
     --color: var(--color-foreground);
+  }
+
+  .rating-color--announcement {
+    --star-fill-color: var(--announcement-bar-color);
+    --star-fill-color-rgb: var(--announcement-bar-color-rgb);
+    --color: var(--announcement-bar-color);
   }
 
   .rating-wrapper,
@@ -257,7 +261,7 @@
       "id": "show_when_no_reviews",
       "label": "t:settings.show_when_no_reviews",
       "info": "t:info.show_when_no_reviews",
-      "default": true
+      "default": false
     },
     {
       "type": "range",
@@ -288,9 +292,13 @@
         {
           "value": "primary",
           "label": "t:options.link"
+        },
+        {
+          "value": "announcement",
+          "label": "t:names.announcement_bar"
         }
       ],
-      "default": "foreground"
+      "default": "announcement"
     },
     {
       "type": "header",

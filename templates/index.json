@@ -487,7 +487,6 @@
         "group_nBjX4E",
         "button_tryV8k"
       ],
-      "disabled": true,
       "name": "Hotspots heading",
       "settings": {
         "content_direction": "row",
@@ -571,7 +570,6 @@
         "hotspot_product_qLcTTX",
         "hotspot_product_KKDhz4"
       ],
-      "disabled": true,
       "name": "Hotspots",
       "settings": {
         "toggle_overlay": false,
@@ -760,7 +758,6 @@
           ]
         }
       },
-      "disabled": true,
       "name": "t:names.media_with_text",
       "settings": {
         "media_position": "right",
@@ -893,7 +890,6 @@
         "video_AjkWQx",
         "group_BmhbDf"
       ],
-      "disabled": true,
       "name": "t:names.video_section",
       "settings": {
         "content_direction": "row",

@@ -47,7 +47,13 @@
     align-self: start;
     justify-content: flex-start;
     width: 100%;
-    max-width: none;
+    max-width: var(--product-details-max-width, 420px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-details {
+      max-width: 100%;
+    }
   }
 
   .product-details > .group-block {
@@ -103,6 +109,52 @@
   .product-details .fabric-picker,
   .product-details .modular-add-piece {
     width: 100%;
+  }
+
+  .product-details .product-step-disclosure__details {
+    border-block-start: none;
+  }
+
+  .product-details .product-step-disclosure__summary,
+  .product-details .variant-option--fabric-grid legend {
+    color: var(--announcement-bar-text);
+    background-color: var(--announcement-bar-color);
+    padding: var(--padding-md) var(--padding-lg);
+    border-radius: var(--style-border-radius-buttons-primary, 4px);
+  }
+
+  .product-details:not(:has(fabric-picker)) .modular-add-piece__disclosure .product-step-disclosure__summary {
+    margin-block-start: 0;
+  }
+
+  .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__summary {
+    margin-block-start: var(--gap-sm);
+  }
+
+  .product-details .product-step-disclosure__summary:hover {
+    color: var(--announcement-bar-text);
+    background-color: var(--announcement-bar-color-hover);
+  }
+
+  .product-details .product-step-disclosure__summary .svg-wrapper {
+    color: inherit;
+  }
+
+  .product-details .add-to-cart-button.button:not(.button-secondary, .button-unstyled) {
+    --button-color: var(--announcement-bar-text);
+    --button-background-color: var(--announcement-bar-color);
+    --button-border-color: var(--announcement-bar-color);
+  }
+
+  .product-details .add-to-cart-button.button:not(.button-secondary, .button-unstyled):hover:not([disabled], [aria-disabled='true']) {
+    --button-color: var(--announcement-bar-text);
+    --button-background-color: var(--announcement-bar-color-hover);
+    --button-border-color: var(--announcement-bar-color-hover);
+  }
+
+  .product-details .add-to-cart-button--loading::after {
+    border-color: rgb(255 255 255 / 0.25);
+    border-top-color: var(--announcement-bar-text);
   }
 
   .product-details .accordion {

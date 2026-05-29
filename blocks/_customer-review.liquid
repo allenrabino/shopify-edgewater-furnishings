@@ -1,0 +1,132 @@
+
+{%- liquid
+  assign block_settings = block.settings
+  assign rating = block_settings.rating | default: 5
+  assign star_count = 5
+-%}
+
+<article class="customer-review" {{ block.shopify_attributes }}>
+  <div class="customer-review__stars" aria-label="{{ rating }} out of 5 stars">
+    {%- for i in (1..star_count) -%}
+      <span class="customer-review__star{% if i <= rating %} customer-review__star--filled{% endif %}" aria-hidden="true">★</span>
+    {%- endfor -%}
+  </div>
+
+  {%- if block_settings.quote != blank -%}
+    <blockquote class="customer-review__quote">{{ block_settings.quote }}</blockquote>
+  {%- endif -%}
+
+  <footer class="customer-review__footer">
+    {%- if block_settings.author != blank -%}
+      <cite class="customer-review__author">{{ block_settings.author }}</cite>
+    {%- endif -%}
+    {%- if block_settings.detail != blank -%}
+      <span class="customer-review__detail">{{ block_settings.detail }}</span>
+    {%- endif -%}
+  </footer>
+</article>
+
+{% stylesheet %}
+  .customer-review {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    height: 100%;
+    padding: var(--padding-lg);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+    border-radius: var(--style-border-radius-popover, 4px);
+    background: rgb(var(--color-background-rgb) / 1);
+  }
+
+  .customer-review__stars {
+    display: flex;
+    gap: 0.125rem;
+    line-height: 1;
+  }
+
+  .customer-review__star {
+    font-size: 1rem;
+    color: rgb(var(--announcement-bar-color-rgb) / 0.25);
+  }
+
+  .customer-review__star--filled {
+    color: var(--announcement-bar-color);
+  }
+
+  .customer-review__quote {
+    margin: 0;
+    font-size: var(--font-size--sm);
+    line-height: 1.55;
+    color: var(--color-foreground);
+    font-style: normal;
+  }
+
+  .customer-review__quote::before {
+    content: open-quote;
+  }
+
+  .customer-review__quote::after {
+    content: close-quote;
+  }
+
+  .customer-review__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-top: auto;
+  }
+
+  .customer-review__author {
+    font-size: var(--font-size--xs);
+    font-weight: 600;
+    font-style: normal;
+    color: var(--color-foreground);
+  }
+
+  .customer-review__detail {
+    font-size: 0.6875rem;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer review",
+  "tag": null,
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Review text",
+      "default": "<p>Beautiful sofa and great communication throughout the order.</p>"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Customer name",
+      "default": "Marketplace buyer"
+    },
+    {
+      "type": "text",
+      "id": "detail",
+      "label": "Detail",
+      "info": "Optional — e.g. configuration purchased or date",
+      "default": "Dream Cloud configuration"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Star rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer review"
+    }
+  ]
+}
+{% endschema %}

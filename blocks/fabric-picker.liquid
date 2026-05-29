@@ -4,6 +4,24 @@
   assign product_resource = closest.product
   assign fabric_input_name = 'fabric-' | append: section.id | append: '-' | append: product_resource.id
 
+  assign product_fabric_step_evaluated = true
+  assign product_has_fabric_step = false
+
+  assign force_hide_picker = false
+  assign hidden_handles_raw = block_settings.hidden_product_handles | downcase | strip
+  assign default_hidden_handles = 'pacific-l-shape-ottoman,juniper-l-shape-ottoman,cove-reversible-chaise-sofa,4pc-sofa-ottoman-configuration' | split: ','
+  assign hidden_handles = default_hidden_handles
+  if hidden_handles_raw != blank
+    assign hidden_handles = hidden_handles_raw | split: ','
+  endif
+  for hidden_handle in hidden_handles
+    assign hidden_handle_normalized = hidden_handle | strip
+    if product_resource.handle == hidden_handle_normalized
+      assign force_hide_picker = true
+      break
+    endif
+  endfor
+
   assign use_variant_picker = false
   unless product_resource.has_only_default_variant
     for product_option in product_resource.options_with_values
@@ -14,6 +32,10 @@
       endif
     endfor
   endunless
+
+  if use_variant_picker
+    assign product_has_fabric_step = true
+  endif
 
   assign allowed_fabric_keys_raw = block_settings.allowed_fabric_keys | downcase | strip
   assign has_allowed_fabric_keys = false
@@ -106,18 +128,44 @@
   endif
 
   assign show_picker = false
-  if use_admin_colors and visible_admin_count >= 1
-    assign show_picker = true
-  elsif fabric_entries.size >= 2
-    assign show_picker = true
+  unless force_hide_picker
+    if use_admin_colors and visible_admin_count >= 2
+      assign show_picker = true
+    elsif fabric_entries.size >= 2
+      assign show_picker = true
+    endif
+  endunless
+
+  if show_picker
+    assign product_has_fabric_step = true
+  endif
+
+  if force_hide_picker
+    assign product_has_fabric_step = false
+    assign show_picker = false
+  endif
+
+  assign fabric_swatch_count = fabric_entries.size
+  if use_admin_colors
+    assign fabric_swatch_count = visible_admin_count
+  endif
+
+  assign fabric_visible_per_page = block_settings.columns | plus: 0
+  if fabric_visible_per_page == 0
+    assign fabric_visible_per_page = 4
+  endif
+  if fabric_visible_per_page > 4
+    assign fabric_visible_per_page = 4
   endif
 -%}
 
 {%- unless use_variant_picker or show_picker == false -%}
   <fabric-picker
     class="fabric-picker spacing-style"
-    style="{% render 'spacing-style', settings: block_settings %} --fabric-columns: {{ block_settings.columns }}; --fabric-swatch-size: {{ block_settings.swatch_size }}px;"
+    style="{% render 'spacing-style', settings: block_settings %} --fabric-visible-per-page: {{ fabric_visible_per_page }}; --fabric-swatch-count: {{ fabric_swatch_count }}; --fabric-swatch-size: {{ block_settings.swatch_size }}px;"
     data-section-id="{{ section.id }}"
+    data-visible-per-page="{{ fabric_visible_per_page }}"
+    data-swatch-count="{{ fabric_swatch_count }}"
     {{ block.shopify_attributes }}
   >
     {% capture fabric_picker_body %}
@@ -126,7 +174,25 @@
         ref="fieldsets[]"
         aria-labelledby="product-step-summary-{{ block.id }}"
       >
-        <div class="fabric-picker__swatches">
+        <div
+          class="fabric-picker__carousel{% if fabric_swatch_count <= fabric_visible_per_page %} fabric-picker__carousel--static{% endif %}"
+          ref="carousel"
+        >
+          <button
+            type="button"
+            class="fabric-picker__nav fabric-picker__nav--prev"
+            ref="prevNav"
+            aria-label="Previous fabric colors"
+            hidden
+          >
+            <span class="svg-wrapper icon-caret icon-caret--prev" aria-hidden="true">
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </span>
+          </button>
+
+          <div class="fabric-picker__viewport" ref="viewport">
+            <div class="fabric-picker__track" ref="track">
+              <div class="fabric-picker__swatches">
         {%- if use_admin_colors -%}
           {%- assign is_first_visible = true -%}
           {%- for child_block in block.blocks -%}
@@ -203,6 +269,23 @@
             %}
           {%- endfor -%}
         {%- endif -%}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="fabric-picker__nav fabric-picker__nav--next"
+            ref="nextNav"
+            aria-label="Next fabric colors"
+            {% if fabric_swatch_count <= fabric_visible_per_page %}
+              hidden
+            {% endif %}
+          >
+            <span class="svg-wrapper icon-caret icon-caret--next" aria-hidden="true">
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </span>
+          </button>
         </div>
       </fieldset>
     {% endcapture %}
@@ -218,6 +301,15 @@
 {%- endunless -%}
 
 {% stylesheet %}
+  .fabric-picker {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .fabric-picker__disclosure {
+    width: 100%;
+  }
+
   .fabric-picker__fieldset {
     border: none;
     margin: 0;
@@ -226,13 +318,81 @@
     width: 100%;
   }
 
-  .fabric-picker__swatches {
+  .fabric-picker__carousel {
     display: grid;
-    grid-template-columns: repeat(var(--fabric-columns, 5), minmax(0, 1fr));
-    gap: var(--gap-lg) var(--gap-sm);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--gap-xs);
     width: 100%;
-    padding-block-start: 0.25rem;
-    padding-inline: 0.25rem;
+  }
+
+  .fabric-picker__carousel--static {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fabric-picker__carousel--static .fabric-picker__nav {
+    display: none;
+  }
+
+  .fabric-picker__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.15);
+    border-radius: 50%;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    cursor: pointer;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+  }
+
+  .fabric-picker__nav:hover:not(:disabled) {
+    border-color: var(--announcement-bar-color);
+    color: var(--announcement-bar-color);
+  }
+
+  .fabric-picker__nav:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .fabric-picker__nav .icon-caret--prev {
+    transform: rotate(90deg);
+  }
+
+  .fabric-picker__nav .icon-caret--next {
+    transform: rotate(-90deg);
+  }
+
+  .fabric-picker__viewport {
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fabric-picker__track {
+    transition: transform 0.3s ease;
+    will-change: transform;
+  }
+
+  .fabric-picker__swatches {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--gap-sm);
+    width: calc(var(--fabric-swatch-count) / var(--fabric-visible-per-page) * 100%);
+    min-width: 100%;
+    padding-block: 0.125rem;
+    padding-inline: 0.125rem;
+    box-sizing: border-box;
+  }
+
+  .fabric-picker__carousel--static .fabric-picker__swatches {
+    width: 100%;
   }
 
   .fabric-picker__item {
@@ -247,6 +407,12 @@
     cursor: pointer;
     text-align: center;
     min-width: 0;
+    flex: 0 0 calc(100% / var(--fabric-swatch-count));
+    box-sizing: border-box;
+  }
+
+  .fabric-picker__carousel--static .fabric-picker__item {
+    flex: 1 1 0;
   }
 
   .fabric-picker__swatch-ring {
@@ -291,7 +457,7 @@
   .fabric-picker__item:has(:checked) .fabric-picker__swatch-ring {
     box-shadow:
       0 0 0 2px var(--color-background),
-      0 0 0 3px var(--color-foreground);
+      0 0 0 3px var(--announcement-bar-color);
   }
 
   .fabric-picker__item:has(:checked) .fabric-picker__swatch {
@@ -299,7 +465,7 @@
   }
 
   .fabric-picker__item:has(:focus-visible) .fabric-picker__swatch-ring {
-    outline: 2px solid var(--color-foreground);
+    outline: 2px solid var(--announcement-bar-color);
     outline-offset: 2px;
   }
 
@@ -324,8 +490,9 @@
   }
 
   @media screen and (max-width: 749px) {
-    .fabric-picker__swatches {
-      grid-template-columns: repeat(min(var(--fabric-columns, 5), 4), minmax(0, 1fr));
+    .fabric-picker__nav {
+      width: 1.75rem;
+      height: 1.75rem;
     }
   }
 {% endstylesheet %}
@@ -366,13 +533,27 @@
       "info": "t:info.allowed_fabric_keys"
     },
     {
-      "type": "range",
+      "type": "textarea",
+      "id": "hidden_product_handles",
+      "label": "Hide fabric picker on products",
+      "info": "Comma-separated product handles that should not show Choose Your Fabric (e.g. 6pc-pit, 4pc-sofa-ottoman-configuration)."
+    },
+    {
+      "type": "select",
       "id": "columns",
-      "label": "t:settings.columns",
-      "min": 3,
-      "max": 6,
-      "step": 1,
-      "default": 5
+      "label": "Colors visible at once",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "4",
+      "info": "Additional colors appear when shoppers use the slide arrows."
     },
     {
       "type": "range",
