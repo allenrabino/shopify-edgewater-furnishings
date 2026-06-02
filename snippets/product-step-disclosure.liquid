@@ -119,4 +119,18 @@
     overflow: visible;
     visibility: visible;
   }
+
+  @media screen and (max-width: 749px) {
+    accordion-custom.variant-picker__fabric-disclosure.product-step-disclosure .product-step-disclosure__details {
+      overflow-x: clip;
+      overflow-y: visible;
+      min-width: 0;
+    }
+
+    accordion-custom.variant-picker__fabric-disclosure.product-step-disclosure details[open] .product-step-disclosure__content {
+      overflow-x: clip;
+      overflow-y: visible;
+      min-width: 0;
+    }
+  }
 {% endstylesheet %}

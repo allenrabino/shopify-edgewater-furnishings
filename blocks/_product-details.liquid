@@ -209,6 +209,20 @@
     }
   }
 
+  @media screen and (max-width: 749px) {
+    .product-details accordion-custom.variant-picker__fabric-disclosure .product-step-disclosure__details,
+    .product-details accordion-custom.variant-picker__fabric-disclosure .product-step-disclosure__content {
+      overflow-x: clip;
+      overflow-y: visible;
+      min-width: 0;
+    }
+
+    .product-details .variant-picker__fabric-disclosure .variant-option--fabric-grid {
+      overflow: hidden;
+      min-width: 0;
+    }
+  }
+
   @media screen and (min-width: 750px) {
     .product-details > .group-block {
       height: min-content;

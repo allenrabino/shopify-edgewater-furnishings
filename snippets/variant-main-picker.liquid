@@ -74,7 +74,7 @@
           <fieldset
             class="variant-option variant-option--buttons{% if option_variant_style == 'swatch' %} variant-option--swatches{% if is_fabric_option %} variant-option--fabric-grid{% endif %}{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
-            {% if is_fabric_option %}data-fabric-option="true" style="--fabric-swatch-size: 3.5rem;"{% endif %}
+            {% if is_fabric_option %}data-fabric-option="true" style="--fabric-swatch-size: 3.5rem; --fabric-swatch-count: 1;"{% endif %}
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
@@ -92,21 +92,21 @@
             {%- else -%}
               <legend class="visually-hidden">{{ block_settings.fabric_heading | default: '1. Choose Your Fabric' }}</legend>
             {%- endunless -%}
+            {%- if is_fabric_option -%}
+              <div class="variant-option__fabric-track">
+            {%- endif -%}
             {%- for product_option_value in product_option.values -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
               <label
-                class="{% if is_fabric_option %}fabric-picker__item variant-option__fabric-item{% else %}variant-option__button-label{% if option_variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}{% endif %}"
+                class="{% if is_fabric_option %}variant-option__fabric-item{% else %}variant-option__button-label{% if option_variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}{% endif %}"
               >
                 <input
                   type="radio"
                   name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
                   value="{{ product_option_value | escape }}"
                   aria-label="{{ product_option_value.name }}"
-                  {% if product_option_value.available == false %}
-                    aria-disabled="true"
-                  {% endif %}
                   data-previous-checked="false"
                   data-fieldset-index="{{ fieldset_index }}"
                   data-input-index="{{ forloop.index0 }}"
@@ -202,6 +202,9 @@
                 {%- endunless -%}
               </label>
             {%- endfor -%}
+            {%- if is_fabric_option -%}
+              </div>
+            {%- endif -%}
             {% if option_id_attribute %}
               {% style %}
                 [data-option-id="{{ fieldset_id }}"] {
@@ -378,16 +381,27 @@
   }
 
   .variant-option--fabric-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--gap-md) var(--gap-sm);
+    display: block;
     border: none;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 0;
   }
 
+  .variant-option--buttons.variant-option--fabric-grid {
+    display: block;
+    flex-wrap: unset;
+  }
+
+  .variant-option--fabric-grid .variant-option__fabric-track {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap-md) var(--gap-sm);
+    width: 100%;
+  }
+
   .variant-option--fabric-grid legend {
-    grid-column: 1 / -1;
     font-size: var(--font-size--md);
     font-weight: 600;
     margin-bottom: var(--gap-md);
@@ -410,6 +424,11 @@
     text-align: center;
     position: relative;
     box-sizing: border-box;
+    opacity: 1;
+  }
+
+  .variant-option--fabric-grid .variant-option__fabric-item:hover {
+    opacity: 1;
   }
 
   .variant-option--fabric-grid .variant-option__fabric-item::before,
@@ -420,15 +439,21 @@
   .variant-option--fabric-grid .variant-option__fabric-item input {
     position: absolute;
     opacity: 0;
-    width: 0;
-    height: 0;
+    width: 100%;
+    height: 100%;
+    inset: 0;
     margin: 0;
-    pointer-events: none;
+    cursor: pointer;
   }
 
   .variant-option--fabric-grid .variant-option__fabric-item:has([data-option-available='false']) {
-    opacity: 0.45;
-    cursor: not-allowed;
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .variant-option--fabric-grid label.variant-option__fabric-item:has(input[type='radio']),
+  .variant-option--fabric-grid label.variant-option__fabric-item:has(input[type='radio']:disabled) {
+    cursor: pointer;
   }
 
   .variant-option--fabric-grid .variant-option__fabric-item:has(:checked) {
@@ -455,6 +480,14 @@
     box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
     overflow: hidden;
     flex-shrink: 0;
+    opacity: 1;
+    filter: none;
+  }
+
+  .variant-option--fabric-grid .variant-option__fabric-item:hover .fabric-picker__swatch-ring {
+    box-shadow:
+      0 0 0 2px var(--color-background),
+      0 0 0 3px rgb(var(--color-foreground-rgb) / 0.35);
   }
 
   .variant-option--fabric-grid .fabric-picker__swatch-image {
@@ -486,18 +519,96 @@
     font-size: var(--font-size--xs);
     font-weight: 600;
     color: var(--color-foreground);
+    opacity: 1;
   }
 
   .variant-option--fabric-grid .fabric-picker__fabric-type {
     font-size: 0.6875rem;
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    color: rgb(var(--color-foreground-rgb) / 0.72);
     white-space: normal;
     overflow-wrap: anywhere;
+    opacity: 1;
+  }
+
+  /* Prevent fabric-picker item sizing from affecting variant picker swatches */
+  .variant-option--fabric-grid .fabric-picker__item,
+  .variant-option--fabric-grid .variant-option__fabric-item {
+    flex: unset;
   }
 
   @media screen and (max-width: 749px) {
     .variant-option--fabric-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      overflow: hidden;
+    }
+
+    accordion-custom.variant-picker__fabric-disclosure .product-step-disclosure__details,
+    accordion-custom.variant-picker__fabric-disclosure .product-step-disclosure__content {
+      overflow-x: clip;
+      overflow-y: visible;
+      min-width: 0;
+    }
+
+    .variant-option--fabric-grid {
+      --fabric-swatch-size: 4rem;
+    }
+
+    .variant-option--fabric-grid .variant-option__fabric-track {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      gap: var(--gap-sm);
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--padding-md);
+      padding-block: 0.5rem 0.75rem;
+      padding-inline-start: var(--padding-xs);
+      padding-inline-end: max(var(--padding-lg), calc((100% - (2 * var(--gap-sm))) / 3));
+      margin-inline: 0;
+      scrollbar-width: none;
+      box-sizing: border-box;
+    }
+
+    .variant-option--fabric-grid .variant-option__fabric-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .variant-option--fabric-grid .variant-option__fabric-item {
+      flex: 0 0 calc((100% - (2 * var(--gap-sm))) / 3);
+      width: calc((100% - (2 * var(--gap-sm))) / 3);
+      min-width: calc((100% - (2 * var(--gap-sm))) / 3);
+      max-width: calc((100% - (2 * var(--gap-sm))) / 3);
+      height: auto;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      padding-inline: 0.125rem;
+      padding-block: 0.25rem;
+      box-sizing: border-box;
+    }
+
+    .variant-option--fabric-grid .fabric-picker__text {
+      width: 100%;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .variant-option--fabric-grid .fabric-picker__color-name {
+      font-size: 0.6875rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .variant-option--fabric-grid .fabric-picker__fabric-type {
+      font-size: 0.625rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
   }
 {% endstylesheet %}
