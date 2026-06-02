@@ -107,6 +107,7 @@
   }
 
   .product-details .fabric-picker,
+  .product-details .variant-picker,
   .product-details .modular-add-piece {
     width: 100%;
   }
@@ -123,12 +124,30 @@
     border-radius: var(--style-border-radius-buttons-primary, 4px);
   }
 
-  .product-details:not(:has(fabric-picker)) .modular-add-piece__disclosure .product-step-disclosure__summary {
+  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__summary {
     margin-block-start: 0;
   }
 
-  .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__summary {
+  .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
+    display: none;
+  }
+
+  .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__summary,
+  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__summary {
     margin-block-start: var(--gap-sm);
+  }
+
+  .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric,
+  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
+    display: none;
+  }
+
+  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__heading-when-fabric {
+    display: none;
+  }
+
+  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
+    display: inline;
   }
 
   .product-details .product-step-disclosure__summary:hover {

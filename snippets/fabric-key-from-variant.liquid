@@ -1,0 +1,31 @@
+{%- doc -%}
+  Returns a normalized fabric key from a variant's Fabric/Color option value.
+
+  @param {object} variant - Product variant
+  @param {object} product - Product object
+{%- enddoc -%}
+
+{%- liquid
+  assign fabric_key = ''
+  assign product = product | default: closest.product
+
+  if variant != blank and product != blank
+    for option_name in product.options
+      assign option_name_downcase = option_name | downcase
+      assign option_index = forloop.index0
+
+      if option_name_downcase contains 'fabric' or option_name_downcase contains 'color' or option_name_downcase contains 'colour' or option_name_downcase contains 'material'
+        assign option_value = variant.options[option_index]
+        if option_value != blank
+          assign fabric_key = option_value | handleize
+        endif
+        break
+      endif
+    endfor
+
+    if fabric_key == blank and product.options.size == 1 and variant.option1 != blank
+      assign fabric_key = variant.option1 | handleize
+    endif
+  endif
+-%}
+{{- fabric_key -}}

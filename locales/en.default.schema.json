@@ -244,6 +244,10 @@
     "fabric_key": "Must match the fabric key in product image filenames (e.g. cream-oatmeal) so the gallery updates when selected.",
     "default_fabric_type_fallback": "Used only when no fabric color blocks are added and colors are detected from images.",
     "fabric_colors_admin": "Add Fabric color blocks below to show solid color swatches. Each fabric key should match your product image filenames.",
+    "product_fabric_colors_metafield": "On each product, add a Fabric colors metafield (custom.fabric_colors). Create a Fabric color metaobject with: color name, fabric key, swatch color, fabric type, and image filename match (optional). Assign colors on each product. Gallery images update when a swatch is selected.",
+    "product_media_fabric_key_metafield": "Optional but recommended: on Settings → Custom data → Product media, add Fabric key (custom.fabric_key). Then open a product image in admin and set its fabric key to match the swatch (e.g. cream-oatmeal).",
+    "fabric_image_filename_match": "Optional. Comma- or line-separated text that appears in image filenames for this color (e.g. cream-oatmeal, cream_oatmeal). Used when media Fabric key is not set.",
+    "variant_picker_fabric_admin": "Add a product option named Fabric or Color in Shopify admin (Products → Variants). Assign swatch colors under Theme settings → Variant pickers. Attach images to each variant to control the gallery. The custom fabric picker is hidden when variant options exist.",
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
@@ -1087,6 +1091,9 @@
     "default_fabric_type": "Default fabric type",
     "swatch_size": "Swatch size",
     "allowed_fabric_keys": "Allowed fabric keys",
+    "use_product_metafield_colors": "Use fabric colors from product admin",
+    "fabric_heading": "Fabric heading",
+    "use_fabric_disclosure": "Wrap fabric option in collapsible step",
     "color_name": "Color name",
     "fabric_key": "Fabric key",
     "swatch_color": "Swatch color",

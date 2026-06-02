@@ -1,5 +1,5 @@
 import { Component } from '@theme/component';
-import { VariantSelectedEvent, VariantUpdateEvent } from '@theme/events';
+import { ThemeEvents, VariantSelectedEvent, VariantUpdateEvent } from '@theme/events';
 import { morph, MORPH_OPTIONS } from '@theme/morph';
 import { yieldToMainThread, getViewParameterValue, ResizeNotifier } from '@theme/utilities';
 
@@ -45,6 +45,7 @@ export default class VariantPicker extends Component {
 
     this.addEventListener('change', this.variantChanged.bind(this));
     this.#resizeObserver.observe(this);
+    this.#dispatchFabricSelected();
   }
 
   disconnectedCallback() {
@@ -66,6 +67,7 @@ export default class VariantPicker extends Component {
 
     this.updateSelectedOption(event.target);
     this.dispatchEvent(new VariantSelectedEvent({ id: selectedOption.dataset.optionValueId ?? '' }));
+    this.#dispatchFabricSelected(event.target);
 
     const isOnProductPage =
       this.dataset.templateProductMatch === 'true' &&
@@ -480,6 +482,34 @@ export default class VariantPicker extends Component {
 
       return optionValueId;
     });
+  }
+
+  /**
+   * @param {HTMLElement} [changedTarget]
+   */
+  #dispatchFabricSelected(changedTarget) {
+    const fabricFieldset = this.querySelector('[data-fabric-option="true"]');
+    if (!(fabricFieldset instanceof HTMLElement)) return;
+
+    if (changedTarget instanceof HTMLElement && !fabricFieldset.contains(changedTarget)) return;
+
+    const checked = fabricFieldset.querySelector('input[type="radio"]:checked');
+    if (!(checked instanceof HTMLInputElement)) return;
+
+    const fabricKey = checked.dataset.fabricKey?.trim();
+    if (!fabricKey) return;
+
+    const section = this.closest('.shopify-section');
+
+    this.dispatchEvent(
+      new CustomEvent(ThemeEvents.fabricSelected, {
+        bubbles: true,
+        detail: {
+          fabricKey,
+          sectionId: section?.id,
+        },
+      })
+    );
   }
 }
 

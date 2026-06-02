@@ -2,6 +2,8 @@
   Collapsible product configuration step (e.g. fabric picker, add a piece).
 
   @param {string} heading - Step title in the summary row
+  @param {string} [heading_with_fabric] - Title when a fabric step is shown above (use with heading_without_fabric)
+  @param {string} [heading_without_fabric] - Title when no fabric step is shown above
   @param {string} content - HTML for the expandable body (pass via capture)
   @param {boolean} [open_by_default] - Start expanded when true
   @param {string} [disclosure_id] - Unique suffix for summary id / a11y
@@ -12,6 +14,10 @@
   assign open_by_default = open_by_default | default: true, allow_false: true
   assign disclosure_id = disclosure_id | default: 'step'
   assign wrapper_class = class | default: ''
+  assign use_dual_headings = false
+  if heading_with_fabric != blank and heading_without_fabric != blank
+    assign use_dual_headings = true
+  endif
 -%}
 
 <accordion-custom
@@ -31,7 +37,14 @@
       class="details__header product-step-disclosure__summary"
       id="product-step-summary-{{ disclosure_id }}"
     >
-      <span class="product-step-disclosure__heading">{{ heading }}</span>
+      {% if use_dual_headings %}
+        <span class="product-step-disclosure__heading product-step-disclosure__heading--dual">
+          <span class="product-step-disclosure__heading-when-fabric">{{ heading_with_fabric }}</span>
+          <span class="product-step-disclosure__heading-no-fabric">{{ heading_without_fabric }}</span>
+        </span>
+      {% else %}
+        <span class="product-step-disclosure__heading">{{ heading }}</span>
+      {% endif %}
       <span class="svg-wrapper icon-caret icon-animated">
         {{- 'icon-caret.svg' | inline_asset_content -}}
       </span>
@@ -63,6 +76,15 @@
     font-size: var(--font-size--md);
     font-weight: 600;
     padding-block: var(--padding-md);
+  }
+
+  .product-step-disclosure__heading--dual {
+    display: inline;
+  }
+
+  .product-step-disclosure__heading-when-fabric,
+  .product-step-disclosure__heading-no-fabric {
+    display: inline;
   }
 
   .product-step-disclosure__heading {

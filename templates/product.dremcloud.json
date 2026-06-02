@@ -216,6 +216,7 @@
               "type": "modular-add-piece",
               "settings": {
                 "heading": "2. Add a Piece",
+                "heading_without_fabric": "1. Add a Piece",
                 "open_by_default": true,
                 "subheading": "Choose your pieces and quantity to build your perfect configuration.",
                 "total_label": "Configuration total",
@@ -411,6 +412,23 @@
                 "accordion_row_HUWbDi",
                 "accordion_row_GTWFgP"
               ]
+            },
+            "variant_picker_R3rGDr": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "buttons",
+                "show_swatches": true,
+                "default_fabric_type": "Performance Velvet",
+                "fabric_heading": "1. Choose Your Fabric",
+                "use_fabric_disclosure": true,
+                "open_by_default": true,
+                "alignment": "left",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -420,6 +438,7 @@
             "price_a7krng",
             "white_glove_delivery",
             "fabric_picker",
+            "variant_picker_R3rGDr",
             "modular_add_piece",
             "buy_buttons_eYQEYi",
             "accordion_Yd4U4w"

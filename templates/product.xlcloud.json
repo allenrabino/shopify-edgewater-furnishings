@@ -219,18 +219,27 @@
                   }
                 }
               },
-              "block_order": ["fabric_cream", "fabric_sage", "fabric_mocha", "fabric_grey"]
+              "block_order": [
+                "fabric_cream",
+                "fabric_sage",
+                "fabric_mocha",
+                "fabric_grey"
+              ]
             },
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
               "settings": {
-                "variant_style": "dropdowns",
+                "variant_style": "buttons",
                 "show_swatches": true,
                 "alignment": "left",
-                "padding-block-start": 12,
-                "padding-block-end": 12,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
                 "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-end": 0,
+                "default_fabric_type": "Performance Velvet",
+                "fabric_heading": "1. Choose Your Fabric",
+                "use_fabric_disclosure": true,
+                "open_by_default": true
               },
               "blocks": {}
             },

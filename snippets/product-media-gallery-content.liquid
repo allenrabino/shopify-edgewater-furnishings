@@ -27,7 +27,21 @@
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
-  if block_settings.hide_variants
+  assign use_variant_fabric_gallery = false
+  for product_option in selected_product.options_with_values
+    assign option_name_downcase = product_option.name | downcase
+    if option_name_downcase contains 'fabric' or option_name_downcase contains 'color' or option_name_downcase contains 'colour' or option_name_downcase contains 'material'
+      assign use_variant_fabric_gallery = true
+      break
+    endif
+  endfor
+
+  assign effective_hide_variants = block_settings.hide_variants
+  if use_variant_fabric_gallery
+    assign effective_hide_variants = true
+  endif
+
+  if effective_hide_variants
     assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
 
@@ -100,16 +114,18 @@
   endif
 
   assign fabric_keys_delimited = ''
-  assign default_fabric_key = ''
+  unless use_variant_fabric_gallery
+    capture default_fabric_key
+      render 'product-default-fabric-key', product: selected_product
+    endcapture
+    assign default_fabric_key = default_fabric_key | strip
+  endunless
   for media in selected_product.media
     capture fabric_key
-      render 'fabric-key-from-media', media: media
+      render 'resolve-media-fabric-key', media: media, product: selected_product
     endcapture
     assign fabric_key = fabric_key | strip
     if fabric_key != blank
-      if default_fabric_key == blank
-        assign default_fabric_key = fabric_key
-      endif
       unless fabric_keys_delimited contains fabric_key
         if fabric_keys_delimited != blank
           assign fabric_keys_delimited = fabric_keys_delimited | append: '||'
@@ -125,7 +141,7 @@
     assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
 
     for media in selected_product.media
-      if block_settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
+      if effective_hide_variants and variant_images contains media.src and sorted_media.size > 0
         continue
       endif
 
@@ -371,7 +387,9 @@
     "
     style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px;{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
     data-presentation="{{ media_presentation }}"
-    {% if default_fabric_key != blank %}
+    {% if use_variant_fabric_gallery %}
+      data-fabric-filter="off"
+    {% elsif default_fabric_key != blank %}
       data-default-fabric="{{ default_fabric_key }}"
     {% endif %}
     {{ block_shopify_attributes }}
@@ -417,7 +435,7 @@
           endif
         %}
         {% capture fabric_key %}
-          {% render 'fabric-key-from-media', media: media %}
+          {% render 'resolve-media-fabric-key', media: media, product: selected_product %}
         {% endcapture %}
         {% assign fabric_key = fabric_key | strip %}
         {% capture attributes %}
@@ -443,6 +461,7 @@
             style: slideshow_controls_style,
             item_count: sorted_media.size,
             thumbnails: sorted_media,
+            product: selected_product,
             controls_on_media: controls_on_media,
             pagination_position: pagination_position,
             aspect_ratio: block_settings.aspect_ratio,
@@ -456,6 +475,7 @@
             style: block_settings.slideshow_mobile_controls_style,
             item_count: sorted_media.size,
             thumbnails: sorted_media,
+            product: selected_product,
             controls_on_media: mobile_controls_on_media,
             pagination_position: 'center',
             aspect_ratio: block_settings.aspect_ratio,

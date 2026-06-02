@@ -1,0 +1,55 @@
+{%- doc -%}
+  Builds fabric picker entries from a product metafield (JSON array or list of Fabric color metaobjects).
+
+  Output format per entry: fabric_key::color_name::fabric_type::swatch_color
+  Entries separated by ~~~
+
+  @param {object} product - Product object
+  @param {string} [default_fabric_type] - Fallback fabric type label
+  @param {boolean} [filter_keys] - Whether to filter by allowed keys
+  @param {string} [allowed_fabric_keys_raw] - Comma-separated fabric keys
+{%- enddoc -%}
+
+{%- liquid
+  assign default_fabric_type = default_fabric_type | default: 'Performance Velvet'
+  assign fabrics = product.metafields.custom.fabric_colors.value
+  assign output = ''
+
+  if fabrics != blank
+    for fabric in fabrics
+      assign color_name = fabric.color_name.value | default: fabric.color_name | strip
+      assign fabric_key = fabric.fabric_key.value | default: fabric.fabric_key | strip | downcase
+      assign fabric_type = fabric.fabric_type.value | default: fabric.fabric_type | default: default_fabric_type | strip
+      assign swatch_color = fabric.swatch_color.value | default: fabric.swatch_color | strip
+
+      if fabric_key == blank and color_name != blank
+        assign fabric_key = color_name | handleize
+      endif
+
+      assign include_fabric = true
+      if color_name == blank or fabric_key == blank
+        assign include_fabric = false
+      endif
+
+      if include_fabric and filter_keys
+        assign include_fabric = false
+        assign allowed_keys = allowed_fabric_keys_raw | split: ','
+        for allowed_key in allowed_keys
+          assign allowed_key_normalized = allowed_key | strip | downcase
+          if fabric_key == allowed_key_normalized or fabric_key contains allowed_key_normalized
+            assign include_fabric = true
+            break
+          endif
+        endfor
+      endif
+
+      if include_fabric
+        if output != blank
+          assign output = output | append: '~~~'
+        endif
+        assign output = output | append: fabric_key | append: '::' | append: color_name | append: '::' | append: fabric_type | append: '::' | append: swatch_color
+      endif
+    endfor
+  endif
+-%}
+{{- output -}}

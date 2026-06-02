@@ -53,28 +53,6 @@
   if settings.currency_code_enabled_product_pages
     assign money_format = shop.money_with_currency_format
   endif
-
-  assign add_piece_heading = block_settings.heading | default: '2. Add a Piece'
-
-  if product_fabric_step_evaluated
-    unless product_has_fabric_step
-      assign add_piece_heading = block_settings.heading_without_fabric | default: '1. Add a Piece'
-    endunless
-  else
-    assign product_has_fabric_step = false
-    unless product_resource.has_only_default_variant
-      for product_option in product_resource.options_with_values
-        assign option_name_downcase = product_option.name | downcase
-        if option_name_downcase contains 'fabric' or option_name_downcase contains 'color' or option_name_downcase contains 'colour' or option_name_downcase contains 'material'
-          assign product_has_fabric_step = true
-          break
-        endif
-      endfor
-    endunless
-    unless product_has_fabric_step
-      assign add_piece_heading = block_settings.heading_without_fabric | default: '1. Add a Piece'
-    endunless
-  endif
 -%}
 
 {%- if show_block -%}
@@ -157,7 +135,8 @@
     {% endcapture %}
 
     {% render 'product-step-disclosure',
-      heading: add_piece_heading,
+      heading_with_fabric: block_settings.heading | default: '2. Add a Piece',
+      heading_without_fabric: block_settings.heading_without_fabric | default: '1. Add a Piece',
       content: modular_add_piece_body,
       open_by_default: block_settings.open_by_default | default: true, allow_false: true,
       disclosure_id: block.id,

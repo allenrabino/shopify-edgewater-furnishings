@@ -1,0 +1,62 @@
+{%- doc -%}
+  Returns whether step 1 (Choose Your Fabric) is shown for a product.
+
+  Checks variant fabric options, fabric metafields, and image filename detection.
+
+  @param {object} product - Product object
+
+  @example
+  {% capture has_fabric_step %}
+    {% render 'product-has-fabric-step', product: product %}
+  {% endcapture %}
+{%- enddoc -%}
+
+{%- liquid
+  assign has_fabric_step = false
+
+  unless product.has_only_default_variant
+    for product_option in product.options_with_values
+      assign option_name_downcase = product_option.name | downcase
+      if option_name_downcase contains 'fabric' or option_name_downcase contains 'color' or option_name_downcase contains 'colour' or option_name_downcase contains 'material'
+        assign has_fabric_step = true
+        break
+      endif
+    endfor
+  endunless
+
+  unless has_fabric_step
+    assign fabrics = product.metafields.custom.fabric_colors.value
+    if fabrics != blank and fabrics.size >= 2
+      assign has_fabric_step = true
+    endif
+  endunless
+
+  unless has_fabric_step
+    assign fabric_keys_delimited = ''
+    for media in product.media
+      capture fabric_key
+        render 'resolve-media-fabric-key', media: media, product: product
+      endcapture
+      assign fabric_key = fabric_key | strip
+      if fabric_key == blank
+        capture fabric_key
+          render 'fabric-key-from-media', media: media
+        endcapture
+        assign fabric_key = fabric_key | strip
+      endif
+      if fabric_key != blank
+        unless fabric_keys_delimited contains fabric_key
+          if fabric_keys_delimited != blank
+            assign fabric_keys_delimited = fabric_keys_delimited | append: '||'
+          endif
+          assign fabric_keys_delimited = fabric_keys_delimited | append: fabric_key
+        endunless
+      endif
+    endfor
+    assign fabric_key_count = fabric_keys_delimited | split: '||' | size
+    if fabric_key_count >= 2
+      assign has_fabric_step = true
+    endif
+  endunless
+-%}
+{%- if has_fabric_step -%}true{%- else -%}false{%- endif -%}

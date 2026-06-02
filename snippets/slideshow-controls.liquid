@@ -14,7 +14,7 @@
   @param {string} [aspect_ratio] - The aspect ratio of thumbnails, if applicable. defaults to 'adapt'
   @param {number} [thumbnail_radius] - The border radius for thumbnails in pixels
   @param {string} [class] - Additional classes to apply to the controls
-  @param {boolean} [secondary] - Whether the controls are secondary
+  @param {object} [product] - Product object for fabric thumbnail filtering
 
   @example
   {%- render 'slideshow-controls', style: 'dots', item_count: 10 -%}
@@ -108,7 +108,7 @@
           <div class="slideshow-controls__thumbnails">
             {% for media in thumbnails %}
               {% capture thumbnail_fabric_key %}
-                {% render 'fabric-key-from-media', media: media %}
+                {% render 'resolve-media-fabric-key', media: media, product: product %}
               {% endcapture %}
               <button
                 class="slideshow-control button button-unstyled slideshow-controls__thumbnail"

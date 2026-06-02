@@ -24,6 +24,8 @@ export class MediaGallery extends Component {
       signal,
     });
 
+    if (this.dataset.fabricFilter === 'off') return;
+
     const defaultFabric = this.dataset.defaultFabric;
     if (defaultFabric) {
       this.#applyFabricFilter(defaultFabric);
@@ -58,6 +60,8 @@ export class MediaGallery extends Component {
    * @param {CustomEvent} event
    */
   #handleFabricSelected = (event) => {
+    if (this.dataset.fabricFilter === 'off') return;
+
     const fabricKey = event.detail?.fabricKey;
     if (typeof fabricKey !== 'string') return;
     this.#applyFabricFilter(fabricKey);
@@ -69,15 +73,16 @@ export class MediaGallery extends Component {
    * @param {string} fabricKey
    */
   #applyFabricFilter(fabricKey) {
+    const normalizedKey = fabricKey.toLowerCase().trim();
     const slides = /** @type {HTMLElement[]} */ (Array.from(this.querySelectorAll('slideshow-slide[data-fabric-key]')));
     if (!slides.length) return;
 
     let firstVisibleIndex = -1;
 
     slides.forEach((slide, index) => {
-      const slideFabric = slide.dataset.fabricKey ?? '';
+      const slideFabric = (slide.dataset.fabricKey ?? '').toLowerCase().trim();
       const isShared = slideFabric === '';
-      const isMatch = slideFabric === fabricKey;
+      const isMatch = slideFabric === normalizedKey;
       const visible = isShared || isMatch;
 
       slide.toggleAttribute('hidden', !visible);
@@ -91,8 +96,8 @@ export class MediaGallery extends Component {
     const thumbnails = this.querySelectorAll('[data-thumbnail-fabric-key]');
     thumbnails.forEach((thumb) => {
       if (!(thumb instanceof HTMLElement)) return;
-      const thumbFabric = thumb.dataset.thumbnailFabricKey ?? '';
-      const visible = thumbFabric === '' || thumbFabric === fabricKey;
+      const thumbFabric = (thumb.dataset.thumbnailFabricKey ?? '').toLowerCase().trim();
+      const visible = thumbFabric === '' || thumbFabric === normalizedKey;
       thumb.toggleAttribute('hidden', !visible);
     });
 
