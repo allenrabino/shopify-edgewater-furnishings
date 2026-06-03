@@ -17,33 +17,95 @@
     endif
   endif
 
-  assign subproduct_count = 0
+  assign metafield_namespace = block_settings.metafield_namespace | default: 'custom'
+  assign metafield_key = block_settings.metafield_key | default: 'modular_pieces'
+  assign metafield_subproducts = product_resource.metafields[metafield_namespace][metafield_key].value
+
+  assign block_subproduct_count = 0
   for child_block in block.blocks
     if child_block.type == '_modular-subproduct' and child_block.settings.product != blank
-      assign subproduct_count = subproduct_count | plus: 1
+      assign block_subproduct_count = block_subproduct_count | plus: 1
     endif
   endfor
 
-  if subproduct_count == 0
-    assign show_block = false
+  assign use_metafield_subproducts = false
+  if metafield_subproducts != blank
+    assign use_metafield_subproducts = true
   endif
+
+  assign use_block_subproducts = false
+  unless use_metafield_subproducts
+    if block_subproduct_count > 0
+      assign use_block_subproducts = true
+    endif
+  endunless
+
+  assign use_default_subproducts = false
+  unless use_metafield_subproducts or use_block_subproducts
+    assign single_corner = block_settings.single_corner_product | default: all_products['1pc-corner']
+    assign armless_chair = block_settings.armless_chair_product | default: all_products['1pc-armless-chair']
+    assign ottoman = block_settings.ottoman_product | default: all_products['1pc-ottoman']
+    if single_corner != blank or armless_chair != blank or ottoman != blank
+      assign use_default_subproducts = true
+    endif
+  endunless
+
+  unless use_metafield_subproducts or use_block_subproducts or use_default_subproducts
+    assign show_block = false
+  endunless
 
   assign base_price = product_resource.selected_or_first_available_variant.price
   assign pieces_total = 0
 
-  for child_block in block.blocks
-    if child_block.type == '_modular-subproduct'
-      assign piece_product = child_block.settings.product
-      if piece_product != blank
-        assign piece_qty = 0
-        if piece_product.handle == product_resource.handle
-          assign piece_qty = 1
-        endif
-        assign piece_variant = piece_product.selected_or_first_available_variant
-        assign pieces_total = pieces_total | plus: piece_variant.price | times: piece_qty
+  if use_metafield_subproducts
+    for piece_product in metafield_subproducts
+      assign piece_qty = 0
+      if piece_product.handle == product_resource.handle
+        assign piece_qty = 1
       endif
+      assign piece_variant = piece_product.selected_or_first_available_variant
+      assign pieces_total = pieces_total | plus: piece_variant.price | times: piece_qty
+    endfor
+  elsif use_block_subproducts
+    for child_block in block.blocks
+      if child_block.type == '_modular-subproduct'
+        assign piece_product = child_block.settings.product
+        if piece_product != blank
+          assign piece_qty = 0
+          if piece_product.handle == product_resource.handle
+            assign piece_qty = 1
+          endif
+          assign piece_variant = piece_product.selected_or_first_available_variant
+          assign pieces_total = pieces_total | plus: piece_variant.price | times: piece_qty
+        endif
+      endif
+    endfor
+  elsif use_default_subproducts
+    assign corner_qty = 0
+    assign armless_qty = 0
+    assign ottoman_qty = 0
+    assign current_handle = product_resource.handle | downcase
+
+    if current_handle contains 'corner' and current_handle contains '1pc'
+      assign corner_qty = 1
     endif
-  endfor
+    if current_handle contains 'armless'
+      assign armless_qty = 1
+    endif
+    if current_handle contains 'ottoman' and current_handle contains '1pc'
+      assign ottoman_qty = 1
+    endif
+
+    if single_corner != blank
+      assign pieces_total = pieces_total | plus: single_corner.selected_or_first_available_variant.price | times: corner_qty
+    endif
+    if armless_chair != blank
+      assign pieces_total = pieces_total | plus: armless_chair.selected_or_first_available_variant.price | times: armless_qty
+    endif
+    if ottoman != blank
+      assign pieces_total = pieces_total | plus: ottoman.selected_or_first_available_variant.price | times: ottoman_qty
+    endif
+  endif
 
   assign display_total = base_price | plus: pieces_total
 
@@ -62,55 +124,83 @@
     data-money-format="{{ money_format | escape }}"
     {{ block.shopify_attributes }}
   >
-    <accordion-custom
-      class="modular-add-piece__disclosure product-step-disclosure accordion--caret"
-      {% if block_settings.open_by_default | default: true, allow_false: true %}
-        open-by-default-on-desktop
-        open-by-default-on-mobile
-      {% endif %}
-    >
-      <details
-        class="details product-step-disclosure__details"
-        {% if block_settings.open_by_default | default: true, allow_false: true %}
-          open
-        {% endif %}
-      >
-        <summary
-          class="details__header product-step-disclosure__summary"
-          id="product-step-summary-{{ block.id }}"
-        >
-          <span class="product-step-disclosure__heading product-step-disclosure__heading--dual">
-            <span class="product-step-disclosure__heading-when-fabric">
-              {{ block_settings.heading | default: '2. Add a Piece' }}
-            </span>
-            <span class="product-step-disclosure__heading-no-fabric">
-              {{ block_settings.heading_without_fabric | default: '1. Add a Piece' }}
-            </span>
-          </span>
-          <span class="svg-wrapper icon-caret icon-animated">
-            {{- 'icon-caret.svg' | inline_asset_content -}}
-          </span>
-          <span class="svg-wrapper icon-plus">
-            {{- 'icon-plus.svg' | inline_asset_content -}}
-          </span>
-        </summary>
+    {% capture modular_add_piece_body %}
+      {%- if block_settings.subheading != blank -%}
+        <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
+      {%- endif -%}
 
-        <div class="details-content product-step-disclosure__content">
-          {%- if block_settings.subheading != blank -%}
-            <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
+      <div class="modular-add-piece__pieces">
+        {%- if use_metafield_subproducts -%}
+          {%- for piece_product in metafield_subproducts -%}
+            {%- liquid
+              assign piece_qty = 0
+              if piece_product.handle == product_resource.handle
+                assign piece_qty = 1
+              endif
+            -%}
+            {% render 'modular-subproduct-card',
+              piece_product: piece_product,
+              initial_qty: piece_qty
+            %}
+          {%- endfor -%}
+        {%- elsif use_block_subproducts -%}
+          {%- for child_block in block.blocks -%}
+            {%- if child_block.type == '_modular-subproduct' -%}
+              {%- assign piece_product = child_block.settings.product -%}
+              {%- if piece_product != blank -%}
+                {%- liquid
+                  assign piece_qty = 0
+                  if piece_product.handle == product_resource.handle
+                    assign piece_qty = 1
+                  endif
+                -%}
+                {% render 'modular-subproduct-card',
+                  piece_product: piece_product,
+                  initial_qty: piece_qty,
+                  custom_label: child_block.settings.label
+                %}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- elsif use_default_subproducts -%}
+          {%- if single_corner != blank -%}
+            {% render 'modular-subproduct-card',
+              piece_product: single_corner,
+              initial_qty: corner_qty,
+              custom_label: block_settings.single_corner_label
+            %}
           {%- endif -%}
+          {%- if armless_chair != blank -%}
+            {% render 'modular-subproduct-card',
+              piece_product: armless_chair,
+              initial_qty: armless_qty,
+              custom_label: block_settings.armless_chair_label
+            %}
+          {%- endif -%}
+          {%- if ottoman != blank -%}
+            {% render 'modular-subproduct-card',
+              piece_product: ottoman,
+              initial_qty: ottoman_qty,
+              custom_label: block_settings.ottoman_label
+            %}
+          {%- endif -%}
+        {%- endif -%}
+      </div>
 
-          <div class="modular-add-piece__pieces">
-            {% content_for 'blocks' %}
-          </div>
+      <div class="modular-add-piece__total">
+        <span>{{ block_settings.total_label }}</span>
+        <strong data-total-display>{{ display_total | money_with_currency }}</strong>
+      </div>
+    {% endcapture %}
 
-          <div class="modular-add-piece__total">
-            <span>{{ block_settings.total_label }}</span>
-            <strong data-total-display>{{ display_total | money_with_currency }}</strong>
-          </div>
-        </div>
-      </details>
-    </accordion-custom>
+    {% render 'product-step-disclosure',
+      heading_with_fabric: block_settings.heading | default: '2. Add a Piece',
+      heading_without_fabric: block_settings.heading_without_fabric | default: '1. Add a Piece',
+      content: modular_add_piece_body,
+      open_by_default: block_settings.open_by_default | default: true, allow_false: true,
+      disclosure_id: block.id,
+      class: 'modular-add-piece__disclosure'
+    %}
   </modular-add-piece>
 
   <script src="{{ 'modular-add-piece.js' | asset_url }}" type="module"></script>
@@ -130,7 +220,7 @@
   .modular-add-piece__pieces {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm);
+    gap: var(--gap-md);
   }
 
   .modular-add-piece__card {
@@ -140,11 +230,6 @@
     gap: var(--gap-sm);
     width: 100%;
     min-width: 0;
-    padding: var(--gap-sm);
-    border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
-    border-radius: var(--style-border-radius-popover, 4px);
-    background: rgb(var(--color-background-rgb) / 1);
-    box-sizing: border-box;
   }
 
   .modular-subproduct-card__media {
@@ -315,8 +400,65 @@
       "default": "Configuration total"
     },
     {
+      "type": "header",
+      "content": "t:content.modular_subproducts"
+    },
+    {
       "type": "paragraph",
-      "content": "t:info.modular_subproducts_blocks"
+      "content": "t:info.product_modular_pieces_metafield"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "t:settings.metafield_namespace",
+      "default": "custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "t:settings.metafield_key",
+      "default": "modular_pieces"
+    },
+    {
+      "type": "header",
+      "content": "t:content.modular_subproducts_fallback"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:info.modular_subproducts_fallback"
+    },
+    {
+      "type": "text",
+      "id": "single_corner_label",
+      "label": "t:settings.single_corner_label",
+      "default": "Single Corner"
+    },
+    {
+      "type": "text",
+      "id": "armless_chair_label",
+      "label": "t:settings.armless_chair_label",
+      "default": "Armless Chair"
+    },
+    {
+      "type": "text",
+      "id": "ottoman_label",
+      "label": "t:settings.ottoman_label",
+      "default": "Ottoman"
+    },
+    {
+      "type": "product",
+      "id": "single_corner_product",
+      "label": "t:settings.single_corner_product"
+    },
+    {
+      "type": "product",
+      "id": "armless_chair_product",
+      "label": "t:settings.armless_chair_product"
+    },
+    {
+      "type": "product",
+      "id": "ottoman_product",
+      "label": "t:settings.ottoman_product"
     },
     {
       "type": "checkbox",
@@ -373,27 +515,7 @@
   "presets": [
     {
       "name": "t:names.modular_add_piece",
-      "category": "t:categories.product",
-      "blocks": [
-        {
-          "type": "_modular-subproduct",
-          "settings": {
-            "label": "Single Corner"
-          }
-        },
-        {
-          "type": "_modular-subproduct",
-          "settings": {
-            "label": "Armless Chair"
-          }
-        },
-        {
-          "type": "_modular-subproduct",
-          "settings": {
-            "label": "Ottoman"
-          }
-        }
-      ]
+      "category": "t:categories.product"
     }
   ]
 }

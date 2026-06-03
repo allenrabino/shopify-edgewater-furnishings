@@ -112,6 +112,19 @@
     width: 100%;
   }
 
+  .product-information.has-gg-swatches .variant-picker__fabric-disclosure .product-step-disclosure__content,
+  .product-information.has-gg-swatches .variant-picker__fabric-disclosure .variant-option--fabric-grid,
+  .product-information.has-gg-swatches .variant-picker__fabric-disclosure .product-step-disclosure__content > fieldset,
+  .product-information.has-gg-swatches .variant-picker__fabric-disclosure fieldset[data-fabric-option] {
+    display: none !important;
+  }
+
+  .product-information.has-gg-swatches .variant-picker + gg-swatch {
+    display: block !important;
+    width: 100%;
+    margin-block-start: var(--gap-lg);
+  }
+
   .product-details .product-step-disclosure__details {
     border-block-start: none;
   }
@@ -124,7 +137,7 @@
     border-radius: var(--style-border-radius-buttons-primary, 4px);
   }
 
-  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__summary {
+  .product-information:not(.has-gg-swatches) .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)):not(:has(gg-swatch)):not(:has(.gg-swatch)) .modular-add-piece__disclosure .product-step-disclosure__summary {
     margin-block-start: 0;
   }
 
@@ -132,21 +145,27 @@
     display: none;
   }
 
+  .product-information.has-gg-swatches .modular-add-piece__disclosure .product-step-disclosure__summary,
   .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__summary,
-  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__summary {
+  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__summary,
+  .product-details:has(gg-swatch) .modular-add-piece__disclosure .product-step-disclosure__summary,
+  .product-details:has(.gg-swatch) .modular-add-piece__disclosure .product-step-disclosure__summary {
     margin-block-start: var(--gap-sm);
   }
 
+  .product-information.has-gg-swatches .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric,
   .product-details:has(fabric-picker) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric,
-  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
+  .product-details:has(.variant-option--fabric-grid) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric,
+  .product-details:has(gg-swatch) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric,
+  .product-details:has(.gg-swatch) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
     display: none;
   }
 
-  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__heading-when-fabric {
+  .product-information:not(.has-gg-swatches) .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)):not(:has(gg-swatch)):not(:has(.gg-swatch)) .modular-add-piece__disclosure .product-step-disclosure__heading-when-fabric {
     display: none;
   }
 
-  .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
+  .product-information:not(.has-gg-swatches) .product-details:not(:has(fabric-picker)):not(:has(.variant-option--fabric-grid)):not(:has(gg-swatch)):not(:has(.gg-swatch)) .modular-add-piece__disclosure .product-step-disclosure__heading-no-fabric {
     display: inline;
   }
 

@@ -302,7 +302,7 @@
     }
   {% endif %}
 
-  {% unless block_settings.aspect_ratio == 'adapt' and block_settings.constrain_to_viewport %}
+  {% if block_settings.aspect_ratio != 'adapt' %}
     .media-fit-{{ block_settings.media_fit }} {
       --product-media-fit: {{ block_settings.media_fit }};
     }
@@ -318,7 +318,7 @@
       width: 100%;
       height: 100%;
     }
-  {% endunless %}
+  {% endif %}
 
   /* Add background color so carousel arrows' mix-blend-mode works correctly even on transparent areas. */
   {% if block_settings.media_fit == 'contain' %}
@@ -385,12 +385,16 @@
       {% if block_settings.slideshow_mobile_controls_style == 'hint' %}
         media-gallery--hint
       {% endif %}
+      {% if block_settings.aspect_ratio == 'adapt' %}
+        media-gallery--adapt-height
+      {% endif %}
       {% if block_settings.extend_media %}
         media-gallery--extend
       {% endif %}
     "
-    style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px; --product-media-max-height: min(440px, 52vh);{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
+    style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px; --product-media-max-height: min(480px, 58vh);{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
     data-presentation="{{ media_presentation }}"
+    data-adapt-slide-height="{% if block_settings.aspect_ratio == 'adapt' %}true{% else %}false{% endif %}"
     {% if use_variant_fabric_gallery %}
       data-fabric-filter="off"
     {% elsif default_fabric_key != blank %}
@@ -919,41 +923,85 @@
     }
   }
 
-  /* Keep main gallery compact: don't let tall thumbnails or portrait slides stretch the layout */
+  .media-gallery--adapt-height slideshow-container {
+    overflow: hidden;
+    transition: height 0.2s ease;
+  }
+
+  .media-gallery--adapt-height slideshow-slides {
+    align-items: flex-start;
+  }
+
+  /* Size from actual image dimensions — avoid aspect-ratio metadata clipping portrait media */
+  .media-gallery--adapt-height slideshow-slide.product-media-container {
+    aspect-ratio: auto;
+    height: auto;
+    overflow: visible;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .media-gallery--adapt-height slideshow-slide.product-media-container .product-media {
+    aspect-ratio: auto;
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .media-gallery--adapt-height slideshow-slide.product-media-container .product-media__image,
+  .media-gallery--adapt-height slideshow-slide.product-media-container .deferred-media__poster-image {
+    width: 100%;
+    height: auto;
+    max-height: var(--product-media-max-height, min(480px, 58vh));
+    aspect-ratio: unset;
+    object-fit: contain;
+    object-position: top center;
+  }
+
+  /* Adapt-height carousel: JS syncs container height to the active slide on desktop */
   @media screen and (min-width: 750px) {
     .media-gallery--carousel slideshow-component:has(slideshow-controls[thumbnails]) {
       align-items: start;
     }
 
-    .media-gallery--carousel slideshow-container {
+    .media-gallery--carousel.media-gallery--adapt-height slideshow-container {
       align-self: start;
+      overflow: hidden;
+      transition: height 0.2s ease;
     }
 
-    .media-gallery--carousel slideshow-slides {
+    .media-gallery--carousel.media-gallery--adapt-height slideshow-slides {
       align-items: flex-start;
+      min-height: 0;
     }
 
-    .media-gallery--carousel slideshow-slide.product-media-container {
-      max-height: var(--product-media-max-height, min(440px, 52vh));
+    .media-gallery--carousel.media-gallery--adapt-height slideshow-slide.product-media-container {
       align-self: flex-start;
-    }
-
-    .media-gallery--carousel slideshow-slide.product-media-container .product-media {
-      max-height: var(--product-media-max-height, min(440px, 52vh));
-    }
-
-    .media-gallery--carousel slideshow-slide.product-media-container .product-media__image,
-    .media-gallery--carousel slideshow-slide.product-media-container .deferred-media__poster-image {
-      object-fit: contain;
-      object-position: top center;
-      max-height: var(--product-media-max-height, min(440px, 52vh));
     }
 
     .media-gallery--carousel slideshow-controls[thumbnails]:is([pagination-position='right'], [pagination-position='left']) {
       height: auto;
       min-height: 0;
-      max-height: var(--product-media-max-height, min(440px, 52vh));
       align-self: start;
+    }
+
+    .media-gallery--carousel:not(.media-gallery--adapt-height) slideshow-slide.product-media-container {
+      max-height: var(--product-media-max-height, min(480px, 58vh));
+      align-self: flex-start;
+    }
+
+    .media-gallery--carousel:not(.media-gallery--adapt-height) slideshow-slide.product-media-container .product-media,
+    .media-gallery--carousel:not(.media-gallery--adapt-height) slideshow-slide.product-media-container .product-media__image,
+    .media-gallery--carousel:not(.media-gallery--adapt-height) slideshow-slide.product-media-container .deferred-media__poster-image {
+      max-height: var(--product-media-max-height, min(480px, 58vh));
+      object-fit: contain;
+      object-position: top center;
+    }
+
+    .media-gallery--carousel:not(.media-gallery--adapt-height) slideshow-controls[thumbnails]:is([pagination-position='right'], [pagination-position='left']) {
+      max-height: var(--product-media-max-height, min(480px, 58vh));
     }
   }
 {% endstylesheet %}

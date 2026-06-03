@@ -74,7 +74,7 @@
           <fieldset
             class="variant-option variant-option--buttons{% if option_variant_style == 'swatch' %} variant-option--swatches{% if is_fabric_option %} variant-option--fabric-grid{% endif %}{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
-            {% if is_fabric_option %}data-fabric-option="true" style="--fabric-swatch-size: 3.5rem; --fabric-swatch-count: 1;"{% endif %}
+            {% if is_fabric_option %}data-fabric-option="true" data-option-name="{{ product_option.name | escape }}" style="--fabric-swatch-size: 3.5rem; --fabric-swatch-count: 1;"{% endif %}
             ref="fieldsets[]"
             {{ option_id_attribute }}
           >
@@ -90,7 +90,7 @@
                 {%- endif %}
               </legend>
             {%- else -%}
-              <legend class="visually-hidden">{{ block_settings.fabric_heading | default: '1. Choose Your Fabric' }}</legend>
+              <legend class="visually-hidden">{{ product_option.name | escape }}</legend>
             {%- endunless -%}
             {%- if is_fabric_option -%}
               <div class="variant-option__fabric-track">

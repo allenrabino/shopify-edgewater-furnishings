@@ -1,5 +1,5 @@
 import { Component } from '@theme/component';
-import { ThemeEvents, VariantUpdateEvent, ZoomMediaSelectedEvent } from '@theme/events';
+import { SlideshowSelectEvent, ThemeEvents, VariantUpdateEvent, ZoomMediaSelectedEvent } from '@theme/events';
 
 /**
  * A custom element that renders a media gallery.
@@ -9,7 +9,7 @@ import { ThemeEvents, VariantUpdateEvent, ZoomMediaSelectedEvent } from '@theme/
  * @property {import('./slideshow').Slideshow} [slideshow] - The slideshow component.
  * @property {HTMLElement[]} [media] - The media elements.
  *
- * @extends Component<Refs>
+ * @extends {Component<Refs>}
  */
 export class MediaGallery extends Component {
   connectedCallback() {
@@ -23,6 +23,11 @@ export class MediaGallery extends Component {
     this.refs.zoomDialogComponent?.addEventListener(ThemeEvents.zoomMediaSelected, this.#handleZoomMediaSelected, {
       signal,
     });
+
+    if (this.dataset.adaptSlideHeight === 'true') {
+      this.addEventListener(SlideshowSelectEvent.eventName, this.#syncActiveSlideHeight, { signal });
+      this.#setupAdaptHeightSync(signal);
+    }
 
     if (this.dataset.fabricFilter === 'off') return;
 
@@ -39,6 +44,79 @@ export class MediaGallery extends Component {
 
     this.#controller.abort();
   }
+
+  /**
+   * @param {AbortSignal} signal
+   */
+  #setupAdaptHeightSync(signal) {
+    const run = () => {
+      requestAnimationFrame(() => this.#syncActiveSlideHeight());
+    };
+
+    run();
+
+    window.addEventListener('resize', run, { signal });
+
+    this.querySelectorAll('img').forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener('load', run, { signal });
+    });
+  }
+
+  #syncActiveSlideHeight = () => {
+    if (this.dataset.adaptSlideHeight !== 'true') return;
+
+    const slideshow = this.refs.slideshow;
+    const container = slideshow?.refs?.slideshowContainer;
+    const activeSlide = slideshow?.querySelector('slideshow-slide[aria-hidden="false"]:not([hidden])');
+
+    if (!(container instanceof HTMLElement) || !(activeSlide instanceof HTMLElement)) return;
+
+    const image = activeSlide.querySelector('img.product-media__image');
+    const slideWidth = activeSlide.clientWidth || container.clientWidth;
+    const maxHeight = this.#getProductMediaMaxHeight();
+
+    container.style.height = 'auto';
+
+    let height = activeSlide.scrollHeight;
+
+    if (image instanceof HTMLImageElement && image.naturalWidth > 0 && slideWidth > 0) {
+      height = Math.ceil(slideWidth * (image.naturalHeight / image.naturalWidth));
+    }
+
+    if (maxHeight > 0) {
+      height = Math.min(height, maxHeight);
+    }
+
+    if (height <= 0) return;
+
+    container.style.height = `${height}px`;
+
+    const thumbnailControls = this.querySelector(
+      'slideshow-controls[thumbnails]:is([pagination-position="right"], [pagination-position="left"])'
+    );
+    if (thumbnailControls instanceof HTMLElement) {
+      thumbnailControls.style.maxHeight = `${height}px`;
+    }
+  };
+
+  /**
+   * @returns {number}
+   */
+  #getProductMediaMaxHeight() {
+    const value = getComputedStyle(this).getPropertyValue('--product-media-max-height').trim();
+    if (!value) return 480;
+
+    const probe = document.createElement('div');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.height = value;
+    document.body.appendChild(probe);
+    const height = probe.getBoundingClientRect().height;
+    probe.remove();
+
+    return Math.ceil(height) || 480;
+  };
 
   /**
    * Handles a variant update event by replacing the current media gallery with a new one.
@@ -104,6 +182,8 @@ export class MediaGallery extends Component {
     if (firstVisibleIndex >= 0) {
       this.slideshow?.select(firstVisibleIndex, undefined, { animate: false });
     }
+
+    this.#syncActiveSlideHeight();
   };
 
   /**

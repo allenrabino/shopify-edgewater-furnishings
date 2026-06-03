@@ -61,6 +61,11 @@
         "type": "shopify://apps/gg-variant-images/blocks/gg-variant-images/be108892-4b2a-4394-acab-80baee418d1d",
         "disabled": false,
         "settings": {}
+      },
+      "5403639868621142191": {
+        "type": "shopify://apps/gg-variant-images/blocks/gg-swatches/be108892-4b2a-4394-acab-80baee418d1d",
+        "disabled": false,
+        "settings": {}
       }
     },
     "color_schemes": {
