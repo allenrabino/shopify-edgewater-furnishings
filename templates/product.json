@@ -27,8 +27,8 @@
             "thumbnail_width": 72,
             "thumbnail_radius": 0,
             "aspect_ratio": "2/1",
-            "constrain_to_viewport": true,
-            "media_fit": "cover",
+            "constrain_to_viewport": false,
+            "media_fit": "contain",
             "media_radius": 0,
             "extend_media": true,
             "zoom": true,
@@ -196,19 +196,40 @@
                 "open_by_default": true,
                 "subheading": "Choose your pieces and quantity to build your perfect configuration.",
                 "total_label": "Configuration total",
-                "single_corner_label": "Single Corner",
-                "armless_chair_label": "Armless Chair",
-                "ottoman_label": "Ottoman",
-                "single_corner_product": "",
-                "armless_chair_product": "",
-                "ottoman_product": "",
                 "hide_on_collection_templates": true,
                 "padding-block-start": 16,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {}
+              "blocks": {
+                "subproduct_corner": {
+                  "type": "_modular-subproduct",
+                  "settings": {
+                    "product": "1pc-corner",
+                    "label": "Single Corner"
+                  }
+                },
+                "subproduct_armless": {
+                  "type": "_modular-subproduct",
+                  "settings": {
+                    "product": "1pc-armless-chair",
+                    "label": "Armless Chair"
+                  }
+                },
+                "subproduct_ottoman": {
+                  "type": "_modular-subproduct",
+                  "settings": {
+                    "product": "1pc-ottoman",
+                    "label": "Ottoman"
+                  }
+                }
+              },
+              "block_order": [
+                "subproduct_corner",
+                "subproduct_armless",
+                "subproduct_ottoman"
+              ]
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",

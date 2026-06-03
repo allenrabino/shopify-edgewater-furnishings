@@ -167,6 +167,11 @@
     assign needs_both_sizes = true
   endif
 
+  assign thumbnail_aspect_ratio = block_settings.aspect_ratio
+  if thumbnail_aspect_ratio == 'adapt'
+    assign thumbnail_aspect_ratio = '1'
+  endif
+
   # Calculate sizes using utility snippet
   if needs_both_sizes
     # Calculate sizes for single column (first image)
@@ -187,7 +192,7 @@
     assign product_media_container_class = product_media_container_class | append: ' constrain-height'
   endif
   if block_settings.aspect_ratio != 'adapt'
-    assign product_media_container_class = product_media_container_class | append: ' media-fit-cover'
+    assign product_media_container_class = product_media_container_class | append: ' media-fit-' | append: block_settings.media_fit
   elsif block_settings.constrain_to_viewport
     assign product_media_container_class = product_media_container_class | append: ' media-fit-' | append: block_settings.media_fit
   else
@@ -298,19 +303,18 @@
   {% endif %}
 
   {% unless block_settings.aspect_ratio == 'adapt' and block_settings.constrain_to_viewport %}
-    .media-fit-cover {
-      --product-media-fit: cover;
+    .media-fit-{{ block_settings.media_fit }} {
+      --product-media-fit: {{ block_settings.media_fit }};
     }
 
-    /* Media fit for all media elements - default to cover */
-    .media-fit-cover :is(img, video, iframe, .deferred-media__poster-image) {
-      object-fit: cover;
+    .media-fit-{{ block_settings.media_fit }} :is(img, video, iframe, .deferred-media__poster-image) {
+      object-fit: {{ block_settings.media_fit }};
       width: 100%;
       height: 100%;
     }
 
     /* 3D Models (no object-fit support, just sizing) */
-    .media-fit-cover model-viewer {
+    .media-fit-{{ block_settings.media_fit }} model-viewer {
       width: 100%;
       height: 100%;
     }
@@ -385,7 +389,7 @@
         media-gallery--extend
       {% endif %}
     "
-    style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px;{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
+    style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px; --product-media-max-height: min(440px, 52vh);{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
     data-presentation="{{ media_presentation }}"
     {% if use_variant_fabric_gallery %}
       data-fabric-filter="off"
@@ -464,7 +468,7 @@
             product: selected_product,
             controls_on_media: controls_on_media,
             pagination_position: pagination_position,
-            aspect_ratio: block_settings.aspect_ratio,
+            aspect_ratio: thumbnail_aspect_ratio,
             thumbnail_radius: block_settings.thumbnail_radius
           -%}
         {% endif %}
@@ -478,7 +482,7 @@
             product: selected_product,
             controls_on_media: mobile_controls_on_media,
             pagination_position: 'center',
-            aspect_ratio: block_settings.aspect_ratio,
+            aspect_ratio: thumbnail_aspect_ratio,
             thumbnail_radius: block_settings.thumbnail_radius
           -%}
         {% endif %}
@@ -498,6 +502,7 @@
       slide_count: sorted_media.size,
       slideshow_arrows: slideshow_arrows,
       arrows_position: icons_position,
+      slide_position: 'top',
       controls: controls
     %}
 
@@ -911,6 +916,44 @@
   @keyframes fade-out {
     to {
       opacity: 0;
+    }
+  }
+
+  /* Keep main gallery compact: don't let tall thumbnails or portrait slides stretch the layout */
+  @media screen and (min-width: 750px) {
+    .media-gallery--carousel slideshow-component:has(slideshow-controls[thumbnails]) {
+      align-items: start;
+    }
+
+    .media-gallery--carousel slideshow-container {
+      align-self: start;
+    }
+
+    .media-gallery--carousel slideshow-slides {
+      align-items: flex-start;
+    }
+
+    .media-gallery--carousel slideshow-slide.product-media-container {
+      max-height: var(--product-media-max-height, min(440px, 52vh));
+      align-self: flex-start;
+    }
+
+    .media-gallery--carousel slideshow-slide.product-media-container .product-media {
+      max-height: var(--product-media-max-height, min(440px, 52vh));
+    }
+
+    .media-gallery--carousel slideshow-slide.product-media-container .product-media__image,
+    .media-gallery--carousel slideshow-slide.product-media-container .deferred-media__poster-image {
+      object-fit: contain;
+      object-position: top center;
+      max-height: var(--product-media-max-height, min(440px, 52vh));
+    }
+
+    .media-gallery--carousel slideshow-controls[thumbnails]:is([pagination-position='right'], [pagination-position='left']) {
+      height: auto;
+      min-height: 0;
+      max-height: var(--product-media-max-height, min(440px, 52vh));
+      align-self: start;
     }
   }
 {% endstylesheet %}

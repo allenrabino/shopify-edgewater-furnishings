@@ -1,0 +1,84 @@
+{%- doc -%}
+  Compact product card for modular add-a-piece rows (image, title, price, quantity).
+
+  @param {object} piece_product - Subproduct to display
+  @param {number} [initial_qty] - Starting quantity (default 0)
+  @param {string} [custom_label] - Optional label override
+  @param {object} [custom_image] - Optional image override
+  @param {string} [shopify_attributes] - Theme editor attributes
+{%- enddoc -%}
+
+{%- liquid
+  assign piece_variant = piece_product.selected_or_first_available_variant
+  assign display_label = custom_label
+  if display_label == blank
+    assign display_label = piece_product.title
+  endif
+
+  assign piece_qty = initial_qty | default: 0
+  assign piece_image = custom_image
+  if piece_image == blank
+    assign piece_image = piece_variant.featured_image
+  endif
+  if piece_image == blank
+    assign piece_image = piece_product.featured_image
+  endif
+-%}
+
+<div
+  class="modular-add-piece__card modular-subproduct-card"
+  data-piece-row
+  data-variant-id="{{ piece_variant.id }}"
+  data-unit-price="{{ piece_variant.price }}"
+  {{ shopify_attributes }}
+>
+  <div class="modular-subproduct-card__media product-card__media">
+    {%- if piece_image != blank -%}
+      {{
+        piece_image
+        | image_url: width: 240
+        | image_tag:
+          loading: 'lazy',
+          widths: '80, 120, 160, 240',
+          sizes: '5rem',
+          alt: display_label,
+          class: 'modular-subproduct-card__image product-card__image'
+      }}
+    {%- else -%}
+      {{ 'product-apparel-2' | placeholder_svg_tag: 'modular-subproduct-card__placeholder' }}
+    {%- endif -%}
+  </div>
+
+  <div class="modular-subproduct-card__info">
+    <p class="modular-subproduct-card__title">{{ display_label }}</p>
+    <p class="modular-subproduct-card__price">{{ piece_variant.price | money }}</p>
+  </div>
+
+  <div class="modular-add-piece__qty" data-qty-control>
+    <button
+      type="button"
+      class="modular-add-piece__qty-btn"
+      data-qty-action="decrease"
+      aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}"
+    >
+      −
+    </button>
+    <input
+      type="number"
+      class="modular-add-piece__qty-input"
+      value="{{ piece_qty }}"
+      min="0"
+      data-qty-input
+      readonly
+      aria-label="{{ display_label }} quantity"
+    >
+    <button
+      type="button"
+      class="modular-add-piece__qty-btn"
+      data-qty-action="increase"
+      aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}"
+    >
+      +
+    </button>
+  </div>
+</div>

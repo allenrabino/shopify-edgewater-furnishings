@@ -1714,7 +1714,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
 }
 
 .product-media-container.media-fit-contain img {
-  object-position: center center;
+  object-position: top center;
 }
 
 .product-media-container.media-fit {

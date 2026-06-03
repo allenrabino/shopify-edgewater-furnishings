@@ -1,0 +1,52 @@
+
+{%- liquid
+  assign block_settings = block.settings
+  assign piece_product = block_settings.product
+  assign parent_product = closest.product
+
+  assign piece_qty = 0
+  if piece_product != blank and piece_product.handle == parent_product.handle
+    assign piece_qty = 1
+  endif
+-%}
+
+{%- if piece_product != blank -%}
+  {% render 'modular-subproduct-card',
+    piece_product: piece_product,
+    initial_qty: piece_qty,
+    custom_label: block_settings.label,
+    custom_image: block_settings.image,
+    shopify_attributes: block.shopify_attributes
+  %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:names.modular_subproduct",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:settings.product"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image",
+      "info": "t:info.modular_subproduct_image"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.custom_label",
+      "info": "t:info.modular_subproduct_label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.modular_subproduct"
+    }
+  ]
+}
+{% endschema %}

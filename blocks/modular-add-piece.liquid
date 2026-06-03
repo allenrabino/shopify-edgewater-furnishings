@@ -17,36 +17,34 @@
     endif
   endif
 
-  assign single_corner = block_settings.single_corner_product | default: all_products['1pc-corner']
-  assign armless_chair = block_settings.armless_chair_product | default: all_products['1pc-armless-chair']
-  assign ottoman = block_settings.ottoman_product | default: all_products['1pc-ottoman']
+  assign subproduct_count = 0
+  for child_block in block.blocks
+    if child_block.type == '_modular-subproduct' and child_block.settings.product != blank
+      assign subproduct_count = subproduct_count | plus: 1
+    endif
+  endfor
 
-  assign corner_qty = 0
-  assign armless_qty = 0
-  assign ottoman_qty = 0
-  assign current_handle = product_resource.handle | downcase
-
-  if current_handle contains 'corner' and current_handle contains '1pc'
-    assign corner_qty = 1
-  endif
-  if current_handle contains 'armless'
-    assign armless_qty = 1
-  endif
-  if current_handle contains 'ottoman' and current_handle contains '1pc'
-    assign ottoman_qty = 1
+  if subproduct_count == 0
+    assign show_block = false
   endif
 
   assign base_price = product_resource.selected_or_first_available_variant.price
   assign pieces_total = 0
-  if single_corner != blank
-    assign pieces_total = pieces_total | plus: single_corner.selected_or_first_available_variant.price | times: corner_qty
-  endif
-  if armless_chair != blank
-    assign pieces_total = pieces_total | plus: armless_chair.selected_or_first_available_variant.price | times: armless_qty
-  endif
-  if ottoman != blank
-    assign pieces_total = pieces_total | plus: ottoman.selected_or_first_available_variant.price | times: ottoman_qty
-  endif
+
+  for child_block in block.blocks
+    if child_block.type == '_modular-subproduct'
+      assign piece_product = child_block.settings.product
+      if piece_product != blank
+        assign piece_qty = 0
+        if piece_product.handle == product_resource.handle
+          assign piece_qty = 1
+        endif
+        assign piece_variant = piece_product.selected_or_first_available_variant
+        assign pieces_total = pieces_total | plus: piece_variant.price | times: piece_qty
+      endif
+    endif
+  endfor
+
   assign display_total = base_price | plus: pieces_total
 
   assign money_format = shop.money_format
@@ -64,84 +62,55 @@
     data-money-format="{{ money_format | escape }}"
     {{ block.shopify_attributes }}
   >
-    {% capture modular_add_piece_body %}
-      {%- if block_settings.subheading != blank -%}
-        <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
-      {%- endif -%}
-
-      <div class="modular-add-piece__pieces">
-      {%- if single_corner != blank -%}
-        <div
-          class="modular-add-piece__row"
-          data-piece-row
-          data-variant-id="{{ single_corner.selected_or_first_available_variant.id }}"
-          data-unit-price="{{ single_corner.selected_or_first_available_variant.price }}"
+    <accordion-custom
+      class="modular-add-piece__disclosure product-step-disclosure accordion--caret"
+      {% if block_settings.open_by_default | default: true, allow_false: true %}
+        open-by-default-on-desktop
+        open-by-default-on-mobile
+      {% endif %}
+    >
+      <details
+        class="details product-step-disclosure__details"
+        {% if block_settings.open_by_default | default: true, allow_false: true %}
+          open
+        {% endif %}
+      >
+        <summary
+          class="details__header product-step-disclosure__summary"
+          id="product-step-summary-{{ block.id }}"
         >
-          <span class="modular-add-piece__label">
-            {{ block_settings.single_corner_label }}
-            <span class="modular-add-piece__unit-price">{{ single_corner.selected_or_first_available_variant.price | money }}</span>
+          <span class="product-step-disclosure__heading product-step-disclosure__heading--dual">
+            <span class="product-step-disclosure__heading-when-fabric">
+              {{ block_settings.heading | default: '2. Add a Piece' }}
+            </span>
+            <span class="product-step-disclosure__heading-no-fabric">
+              {{ block_settings.heading_without_fabric | default: '1. Add a Piece' }}
+            </span>
           </span>
-          <div class="modular-add-piece__qty" data-qty-control>
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
-            <input type="number" class="modular-add-piece__qty-input" value="{{ corner_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_corner_label }} quantity">
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
+          <span class="svg-wrapper icon-caret icon-animated">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+          <span class="svg-wrapper icon-plus">
+            {{- 'icon-plus.svg' | inline_asset_content -}}
+          </span>
+        </summary>
+
+        <div class="details-content product-step-disclosure__content">
+          {%- if block_settings.subheading != blank -%}
+            <p class="modular-add-piece__subheading">{{ block_settings.subheading }}</p>
+          {%- endif -%}
+
+          <div class="modular-add-piece__pieces">
+            {% content_for 'blocks' %}
+          </div>
+
+          <div class="modular-add-piece__total">
+            <span>{{ block_settings.total_label }}</span>
+            <strong data-total-display>{{ display_total | money_with_currency }}</strong>
           </div>
         </div>
-      {%- endif -%}
-
-      {%- if armless_chair != blank -%}
-        <div
-          class="modular-add-piece__row"
-          data-piece-row
-          data-variant-id="{{ armless_chair.selected_or_first_available_variant.id }}"
-          data-unit-price="{{ armless_chair.selected_or_first_available_variant.price }}"
-        >
-          <span class="modular-add-piece__label">
-            {{ block_settings.armless_chair_label }}
-            <span class="modular-add-piece__unit-price">{{ armless_chair.selected_or_first_available_variant.price | money }}</span>
-          </span>
-          <div class="modular-add-piece__qty" data-qty-control>
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
-            <input type="number" class="modular-add-piece__qty-input" value="{{ armless_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_armless_label }} quantity">
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
-          </div>
-        </div>
-      {%- endif -%}
-
-      {%- if ottoman != blank -%}
-        <div
-          class="modular-add-piece__row"
-          data-piece-row
-          data-variant-id="{{ ottoman.selected_or_first_available_variant.id }}"
-          data-unit-price="{{ ottoman.selected_or_first_available_variant.price }}"
-        >
-          <span class="modular-add-piece__label">
-            {{ block_settings.ottoman_label }}
-            <span class="modular-add-piece__unit-price">{{ ottoman.selected_or_first_available_variant.price | money }}</span>
-          </span>
-          <div class="modular-add-piece__qty" data-qty-control>
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="decrease" aria-label="{{ 'accessibility.decrease_quantity' | t | default: 'Decrease quantity' }}">−</button>
-            <input type="number" class="modular-add-piece__qty-input" value="{{ ottoman_qty }}" min="0" data-qty-input readonly aria-label="{{ block_settings.single_ottoman_label }} quantity">
-            <button type="button" class="modular-add-piece__qty-btn" data-qty-action="increase" aria-label="{{ 'accessibility.increase_quantity' | t | default: 'Increase quantity' }}">+</button>
-          </div>
-        </div>
-      {%- endif -%}
-      </div>
-
-      <div class="modular-add-piece__total">
-        <span>{{ block_settings.total_label }}</span>
-        <strong data-total-display>{{ display_total | money_with_currency }}</strong>
-      </div>
-    {% endcapture %}
-
-    {% render 'product-step-disclosure',
-      heading_with_fabric: block_settings.heading | default: '2. Add a Piece',
-      heading_without_fabric: block_settings.heading_without_fabric | default: '1. Add a Piece',
-      content: modular_add_piece_body,
-      open_by_default: block_settings.open_by_default | default: true, allow_false: true,
-      disclosure_id: block.id,
-      class: 'modular-add-piece__disclosure'
-    %}
+      </details>
+    </accordion-custom>
   </modular-add-piece>
 
   <script src="{{ 'modular-add-piece.js' | asset_url }}" type="module"></script>
@@ -164,24 +133,57 @@
     gap: var(--gap-sm);
   }
 
-  .modular-add-piece__row {
-    display: flex;
+  .modular-add-piece__card {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
+    gap: var(--gap-sm);
+    width: 100%;
+    min-width: 0;
+    padding: var(--gap-sm);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    border-radius: var(--style-border-radius-popover, 4px);
+    background: rgb(var(--color-background-rgb) / 1);
+    box-sizing: border-box;
   }
 
-  .modular-add-piece__label {
+  .modular-subproduct-card__media {
+    aspect-ratio: 1;
+    background: rgb(var(--color-foreground-rgb) / 0.03);
+    border-radius: var(--style-border-radius-popover, 4px);
+    overflow: hidden;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.125rem;
-    font-size: var(--font-size--sm);
-    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modular-subproduct-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modular-subproduct-card__placeholder {
+    width: 70%;
+    height: auto;
+    opacity: 0.3;
+  }
+
+  .modular-subproduct-card__info {
+    min-width: 0;
     text-align: left;
   }
 
-  .modular-add-piece__unit-price {
+  .modular-subproduct-card__title {
+    margin: 0 0 0.125rem;
+    font-size: var(--font-size--sm);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .modular-subproduct-card__price {
+    margin: 0;
     font-size: 0.6875rem;
     font-weight: 400;
     color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
@@ -274,6 +276,11 @@
 {
   "name": "t:names.modular_add_piece",
   "tag": null,
+  "blocks": [
+    {
+      "type": "_modular-subproduct"
+    }
+  ],
   "settings": [
     {
       "type": "text",
@@ -308,37 +315,8 @@
       "default": "Configuration total"
     },
     {
-      "type": "text",
-      "id": "single_corner_label",
-      "label": "t:settings.single_corner_label",
-      "default": "Single Corner"
-    },
-    {
-      "type": "text",
-      "id": "armless_chair_label",
-      "label": "t:settings.armless_chair_label",
-      "default": "Armless Chair"
-    },
-    {
-      "type": "text",
-      "id": "ottoman_label",
-      "label": "t:settings.ottoman_label",
-      "default": "Ottoman"
-    },
-    {
-      "type": "product",
-      "id": "single_corner_product",
-      "label": "t:settings.single_corner_product"
-    },
-    {
-      "type": "product",
-      "id": "armless_chair_product",
-      "label": "t:settings.armless_chair_product"
-    },
-    {
-      "type": "product",
-      "id": "ottoman_product",
-      "label": "t:settings.ottoman_product"
+      "type": "paragraph",
+      "content": "t:info.modular_subproducts_blocks"
     },
     {
       "type": "checkbox",
@@ -395,7 +373,27 @@
   "presets": [
     {
       "name": "t:names.modular_add_piece",
-      "category": "t:categories.product"
+      "category": "t:categories.product",
+      "blocks": [
+        {
+          "type": "_modular-subproduct",
+          "settings": {
+            "label": "Single Corner"
+          }
+        },
+        {
+          "type": "_modular-subproduct",
+          "settings": {
+            "label": "Armless Chair"
+          }
+        },
+        {
+          "type": "_modular-subproduct",
+          "settings": {
+            "label": "Ottoman"
+          }
+        }
+      ]
     }
   ]
 }
