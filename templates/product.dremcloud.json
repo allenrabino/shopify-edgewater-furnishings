@@ -140,7 +140,11 @@
               "type": "price",
               "settings": {
                 "show_sale_price_first": true,
-                "show_installments": true,
+                "update_from_add_piece": true,
+                "show_finance_pricing": true,
+                "finance_label": "Starting at [amount]/month",
+                "finance_term_months": 12,
+                "show_installments": false,
                 "show_tax_info": true,
                 "type_preset": "paragraph",
                 "width": "100%",

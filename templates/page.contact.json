@@ -42,7 +42,7 @@
           "type": "text",
           "name": "Contact info",
           "settings": {
-            "text": "<h3><strong>Email:</strong> email@email.com</h3><h3><strong>CALL US AT:</strong> 403-671-6650</h3>",
+            "text": "<h3><strong>Email:</strong> hello@edgewaterfurnishings.com</h3><h3><strong>CALL US AT:</strong> 403-671-6650</h3>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
@@ -154,9 +154,9 @@
               "settings": {
                 "label": "Submit",
                 "style_class": "button",
-                "width": "fit-content",
+                "width": "custom",
                 "custom_width": 100,
-                "width_mobile": "fit-content",
+                "width_mobile": "custom",
                 "custom_width_mobile": 100
               },
               "blocks": {}

@@ -1,6 +1,7 @@
 import { Component } from '@theme/component';
 import { ThemeEvents } from '@theme/events';
 import { formatMoney } from '@theme/money-formatting';
+import { calculateConfigurationTotalCents, syncConfigurationPrice } from '@theme/configuration-price';
 
 /**
  * Dynamic pricing for modular add-a-piece quantities.
@@ -89,13 +90,20 @@ class ModularAddPiece extends Component {
 
     this.#basePrice = parsed;
     this.dataset.basePrice = String(parsed);
+
+    if (productPrice instanceof HTMLElement) {
+      productPrice.dataset.variantPriceCents = String(parsed);
+    }
+
     this.#updateTotal();
   };
 
   #syncBasePriceFromProductPrice() {
-    const centsAttr = this.#getProductPriceElement()
-      ?.querySelector('[ref="priceContainer"] .price')
-      ?.getAttribute('data-price-cents');
+    const productPrice = this.#getProductPriceElement();
+    const variantCents = productPrice?.dataset.variantPriceCents;
+    const centsAttr =
+      variantCents ||
+      productPrice?.querySelector('[ref="priceContainer"] .price')?.getAttribute('data-price-cents');
 
     if (centsAttr == null || centsAttr === '') return;
 
@@ -104,6 +112,10 @@ class ModularAddPiece extends Component {
 
     this.#basePrice = parsed;
     this.dataset.basePrice = String(parsed);
+
+    if (productPrice instanceof HTMLElement) {
+      productPrice.dataset.variantPriceCents = String(parsed);
+    }
   }
 
   /**
@@ -116,35 +128,29 @@ class ModularAddPiece extends Component {
   }
 
   #updateTotal() {
-    let piecesTotal = 0;
-    this.querySelectorAll('[data-piece-row]').forEach((row) => {
-      const unitPrice = Number(row.getAttribute('data-unit-price')) || 0;
-      const input = row.querySelector('[data-qty-input]');
-      const qty = input instanceof HTMLInputElement ? Number(input.value) || 0 : 0;
-      piecesTotal += unitPrice * qty;
-    });
+    const productDetails = this.closest('.product-details');
+    const productPrice = this.#getProductPriceElement();
+    let total = this.#basePrice;
 
-    const total = this.#basePrice + piecesTotal;
-    const formatted = this.#formatMoney(total);
+    if (productPrice instanceof HTMLElement) {
+      total = calculateConfigurationTotalCents(this, productPrice);
+    } else {
+      let piecesTotal = 0;
+      this.querySelectorAll('[data-piece-row]').forEach((row) => {
+        const unitPrice = Number(row.getAttribute('data-unit-price')) || 0;
+        const input = row.querySelector('[data-qty-input]');
+        const qty = input instanceof HTMLInputElement ? Number(input.value) || 0 : 0;
+        piecesTotal += unitPrice * qty;
+      });
+      total = this.#basePrice + piecesTotal;
+    }
 
     const display = this.querySelector('[data-total-display]');
     if (display) {
-      display.textContent = formatted;
+      display.textContent = this.#formatMoney(total);
     }
 
-    const productPrice = this.#getProductPriceElement();
-    if (productPrice) {
-      productPrice.querySelectorAll('[ref="priceContainer"] .price').forEach((priceEl) => {
-        priceEl.textContent = formatted;
-      });
-      productPrice.dataset.configurationTotalCents = String(total);
-      productPrice.dataset.configurationPiecesCents = String(piecesTotal);
-    }
-
-    const installmentForm = this.closest('.product-details')?.querySelector('form.payment-terms');
-    if (installmentForm instanceof HTMLFormElement) {
-      installmentForm.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+    syncConfigurationPrice(productDetails);
   }
 
   /**

@@ -1,5 +1,6 @@
 import { ThemeEvents, VariantUpdateEvent } from '@theme/events';
 import { Component } from '@theme/component';
+import { syncConfigurationPrice, initGgSwatchPriceSync } from '@theme/configuration-price';
 
 /**
  * @typedef {Object} ProductPriceRefs
@@ -22,6 +23,10 @@ class ProductPrice extends Component {
     const closestSection = this.closest('.shopify-section, dialog');
     if (!closestSection) return;
     closestSection.addEventListener(ThemeEvents.variantUpdate, this.updatePrice);
+
+    requestAnimationFrame(() => {
+      syncConfigurationPrice(this.closest('.product-details'));
+    });
   }
 
   disconnectedCallback() {
@@ -49,6 +54,16 @@ class ProductPrice extends Component {
     );
     if (!newProductPrice) return;
 
+    if (newProductPrice.dataset.variantPriceCents) {
+      this.dataset.variantPriceCents = newProductPrice.dataset.variantPriceCents;
+    }
+
+    const productDetails = this.closest('.product-details');
+    const modular = productDetails?.querySelector('modular-add-piece');
+    if (modular instanceof HTMLElement && newProductPrice.dataset.variantPriceCents) {
+      modular.dataset.basePrice = newProductPrice.dataset.variantPriceCents;
+    }
+
     // Update price container
     const newPrice = newProductPrice.querySelector('[ref="priceContainer"]');
     if (newPrice && priceContainer) {
@@ -66,9 +81,15 @@ class ProductPrice extends Component {
     } else {
       volumePricingNote.replaceWith(newNote);
     }
+
+    requestAnimationFrame(() => {
+      syncConfigurationPrice(this.closest('.product-details'));
+    });
   };
 }
 
 if (!customElements.get('product-price')) {
   customElements.define('product-price', ProductPrice);
 }
+
+initGgSwatchPriceSync();
