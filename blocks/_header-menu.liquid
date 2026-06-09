@@ -18,7 +18,7 @@
       data-hydration-key="header-drawer-mobile"
       {{ block.shopify_attributes }}
     >
-      {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer' %}
+      {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer', block: block, section: section %}
     </div>
 
   {% when 'navigation_bar' %}
@@ -33,20 +33,24 @@
             class="menu-list__list list-unstyled"
             role="list"
           >
-            {% for link in block_settings.menu.links %}
-              <li>
-                <a
-                  href="{{ link.url }}"
-                  id="MenuItem-{{ link.handle }}"
-                  class="menu-list__item"
-                  {% if link.current %}
-                    aria-current="page"
-                  {% endif %}
-                >
-                  {{- link.title -}}
-                </a>
-              </li>
-            {% endfor %}
+            {% if block_settings.use_edgewater_navigation %}
+              {% render 'edgewater-main-navigation', variant: 'mobile_bar', block_settings: block_settings %}
+            {% else %}
+              {% for link in block_settings.menu.links %}
+                <li>
+                  <a
+                    href="{{ link.url }}"
+                    id="MenuItem-{{ link.handle }}"
+                    class="menu-list__item"
+                    {% if link.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{- link.title -}}
+                  </a>
+                </li>
+              {% endfor %}
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -78,7 +82,18 @@
     %}
 
     {% capture children %}
-      {% for link in block_settings.menu.links %}
+      {% if block_settings.use_edgewater_navigation %}
+        {% render 'edgewater-main-navigation',
+          variant: 'header',
+          block_settings: block_settings,
+          section: section,
+          color_scheme_classes: color_scheme_classes,
+          menu_content_type: menu_content_type,
+          ratio: ratio,
+          image_border_radius: image_border_radius
+        %}
+      {% else %}
+        {% for link in block_settings.menu.links %}
         <li
           role="presentation"
           class="menu-list__list-item{% if link.title == "Collections" %} menu__collection-dropdown{% endif %}"
@@ -152,6 +167,7 @@
           {%- endif -%}
         </li>
       {% endfor %}
+      {% endif %}
       <li
         class="menu-list__list-item"
         role="presentation"
@@ -361,17 +377,63 @@
 
   .menu-list__dropdown a {
     width: 20%;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease;
+  }
+
+  .menu-list__dropdown .collection-dropdown__imag {
+    overflow: hidden;
+    border-radius: 10px;
+    transition: box-shadow 0.25s ease;
+  }
+
+  .menu-list__dropdown .collection-dropdown__imag img {
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .menu-list__dropdown a:hover .collection-dropdown__imag,
+    .menu-list__dropdown a:focus-visible .collection-dropdown__imag {
+      box-shadow: 0 8px 24px rgb(var(--color-foreground-rgb) / 0.12);
+    }
+
+    .menu-list__dropdown a:hover .collection-dropdown__imag img,
+    .menu-list__dropdown a:focus-visible .collection-dropdown__imag img {
+      transform: scale(1.04);
+    }
+
+    .menu-list__dropdown a:hover .collection-dropdown__title,
+    .menu-list__dropdown a:focus-visible .collection-dropdown__title {
+      color: var(--announcement-bar-color, var(--color-foreground));
+    }
+  }
+
+  .menu-list__dropdown .collection-dropdown__title {
+    transition: color 0.25s ease;
   }
 
   .menu-list__link {
-    font-family: var(--menu-top-level-font-family);
+    font-family:
+      'Avenir Next',
+      Avenir,
+      Montserrat,
+      var(--menu-top-level-font-family),
+      'Helvetica Neue',
+      Helvetica,
+      Arial,
+      sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: none;
     font-style: var(--menu-top-level-font-style);
-    font-weight: var(--menu-top-level-font-weight);
     font-size: var(--menu-top-level-font-size);
     line-height: var(--menu-top-level-font-line-height);
-    text-transform: var(--menu-top-level-font-case);
     color: var(--menu-top-level-font-color);
-    transition: color var(--animation-speed) var(--animation-easing);
+    transition:
+      color var(--animation-speed) var(--animation-easing),
+      opacity var(--animation-speed) var(--animation-easing);
     text-decoration: none;
     display: flex;
     flex-direction: column;
@@ -382,8 +444,8 @@
     z-index: 1;
 
     &:hover,
-    &:focus {
-      color: var(--menu-top-level-font-color);
+    &:focus-visible {
+      color: var(--announcement-bar-color, var(--menu-top-level-font-color));
     }
 
     @media screen and (min-width: 750px) {
@@ -392,8 +454,32 @@
   }
 
   .menu-list__link-title {
+    position: relative;
+    display: inline-block;
+    padding-block-end: 0.2em;
     padding-inline: calc(var(--gap-xl) / 2);
   }
+  @media (hover: hover) {
+    .menu-list__link-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--announcement-bar-color, currentColor);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.25s ease;
+    }
+
+    .menu-list__link:hover .menu-list__link-title::after,
+    .menu-list__link:focus-visible .menu-list__link-title::after,
+    .menu-list__link--active .menu-list__link-title::after {
+      transform: scaleX(1);
+    }
+  }
+
   [slot='overflow'] .menu-list__link-title {
     padding-inline: 0;
   }
@@ -428,7 +514,11 @@
   .menu-list:not(:has(.menu-list__list-item:hover)) .menu-list__link--active,
   .menu-list .menu-list__list-item:where(:hover, :focus-within) .menu-list__link,
   .menu-list .menu-list__list-item[slot='overflow'] .menu-list__link[aria-expanded='true'] {
-    color: var(--menu-top-level-font-color);
+    color: var(--announcement-bar-color, var(--menu-top-level-font-color));
+  }
+
+  .menu-list:not(:has(.menu-list__list-item:hover)) .menu-list__link--active {
+    color: var(--announcement-bar-color, var(--menu-top-level-font-color));
   }
 
   .overflow-menu::part(list) {
@@ -780,6 +870,34 @@
     /* preserves the inherited grid layout when this submenu wrapper is used */
     display: contents;
   }
+
+  .menu-drawer__menu-item--mainlist .menu-drawer__menu-item-text,
+  .menu-list--mobile .menu-list__item {
+    font-family:
+      'Avenir Next',
+      Avenir,
+      Montserrat,
+      'Helvetica Neue',
+      Helvetica,
+      Arial,
+      sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  @media (hover: hover) {
+    .menu-list--mobile .menu-list__item:hover,
+    .menu-list--mobile .menu-list__item:focus-visible {
+      color: var(--announcement-bar-color, var(--color-foreground));
+    }
+  }
+
+  .menu-list--mobile .menu-list__item {
+    padding-inline: 0.75rem;
+    border-radius: var(--style-border-radius-buttons-primary, 999px);
+    transition: color 0.25s ease;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -792,6 +910,13 @@
       "id": "menu",
       "label": "t:settings.menu",
       "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_edgewater_navigation",
+      "label": "Use Edgewater navigation",
+      "default": true,
+      "info": "Shows Collections, Our Story, Book a Showroom Visit, and Contact Us in this order."
     },
     {
       "type": "select",

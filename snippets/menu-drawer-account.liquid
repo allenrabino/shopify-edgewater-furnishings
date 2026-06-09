@@ -1,0 +1,23 @@
+{%- doc -%}
+  Sign in / sign out footer for the mobile menu drawer.
+{%- enddoc -%}
+
+{%- if shop.customer_accounts_enabled -%}
+  <div class="menu-drawer__footer">
+    {%- if customer -%}
+      <a
+        href="{{ routes.account_logout_url }}"
+        class="button button-secondary menu-drawer__auth-button"
+      >
+        {{ 'actions.log_out' | t }}
+      </a>
+    {%- else -%}
+      <a
+        href="{% if request.design_mode %}{{ routes.account_url }}{% else %}{{ routes.storefront_login_url }}{% endif %}"
+        class="button menu-drawer__auth-button"
+      >
+        {{ 'actions.log_in' | t }}
+      </a>
+    {%- endif -%}
+  </div>
+{%- endif -%}
