@@ -18,12 +18,12 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Best Selling Sofas in Canada!",
+            "text": "WHITE GLOVE DELIVERY: includes delivery, assembly and empty box haul away",
             "link": "",
-            "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
-            "weight": "",
-            "letter_spacing": "normal",
+            "font": "var(--font-accent--family)",
+            "font_size": "0.625rem",
+            "weight": "600",
+            "letter_spacing": "loose",
             "case": "none"
           },
           "blocks": {}
@@ -31,13 +31,13 @@
         "announcement_KMAGKG": {
           "type": "_announcement",
           "settings": {
-            "text": "CALL US AT 403-671-6650",
+            "text": "CALL or TEXT to book a showroom visit: 403-671-6650",
             "link": "shopify://collections/all",
             "font": "var(--font-accent--family)",
-            "font_size": "0.75rem",
-            "weight": "",
+            "font_size": "0.625rem",
+            "weight": "500",
             "letter_spacing": "loose",
-            "case": "uppercase"
+            "case": "none"
           },
           "blocks": {}
         }
