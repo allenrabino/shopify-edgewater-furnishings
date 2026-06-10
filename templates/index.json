@@ -290,8 +290,6 @@
     },
     "customer_reviews_home": {
       "type": "customer-reviews",
-      "blocks": {},
-      "block_order": [],
       "settings": {
         "heading": "Reviews",
         "show_summary": true,
