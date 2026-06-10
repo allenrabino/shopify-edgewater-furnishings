@@ -6,33 +6,21 @@
 >
   <div class="customer-reviews__inner page-width">
     <header class="customer-reviews__header">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="customer-reviews__eyebrow">{{ section.settings.eyebrow }}</p>
-      {%- endif -%}
-
       {%- if section.settings.heading != blank -%}
         <h2 class="customer-reviews__heading">{{ section.settings.heading }}</h2>
       {%- endif -%}
 
       {%- if section.settings.show_summary -%}
         <div class="customer-reviews__summary">
-          <div class="customer-reviews__summary-rating-row">
-            <div class="customer-reviews__summary-stars" aria-hidden="true">
-              {%- assign summary_rating = section.settings.summary_rating | round -%}
-              {%- for i in (1..5) -%}
-                <span class="customer-reviews__summary-star{% if i <= summary_rating %} customer-reviews__summary-star--filled{% endif %}">★</span>
-              {%- endfor -%}
-            </div>
-            <p class="customer-reviews__summary-text">
-              <span class="customer-reviews__summary-rating">{{ section.settings.summary_rating }}</span>
-              {%- if section.settings.review_count > 0 -%}
-                <span class="customer-reviews__summary-count">({{ section.settings.review_count }} reviews)</span>
-              {%- endif -%}
-            </p>
+          <div
+            class="customer-reviews__summary-stars"
+            aria-label="{{ section.settings.summary_rating }} out of 5 stars"
+          >
+            {%- assign summary_rating = section.settings.summary_rating | round -%}
+            {%- for i in (1..5) -%}
+              <span class="customer-reviews__summary-star{% if i <= summary_rating %} customer-reviews__summary-star--filled{% endif %}" aria-hidden="true">★</span>
+            {%- endfor -%}
           </div>
-          {%- if section.settings.source_label != blank -%}
-            <p class="customer-reviews__summary-source">{{ section.settings.source_label }}</p>
-          {%- endif -%}
         </div>
       {%- endif -%}
 
@@ -41,14 +29,44 @@
       {%- endif -%}
     </header>
 
-    <div
-      class="customer-reviews__grid"
-      style="--review-columns: {{ section.settings.columns }};"
-    >
-      {% content_for 'blocks' %}
+    {%- liquid
+      assign carousel_columns = section.settings.columns | default: 3
+      assign mobile_columns = section.settings.mobile_columns | default: 1
+      assign review_slide_count = 54
+    -%}
+
+    <div class="customer-reviews__carousel">
+      {% capture review_slides %}
+        {% render 'edgewater-reviews-slides' %}
+      {% endcapture %}
+
+      {% capture carousel_style %}
+        --carousel-columns: {{ carousel_columns }};
+        --carousel-mobile-columns: {{ mobile_columns }};
+        --carousel-gap: 1.25rem;
+      {% endcapture %}
+
+      {% render 'slideshow',
+        ref: 'customerReviewsCarousel',
+        class: 'customer-reviews-carousel',
+        style: carousel_style,
+        slides: review_slides,
+        show_arrows: true,
+        icon_style: 'arrow',
+        icon_shape: 'circle',
+        auto_hide_controls: false,
+        infinite: true,
+        initial_slide: 0,
+        slide_count: review_slide_count,
+        slide_position: 'stretch',
+        arrows_position: 'center',
+        attributes: 'data-autoplay="true" data-autoplay-interval="5000"'
+      %}
     </div>
   </div>
 </div>
+
+<script src="{{ 'customer-reviews-carousel.js' | asset_url }}" defer></script>
 
 {% stylesheet %}
   .customer-reviews__inner {
@@ -61,14 +79,6 @@
     text-align: center;
     max-width: 40rem;
     margin-inline: auto;
-  }
-
-  .customer-reviews__eyebrow {
-    margin: 0 0 var(--gap-sm);
-    font-size: var(--font-size--xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
   }
 
   .customer-reviews__heading {
@@ -86,14 +96,6 @@
     margin-bottom: var(--gap-md);
   }
 
-  .customer-reviews__summary-rating-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem 0.5rem;
-  }
-
   .customer-reviews__summary-stars {
     display: flex;
     gap: 0.2rem;
@@ -107,30 +109,6 @@
 
   .customer-reviews__summary-star--filled {
     color: var(--announcement-bar-color);
-  }
-
-  .customer-reviews__summary-text {
-    margin: 0;
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.35rem;
-    font-size: var(--font-size--sm);
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-    white-space: nowrap;
-  }
-
-  .customer-reviews__summary-rating {
-    font-weight: 600;
-    color: var(--color-foreground);
-  }
-
-  .customer-reviews__summary-source {
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    font-size: var(--font-size--xs);
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
   }
 
   .customer-reviews__description {
@@ -148,31 +126,175 @@
     background-color: transparent;
   }
 
-  .customer-reviews__grid {
-    display: grid;
-    grid-template-columns: repeat(var(--review-columns, 3), minmax(0, 1fr));
-    gap: var(--gap-xl);
+  .customer-reviews__carousel {
+    position: relative;
+  }
+
+  .customer-reviews-carousel slideshow-container {
+    position: relative;
+    display: block;
+    background-color: transparent;
+    padding-inline: 3.25rem;
+  }
+
+  .customer-reviews-carousel slideshow-container > slideshow-slides {
+    position: relative;
+    z-index: 1;
+    --slideshow-gap: var(--carousel-gap, 1.25rem);
     align-items: stretch;
+    scroll-behavior: smooth;
   }
 
-  @media screen and (min-width: 1000px) {
-    .customer-reviews__grid {
-      grid-template-rows: auto auto 1fr auto auto;
-      column-gap: var(--gap-xl);
-      row-gap: var(--gap-xs);
-      justify-items: center;
+  .customer-reviews-carousel slideshow-container > slideshow-arrows {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    mix-blend-mode: normal;
+  }
+
+  .customer-reviews-carousel slideshow-container > slideshow-arrows .slideshow-control {
+    opacity: 1 !important;
+    position: static;
+    transform: none !important;
+    animation: none !important;
+    pointer-events: auto;
+    flex-shrink: 0;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0;
+    border-radius: 50%;
+    background-color: var(--announcement-bar-color);
+    color: var(--announcement-bar-text);
+  }
+
+  .customer-reviews-carousel slideshow-container > slideshow-arrows .slideshow-control:hover {
+    background-color: var(--announcement-bar-color-hover);
+    color: var(--announcement-bar-text);
+  }
+
+  .customer-reviews-carousel slideshow-container > slideshow-arrows .slideshow-control[disabled] {
+    opacity: 0.35;
+  }
+
+  @media screen and (max-width: 749px) {
+    .customer-reviews-carousel slideshow-container {
+      padding-inline: 2.5rem;
+    }
+
+    .customer-reviews-carousel slideshow-container > slideshow-arrows .slideshow-control {
+      min-height: 2.25rem;
+      min-width: 2.25rem;
     }
   }
 
-  @media screen and (max-width: 999px) {
-    .customer-reviews__grid {
-      grid-template-columns: 1fr;
-      justify-items: center;
-    }
+  .customer-reviews-carousel slideshow-slides > slideshow-slide,
+  .customer-reviews-carousel slideshow-slides > .customer-reviews__slide {
+    flex: 0 0 auto;
+    height: auto;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    width: calc(
+      (100% - (var(--carousel-gap, 1.25rem) * (var(--carousel-mobile-columns, 1) - 1))) /
+        var(--carousel-mobile-columns, 1)
+    );
+  }
 
-    .customer-reviews__grid .customer-review {
-      width: min(100%, 22rem);
+  @media screen and (min-width: 750px) {
+    .customer-reviews-carousel slideshow-slides > slideshow-slide,
+    .customer-reviews-carousel slideshow-slides > .customer-reviews__slide {
+      width: calc(
+        (100% - (var(--carousel-gap, 1.25rem) * (var(--carousel-columns, 3) - 1))) /
+          var(--carousel-columns, 3)
+      );
     }
+  }
+
+  .customer-review {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    height: 100%;
+    min-height: 100%;
+    padding: 1.25rem;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    border-radius: 12px;
+    background: #fff;
+    text-align: left;
+  }
+
+  .customer-review__avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .customer-review__stars {
+    display: flex;
+    gap: 0.15rem;
+    line-height: 1;
+  }
+
+  .customer-review__star {
+    font-size: 1.125rem;
+    color: rgb(var(--announcement-bar-color-rgb) / 0.25);
+    letter-spacing: 0.05em;
+  }
+
+  .customer-review__star--filled {
+    color: var(--announcement-bar-color);
+  }
+
+  .customer-review__quote {
+    margin: 0;
+    padding: 0;
+    align-self: stretch;
+    font-size: var(--font-size--sm);
+    line-height: 1.45;
+    color: var(--color-foreground);
+    font-style: normal;
+    text-align: left;
+  }
+
+  .customer-review__quote > *:first-child {
+    margin-block-start: 0;
+  }
+
+  .customer-review__quote > *:last-child {
+    margin-block-end: 0;
+  }
+
+  .customer-review__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    gap: 0.25rem;
+    margin-top: auto;
+  }
+
+  .customer-review__author {
+    font-size: var(--font-size--sm);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--color-foreground);
+    line-height: 1.3;
+  }
+
+  .customer-review__verified {
+    font-size: 0.8125rem;
+    color: rgb(var(--color-foreground-rgb) / 0.55);
+    line-height: 1.3;
   }
 {% endstylesheet %}
 
@@ -180,23 +302,12 @@
 {
   "name": "Customer reviews",
   "class": "ui-test-customer-reviews",
-  "blocks": [
-    {
-      "type": "_customer-review"
-    }
-  ],
   "settings": [
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "Customer reviews"
-    },
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "What our customers say"
+      "default": "Reviews"
     },
     {
       "type": "header",
@@ -221,23 +332,36 @@
       "type": "number",
       "id": "review_count",
       "label": "Total review count",
-      "default": 98
+      "default": 54
     },
     {
-      "type": "text",
-      "id": "source_label",
-      "label": "Source label",
-      "default": "Facebook Marketplace reviews",
-      "info": "Shown under the rating — does not link externally unless you add a link in the description."
+      "type": "header",
+      "content": "Carousel"
     },
     {
       "type": "range",
       "id": "columns",
-      "label": "Columns",
+      "label": "Slides per row (desktop)",
       "min": 1,
       "max": 4,
       "step": 1,
       "default": 3
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Slides per row (mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
     },
     {
       "type": "select",
@@ -288,18 +412,7 @@
   ],
   "presets": [
     {
-      "name": "Customer reviews",
-      "blocks": [
-        {
-          "type": "_customer-review"
-        },
-        {
-          "type": "_customer-review"
-        },
-        {
-          "type": "_customer-review"
-        }
-      ]
+      "name": "Customer reviews"
     }
   ]
 }

@@ -18,9 +18,13 @@
     assign collections_url = pages.collectionss.url
   endif
 
-  assign our_story_url = '/pages/about'
-  if pages.about != blank
-    assign our_story_url = pages.about.url
+  assign our_story_url = '/pages/about-us'
+  assign our_story_page = pages['about-us']
+  if our_story_page == blank
+    assign our_story_page = pages.about
+  endif
+  if our_story_page != blank
+    assign our_story_url = our_story_page.url
   endif
 
   assign showroom_url = '/pages/contact'
@@ -36,7 +40,7 @@
   endif
 
   assign our_story_active = false
-  if pages.about != blank and request.path == pages.about.url
+  if our_story_page != blank and request.path == our_story_page.url
     assign our_story_active = true
   endif
 

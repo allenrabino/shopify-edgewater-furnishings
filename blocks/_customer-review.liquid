@@ -3,37 +3,10 @@
   assign block_settings = block.settings
   assign rating = block_settings.rating | default: 5
   assign star_count = 5
-  assign verified_label = block_settings.verified_label | default: '(Verified Buyer)'
-  assign button_label = block_settings.button_label | default: 'View Product'
-
-  assign product_link = block_settings.product_url
-  assign linked_product = block_settings.product
-  if linked_product != blank
-    assign product_link = linked_product.url
-  endif
-
-  assign review_image = block_settings.image
-  if review_image == blank and linked_product != blank and linked_product.featured_image != blank
-    assign review_image = linked_product.featured_image
-  endif
+  assign verified_label = block_settings.verified_label | default: 'Verified Buyer'
 -%}
 
 <article class="customer-review" {{ block.shopify_attributes }}>
-  {%- if review_image != blank -%}
-    <div class="customer-review__media">
-      {{
-        review_image
-        | image_url: width: 240
-        | image_tag:
-          class: 'customer-review__image',
-          loading: 'lazy',
-          widths: '120, 180, 240',
-          sizes: '7.5rem',
-          alt: review_image.alt | default: block_settings.author
-      }}
-    </div>
-  {%- endif -%}
-
   <div class="customer-review__stars" aria-label="{{ rating }} out of 5 stars">
     {%- for i in (1..star_count) -%}
       <span class="customer-review__star{% if i <= rating %} customer-review__star--filled{% endif %}" aria-hidden="true">★</span>
@@ -51,69 +24,33 @@
     {%- if verified_label != blank -%}
       <span class="customer-review__verified">{{ verified_label }}</span>
     {%- endif -%}
-    {%- if block_settings.detail != blank -%}
-      <span class="customer-review__detail">{{ block_settings.detail }}</span>
-    {%- endif -%}
   </footer>
-
-  {%- if product_link != blank and button_label != blank -%}
-    <a class="customer-review__button" href="{{ product_link }}">{{ button_label }}</a>
-  {%- endif -%}
 </article>
 
 {% stylesheet %}
   .customer-review {
-    --review-content-width: 18rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--gap-xs);
-    padding: var(--padding-lg) var(--padding-md);
-    background: transparent;
-    text-align: center;
-  }
-
-  .customer-review__stars,
-  .customer-review__quote,
-  .customer-review__footer,
-  .customer-review__button {
-    width: 100%;
-    max-width: var(--review-content-width);
-    margin-inline: auto;
-  }
-
-  .customer-review__media {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 7.5rem;
-    height: 7.5rem;
-    padding: 0.25rem;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid var(--announcement-bar-color);
-    box-shadow: 0 0 0 1px rgb(var(--announcement-bar-color-rgb) / 0.15);
-    flex-shrink: 0;
-  }
-
-  .customer-review__image {
-    width: 100%;
+    align-items: flex-start;
+    gap: var(--gap-sm);
     height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
+    padding: 1.25rem;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    border-radius: 12px;
+    background: #fff;
+    text-align: left;
   }
 
   .customer-review__stars {
     display: flex;
-    justify-content: center;
     gap: 0.15rem;
     line-height: 1;
   }
 
   .customer-review__star {
-    font-size: 0.875rem;
+    font-size: 1.125rem;
     color: rgb(var(--announcement-bar-color-rgb) / 0.25);
+    letter-spacing: 0.05em;
   }
 
   .customer-review__star--filled {
@@ -121,14 +58,13 @@
   }
 
   .customer-review__quote {
-    position: relative;
     margin: 0;
-    padding: 0.875rem 1rem 0.375rem;
+    padding: 0;
     font-size: var(--font-size--sm);
-    line-height: 1.5;
+    line-height: 1.45;
     color: var(--color-foreground);
     font-style: normal;
-    text-align: center;
+    text-align: left;
   }
 
   .customer-review__quote > *:first-child {
@@ -139,35 +75,12 @@
     margin-block-end: 0;
   }
 
-  .customer-review__quote::before,
-  .customer-review__quote::after {
-    position: absolute;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2.75rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--color-foreground);
-    pointer-events: none;
-  }
-
-  .customer-review__quote::before {
-    content: '\201C';
-    top: 0;
-    left: 0;
-  }
-
-  .customer-review__quote::after {
-    content: '\201D';
-    right: 0;
-    bottom: 0;
-  }
-
   .customer-review__footer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.125rem;
-    width: 100%;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-top: auto;
   }
 
   .customer-review__author {
@@ -179,65 +92,9 @@
   }
 
   .customer-review__verified {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: rgb(var(--color-foreground-rgb) / 0.55);
     line-height: 1.3;
-  }
-
-  .customer-review__detail {
-    font-size: 0.6875rem;
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
-  }
-
-  .customer-review__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-block-start: var(--gap-2xs);
-    padding: 0.75rem 1.75rem;
-    min-width: 9.5rem;
-    border-radius: var(--style-border-radius-buttons-primary, 4px);
-    background-color: var(--announcement-bar-color);
-    color: var(--announcement-bar-text);
-    font-size: var(--font-size--xs);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background-color 0.15s ease;
-  }
-
-  .customer-review__button:hover {
-    background-color: var(--announcement-bar-color-hover);
-    color: var(--announcement-bar-text);
-  }
-
-  @media screen and (min-width: 1000px) {
-    .customer-review {
-      display: grid;
-      grid-template-rows: subgrid;
-      grid-row: span 5;
-      width: 100%;
-      gap: 0;
-      justify-items: center;
-      align-content: start;
-    }
-
-    .customer-review__media,
-    .customer-review__stars,
-    .customer-review__quote,
-    .customer-review__footer,
-    .customer-review__button {
-      justify-self: center;
-    }
-
-    .customer-review__quote {
-      align-self: start;
-    }
-
-    .customer-review__button {
-      margin-block-start: 0;
-    }
   }
 {% endstylesheet %}
 
@@ -246,11 +103,6 @@
   "name": "Customer review",
   "tag": null,
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Product image"
-    },
     {
       "type": "richtext",
       "id": "quote",
@@ -261,36 +113,13 @@
       "type": "text",
       "id": "author",
       "label": "Customer name",
-      "default": "Catherine S."
+      "default": "Catherine"
     },
     {
       "type": "text",
       "id": "verified_label",
       "label": "Verified label",
-      "default": "(Verified Buyer)"
-    },
-    {
-      "type": "text",
-      "id": "detail",
-      "label": "Extra detail",
-      "info": "Optional line below verified label (e.g. collection name)."
-    },
-    {
-      "type": "product",
-      "id": "product",
-      "label": "View product link"
-    },
-    {
-      "type": "url",
-      "id": "product_url",
-      "label": "Or custom button link",
-      "info": "Used when no product is selected above."
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button label",
-      "default": "View Product"
+      "default": "Verified Buyer"
     },
     {
       "type": "range",

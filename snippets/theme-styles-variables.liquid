@@ -170,6 +170,8 @@
     --font-accent--family: {{ settings.type_accent_font.family }}, {{ settings.type_accent_font.fallback_families }};
     --font-accent--style: {{ settings.type_accent_font.style }};
     --font-accent--weight: {{ settings.type_accent_font.weight }};
+    --font-cormorant-garamond--family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-cormorant-garamond--weight: 300;
 
     /* Margin sizes */
     --font-h1--spacing: 0.25em;
@@ -686,5 +688,13 @@
     --cart-secondary-font-family: var(--font-{{ settings.cart_price_font }}--family);
     --cart-secondary-font-style: var(--font-{{ settings.cart_price_font }}--style);
     --cart-secondary-font-weight: var(--font-{{ settings.cart_price_font }}--weight);
+  }
+
+  [class*='text_jcLMz6'].custom-typography,
+  [class*='text_jcLMz6'].custom-typography > *,
+  [class*='text_jcLMz6'].h2,
+  [class*='text_jcLMz6'].h2 > * {
+    font-family: var(--font-cormorant-garamond--family);
+    font-weight: var(--font-cormorant-garamond--weight);
   }
 {% endstyle %}

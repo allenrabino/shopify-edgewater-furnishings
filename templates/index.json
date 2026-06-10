@@ -101,9 +101,9 @@
             "width": "fit-content",
             "max_width": "narrow",
             "alignment": "center",
-            "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
+            "type_preset": "custom",
+            "font": "var(--font-cormorant-garamond--family)",
+            "font_size": "2.5rem",
             "line_height": "normal",
             "letter_spacing": "normal",
             "case": "none",
@@ -290,63 +290,15 @@
     },
     "customer_reviews_home": {
       "type": "customer-reviews",
-      "blocks": {
-        "review_1": {
-          "type": "_customer-review",
-          "settings": {
-            "quote": "<p>Excellent quality and great communication from start to finish.</p>",
-            "author": "Catherine S.",
-            "verified_label": "(Verified Buyer)",
-            "detail": "",
-            "product": "6pc-pit",
-            "product_url": "",
-            "button_label": "View Product",
-            "rating": 5
-          },
-          "blocks": {}
-        },
-        "review_2": {
-          "type": "_customer-review",
-          "settings": {
-            "quote": "<p>Excellent quality and great communication from start to finish.</p>",
-            "author": "Michael T.",
-            "verified_label": "(Verified Buyer)",
-            "detail": "",
-            "product": "5pc-l-shape-ottoman",
-            "product_url": "",
-            "button_label": "View Product",
-            "rating": 5
-          },
-          "blocks": {}
-        },
-        "review_3": {
-          "type": "_customer-review",
-          "settings": {
-            "quote": "<p>Exactly what we wanted for our space. Highly recommend booking a viewing.</p>",
-            "author": "Sarah L.",
-            "verified_label": "(Verified Buyer)",
-            "detail": "",
-            "product": "4pc-sofa-ottoman-configuration",
-            "product_url": "",
-            "button_label": "View Product",
-            "rating": 5
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "review_1",
-        "review_2",
-        "review_3"
-      ],
+      "blocks": {},
+      "block_order": [],
       "settings": {
-        "eyebrow": "Customer reviews",
-        "heading": "What our customers say",
+        "heading": "Reviews",
         "show_summary": true,
         "summary_rating": 5,
-        "review_count": 98,
-        "source_label": "Facebook Marketplace reviews",
+        "review_count": 54,
         "columns": 3,
+        "mobile_columns": "1",
         "section_width": "page-width",
         "color_scheme": "scheme-4",
         "padding-block-start": 48,
