@@ -1,0 +1,326 @@
+{%- liquid
+  assign contact_url = '/pages/contact'
+  if pages.contact != blank
+    assign contact_url = pages.contact.url
+  endif
+
+  assign story_image = section.settings.story_image
+  assign showroom_image = section.settings.showroom_image
+-%}
+
+<div
+  class="edgewater-our-story spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="edgewater-our-story__inner">
+    <section class="edgewater-our-story__row edgewater-our-story__row--story">
+      <div class="edgewater-our-story__media">
+        {%- if story_image != blank -%}
+          {{
+            story_image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'edgewater-our-story__image',
+              alt: section.settings.story_heading,
+              widths: '600, 750, 960, 1200, 1600',
+              sizes: '(min-width: 768px) 50vw, 100vw',
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          <img
+            class="edgewater-our-story__image"
+            src="{{ 'nicole-kids-edgewater-furnishings.jpg' | asset_url }}"
+            alt="{{ section.settings.story_heading | escape }}"
+            loading="lazy"
+            width="1600"
+            height="1600"
+          >
+        {%- endif -%}
+      </div>
+
+      <div class="edgewater-our-story__content">
+        {%- if section.settings.story_heading != blank -%}
+          <h2 class="edgewater-our-story__heading">{{ section.settings.story_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.story_text != blank -%}
+          <div class="edgewater-our-story__text rte">{{ section.settings.story_text }}</div>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="edgewater-our-story__row edgewater-our-story__row--experience">
+      <div class="edgewater-our-story__content">
+        {%- if section.settings.experience_heading != blank -%}
+          <h2 class="edgewater-our-story__heading">{{ section.settings.experience_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.experience_text != blank -%}
+          <div class="edgewater-our-story__text rte">{{ section.settings.experience_text }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a
+            href="{{ section.settings.button_link | default: contact_url }}"
+            class="edgewater-our-story__button"
+          >
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div class="edgewater-our-story__media">
+        {%- if showroom_image != blank -%}
+          {{
+            showroom_image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'edgewater-our-story__image',
+              alt: section.settings.experience_heading,
+              widths: '600, 750, 960, 1200, 1600',
+              sizes: '(min-width: 768px) 50vw, 100vw',
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          <img
+            class="edgewater-our-story__image"
+            src="{{ 'edgewater-furnishings-showroom.jpg' | asset_url }}"
+            alt="{{ section.settings.experience_heading | escape }}"
+            loading="lazy"
+            width="1600"
+            height="1600"
+          >
+        {%- endif -%}
+      </div>
+    </section>
+  </div>
+</div>
+
+{% stylesheet %}
+  .shopify-section:has(.edgewater-our-story) {
+    background-color: #f4efe8;
+  }
+
+  .edgewater-our-story {
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .edgewater-our-story__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: max(1rem, var(--page-margin, 16px));
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-our-story__inner {
+      gap: 4rem;
+      padding-inline: max(1.5rem, var(--page-margin, 40px));
+    }
+  }
+
+  .edgewater-our-story__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 767px) {
+    .edgewater-our-story__row--experience .edgewater-our-story__media {
+      order: 1;
+    }
+
+    .edgewater-our-story__row--experience .edgewater-our-story__content {
+      order: 2;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .edgewater-our-story__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+    }
+
+    .edgewater-our-story__row--experience .edgewater-our-story__content {
+      order: 1;
+    }
+
+    .edgewater-our-story__row--experience .edgewater-our-story__media {
+      order: 2;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .edgewater-our-story__row {
+      gap: 3.5rem;
+    }
+  }
+
+  .edgewater-our-story__media {
+    width: 100%;
+  }
+
+  .edgewater-our-story__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .edgewater-our-story__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .edgewater-our-story__heading {
+    margin: 0;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(1.75rem, 3vw, 2.375rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #433625;
+  }
+
+  .edgewater-our-story__text {
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(0.9375rem, 1.6vw, 1.0625rem);
+    line-height: 1.65;
+    color: rgb(67 54 37 / 0.88);
+  }
+
+  .edgewater-our-story__text > *:first-child {
+    margin-block-start: 0;
+  }
+
+  .edgewater-our-story__text > *:last-child {
+    margin-block-end: 0;
+  }
+
+  .edgewater-our-story__text p + p {
+    margin-block-start: 1rem;
+  }
+
+  .edgewater-our-story__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.25rem;
+    background: #2f2722;
+    color: #fff;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
+  }
+
+  .edgewater-our-story__button:hover,
+  .edgewater-our-story__button:focus-visible {
+    background: #433625;
+    color: #fff;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Edgewater our story",
+  "class": "section-edgewater-our-story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_image",
+      "label": "Story image"
+    },
+    {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Story heading",
+      "default": "Not Your Typical Story"
+    },
+    {
+      "type": "richtext",
+      "id": "story_text",
+      "label": "Story text",
+      "default": "<p>Edgewater started with a simple idea: furniture should feel beautiful, comfortable, and actually work for real family life.</p><p>Founded by Nicole, an Alberta-born designer and mom, Edgewater was built around the kind of furniture she wanted for her own home — soft, flexible, durable, and easy to live with. That same design-first mindset still guides everything we do today: modular sectionals made for real homes, real routines, and real comfort.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Section 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "showroom_image",
+      "label": "Showroom image"
+    },
+    {
+      "type": "text",
+      "id": "experience_heading",
+      "label": "Experience heading",
+      "default": "Not Your Typical Sofa Buying Experience"
+    },
+    {
+      "type": "richtext",
+      "id": "experience_text",
+      "label": "Experience text",
+      "default": "<p>Our main showroom is located 20 minutes north of Airdrie and is designed for private, appointment-based viewings — calm, unrushed, and focused on helping you find the right fit.</p><p>No commissioned salespeople. No pressure. No wandering a massive showroom trying to figure out what's included. Just honest guidance, clear options, and a better way to shop for a sectional.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Book a Showroom Visit"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Edgewater our story"
+    }
+  ]
+}
+{% endschema %}
