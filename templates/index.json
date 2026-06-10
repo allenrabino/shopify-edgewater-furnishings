@@ -314,6 +314,16 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "edgewater_best_sellers_home": {
+      "type": "edgewater-best-sellers",
+      "settings": {
+        "heading": "Our Best Sellers",
+        "max_products": 10,
+        "columns": 3,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
     }
   },
   "order": [
@@ -321,6 +331,7 @@
     "section",
     "collection_list_3ejxRy",
     "customer_reviews_home",
-    "edgewater_split_image_home"
+    "edgewater_split_image_home",
+    "edgewater_best_sellers_home"
   ]
 }
