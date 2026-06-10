@@ -1,0 +1,745 @@
+{%- liquid
+  assign collections_url = routes.collections_url
+  if pages.collectionss != blank
+    assign collections_url = pages.collectionss.url
+  endif
+
+  assign our_story_url = '/pages/about-us'
+  assign our_story_page = pages['about-us']
+  if our_story_page == blank
+    assign our_story_page = pages.about
+  endif
+  if our_story_page != blank
+    assign our_story_url = our_story_page.url
+  endif
+
+  assign contact_url = '/pages/contact'
+  if pages.contact != blank
+    assign contact_url = pages.contact.url
+  endif
+
+  assign shipping_url = '/pages/shipping-delivery'
+  if pages['shipping-delivery'] != blank
+    assign shipping_url = pages['shipping-delivery'].url
+  elsif pages.shipping != blank
+    assign shipping_url = pages.shipping.url
+  endif
+
+  assign assembly_url = '/pages/assembly'
+  if pages.assembly != blank
+    assign assembly_url = pages.assembly.url
+  endif
+
+  assign faq_url = '/pages/faq'
+  if pages.faq != blank
+    assign faq_url = pages.faq.url
+  endif
+
+  assign blog_url = routes.blogs_url
+  if blogs.news != blank
+    assign blog_url = blogs.news.url
+  elsif blogs.blog != blank
+    assign blog_url = blogs.blog.url
+  endif
+
+  assign privacy_url = '/policies/privacy-policy'
+  if shop.policies.privacy_policy != blank
+    assign privacy_url = shop.policies.privacy_policy.url
+  endif
+
+  assign terms_url = '/policies/terms-of-service'
+  if shop.policies.terms_of_service != blank
+    assign terms_url = shop.policies.terms_of_service.url
+  endif
+
+  assign logo_image = settings.logo
+  if settings.logo_inverse
+    assign logo_image = settings.logo_inverse
+  endif
+
+  assign form_id = section.id | prepend: 'EdgewaterFooterEmail-'
+-%}
+
+<footer
+  class="edgewater-footer spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="edgewater-footer__inner page-width">
+    <div class="edgewater-footer__main">
+      <div class="edgewater-footer__brand">
+        <a href="{{ routes.root_url }}" class="edgewater-footer__logo-link">
+          {%- if logo_image != blank -%}
+            {{
+              logo_image
+              | image_url: width: 600
+              | image_tag:
+                class: 'edgewater-footer__logo',
+                alt: shop.name,
+                widths: '120, 180, 240, 360, 480, 600',
+                sizes: '(min-width: 750px) 180px, 140px'
+            }}
+          {%- else -%}
+            <span class="edgewater-footer__logo-text">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+      </div>
+
+      <nav class="edgewater-footer__nav edgewater-footer__nav--discover" aria-label="Discover">
+        <h2 class="edgewater-footer__heading">{{ section.settings.discover_heading }}</h2>
+        <ul class="edgewater-footer__links list-unstyled">
+          <li><a href="{{ collections_url }}">Shop Collections</a></li>
+          <li><a href="{{ shipping_url }}">Shipping &amp; Delivery</a></li>
+          <li><a href="{{ our_story_url }}">Our Story</a></li>
+          <li><a href="{{ blog_url }}">Blog</a></li>
+        </ul>
+      </nav>
+
+      <nav class="edgewater-footer__nav edgewater-footer__nav--support" aria-label="Support">
+        <h2 class="edgewater-footer__heading">{{ section.settings.support_heading }}</h2>
+        <ul class="edgewater-footer__links list-unstyled">
+          <li><a href="{{ contact_url }}">Contact Us</a></li>
+          <li><a href="{{ assembly_url }}">Assembly</a></li>
+          <li><a href="{{ faq_url }}">FAQ</a></li>
+        </ul>
+      </nav>
+
+      {%- if section.settings.show_email_signup -%}
+        <div class="edgewater-footer__signup">
+          {%- if section.settings.signup_text != blank -%}
+            <p class="edgewater-footer__signup-text">{{ section.settings.signup_text }}</p>
+          {%- endif -%}
+
+          {%- form 'customer', class: 'edgewater-footer__signup-form' -%}
+            <input name="contact[id]" type="hidden" value="{{ form_id }}">
+
+            <div class="edgewater-footer__signup-row">
+              <label for="EdgewaterFooterEmailInput-{{ section.id }}" class="visually-hidden">
+                {{ 'blocks.email_signup.label' | t }}
+              </label>
+              <input
+                id="EdgewaterFooterEmailInput-{{ section.id }}"
+                class="edgewater-footer__signup-input"
+                type="email"
+                name="contact[email]"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                placeholder="{{ section.settings.signup_placeholder }}"
+                required
+                {% if form.errors and form.id == form_id %}
+                  autofocus
+                  aria-invalid="true"
+                  aria-describedby="EdgewaterFooterEmailError-{{ section.id }}"
+                {% elsif form.posted_successfully? and form.id == form_id %}
+                  aria-describedby="EdgewaterFooterEmailSuccess-{{ section.id }}"
+                {% endif %}
+              >
+              <button type="submit" class="edgewater-footer__signup-button">
+                {{ section.settings.signup_button_label }}
+              </button>
+            </div>
+
+            {%- if form.errors and form.id == form_id -%}
+              <p id="EdgewaterFooterEmailError-{{ section.id }}" class="edgewater-footer__signup-message edgewater-footer__signup-message--error">
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </p>
+            {%- endif -%}
+
+            {%- if form.posted_successfully? and form.id == form_id -%}
+              <p id="EdgewaterFooterEmailSuccess-{{ section.id }}" class="edgewater-footer__signup-message edgewater-footer__signup-message--success">
+                {{ 'blocks.email_signup.success' | t }}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="edgewater-footer__bottom">
+      <div class="edgewater-footer__legal">
+        <span class="edgewater-footer__copyright">{{ section.settings.copyright_text }}</span>
+        <span class="edgewater-footer__legal-separator" aria-hidden="true">|</span>
+        <a href="{{ privacy_url }}">Privacy Policy</a>
+        <span class="edgewater-footer__legal-separator" aria-hidden="true">|</span>
+        <a href="{{ terms_url }}">Terms &amp; Conditions</a>
+      </div>
+
+      <div class="edgewater-footer__social">
+        {%- if section.settings.facebook_url != blank -%}
+          <a
+            href="{{ section.settings.facebook_url }}"
+            class="edgewater-footer__social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+          >
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              {%- render 'icon', icon: 'facebook' -%}
+            </svg>
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.instagram_url != blank -%}
+          <a
+            href="{{ section.settings.instagram_url }}"
+            class="edgewater-footer__social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              {%- render 'icon', icon: 'instagram' -%}
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .edgewater-footer {
+    --edgewater-footer-bg: #433625;
+    --edgewater-footer-text: #e9e4e0;
+    --edgewater-footer-muted: rgb(233 228 224 / 0.72);
+    --edgewater-footer-border: rgb(233 228 224 / 0.22);
+    --edgewater-footer-button: #a68b6f;
+    --edgewater-footer-button-hover: #8f7358;
+    --edgewater-footer-social-bg: #a68b6f;
+
+    background-color: var(--edgewater-footer-bg);
+    color: var(--edgewater-footer-text);
+    border-top: 1px solid var(--edgewater-footer-border);
+  }
+
+  .edgewater-footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-block: 2.5rem 1.5rem;
+    padding-inline: max(1.25rem, var(--page-margin, 16px));
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__inner {
+      gap: 2.5rem;
+      padding-block: 3rem 1.75rem;
+      padding-inline: max(1.5rem, var(--page-margin, 40px));
+    }
+  }
+
+  .edgewater-footer__main {
+    display: grid;
+    grid-template-areas:
+      'brand'
+      'discover'
+      'support'
+      'signup';
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .edgewater-footer__brand {
+    grid-area: brand;
+  }
+
+  @media screen and (max-width: 749px) {
+    .edgewater-footer__main {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .edgewater-footer__brand {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .edgewater-footer__nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .edgewater-footer__links {
+      align-items: center;
+    }
+
+    .edgewater-footer__signup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+
+    .edgewater-footer__signup-text {
+      text-align: center;
+    }
+
+    .edgewater-footer__signup-form {
+      width: 100%;
+    }
+
+    .edgewater-footer__bottom {
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .edgewater-footer__legal {
+      justify-content: center;
+    }
+
+    .edgewater-footer__copyright {
+      text-align: center;
+    }
+
+    .edgewater-footer__social {
+      justify-content: center;
+      align-self: center;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__brand {
+      padding-inline-start: 1rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .edgewater-footer__brand {
+      padding-inline-start: 1.25rem;
+    }
+  }
+
+  .edgewater-footer__nav--discover {
+    grid-area: discover;
+  }
+
+  .edgewater-footer__nav--support {
+    grid-area: support;
+  }
+
+  .edgewater-footer__signup {
+    grid-area: signup;
+  }
+
+  @media screen and (min-width: 600px) {
+    .edgewater-footer__main {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        'brand brand'
+        'discover support'
+        'signup signup';
+      column-gap: 2rem;
+      row-gap: 2rem;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__main {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'brand signup'
+        'discover support';
+      column-gap: 2.5rem;
+      row-gap: 2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .edgewater-footer__main {
+      grid-template-columns: minmax(9rem, 1.05fr) minmax(7rem, 0.85fr) minmax(7rem, 0.85fr) minmax(12rem, 1.1fr);
+      grid-template-areas: 'brand discover support signup';
+      column-gap: 2.5rem;
+      row-gap: 0;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .edgewater-footer__main {
+      column-gap: 3.5rem;
+    }
+  }
+
+  .edgewater-footer__logo-link {
+    display: inline-flex;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .edgewater-footer__logo {
+    display: block;
+    width: auto;
+    max-width: 9rem;
+    height: auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__logo {
+      max-width: 11rem;
+    }
+  }
+
+  .edgewater-footer__logo-text {
+    font-family: var(--font-cormorant-garamond--family);
+    font-weight: 400;
+    font-size: clamp(1.375rem, 4vw, 1.875rem);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: lowercase;
+  }
+
+  .edgewater-footer__heading {
+    margin: 0 0 0.875rem;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--edgewater-footer-text);
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__heading {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .edgewater-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__links {
+      gap: 0.75rem;
+    }
+  }
+
+  .edgewater-footer__links a {
+    color: var(--edgewater-footer-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+  }
+
+  .edgewater-footer__links a:hover,
+  .edgewater-footer__links a:focus-visible {
+    color: var(--edgewater-footer-text);
+  }
+
+  .edgewater-footer__signup-text {
+    margin: 0 0 1rem;
+    max-width: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--edgewater-footer-muted);
+  }
+
+  @media screen and (min-width: 600px) {
+    .edgewater-footer__signup-text {
+      max-width: 28rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .edgewater-footer__signup-text {
+      max-width: 22rem;
+    }
+  }
+
+  .edgewater-footer__signup-form {
+    width: 100%;
+    max-width: none;
+  }
+
+  @media screen and (min-width: 990px) {
+    .edgewater-footer__signup-form {
+      max-width: 22rem;
+    }
+  }
+
+  .edgewater-footer__signup-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .edgewater-footer__signup-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .edgewater-footer__signup-button {
+      width: 100%;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__signup-row {
+      flex-direction: row;
+      align-items: stretch;
+    }
+  }
+
+  .edgewater-footer__signup-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.85rem 1rem;
+    border: 0;
+    border-radius: 0.35rem;
+    background: #fff;
+    color: #433625;
+    font: inherit;
+    font-size: 0.9375rem;
+  }
+
+  .edgewater-footer__signup-input::placeholder {
+    color: rgb(67 54 37 / 0.55);
+  }
+
+  .edgewater-footer__signup-button {
+    flex: 0 0 auto;
+    min-height: 2.75rem;
+    padding: 0.85rem 1.35rem;
+    border: 0;
+    border-radius: 0.35rem;
+    background: var(--edgewater-footer-button);
+    color: #fff;
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .edgewater-footer__signup-button:hover,
+  .edgewater-footer__signup-button:focus-visible {
+    background: var(--edgewater-footer-button-hover);
+  }
+
+  .edgewater-footer__signup-message {
+    margin: 0.75rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .edgewater-footer__signup-message--error {
+    color: #ffb4a8;
+  }
+
+  .edgewater-footer__signup-message--success {
+    color: #d7f0c2;
+  }
+
+  .edgewater-footer__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--edgewater-footer-border);
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem 1.5rem;
+    }
+  }
+
+  .edgewater-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem 0.625rem;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    color: var(--edgewater-footer-muted);
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__legal {
+      gap: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  .edgewater-footer__copyright {
+    flex: 1 1 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .edgewater-footer__copyright {
+      flex: 0 1 auto;
+    }
+  }
+
+  .edgewater-footer__legal a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .edgewater-footer__legal a:hover,
+  .edgewater-footer__legal a:focus-visible {
+    color: var(--edgewater-footer-text);
+  }
+
+  .edgewater-footer__legal-separator {
+    color: rgb(233 228 224 / 0.35);
+  }
+
+  .edgewater-footer__social {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .edgewater-footer__social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--edgewater-footer-social-bg);
+    color: var(--edgewater-footer-bg);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .edgewater-footer__social-link:hover,
+  .edgewater-footer__social-link:focus-visible {
+    opacity: 0.85;
+  }
+
+  .edgewater-footer__social-link svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Edgewater footer",
+  "class": "section-edgewater-footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "discover_heading",
+      "label": "Discover heading",
+      "default": "Discover"
+    },
+    {
+      "type": "text",
+      "id": "support_heading",
+      "label": "Support heading",
+      "default": "Support"
+    },
+    {
+      "type": "header",
+      "content": "Email signup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_email_signup",
+      "label": "Show email signup",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "signup_text",
+      "label": "Signup description",
+      "default": "Add your email for updates on future product releases and save big on seasonal discount offers."
+    },
+    {
+      "type": "text",
+      "id": "signup_placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "signup_button_label",
+      "label": "Signup button label",
+      "default": "Sign Up"
+    },
+    {
+      "type": "header",
+      "content": "Social links"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Legal"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© 2026 Edgewater Furnishings. All Rights Reserved."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Edgewater footer"
+    }
+  ]
+}
+{% endschema %}
