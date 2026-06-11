@@ -1,7 +1,11 @@
 {%- liquid
-  assign contact_url = '/pages/contact'
-  if pages.contact != blank
-    assign contact_url = pages.contact.url
+  assign showroom_url = '/pages/book-a-showroom'
+  assign showroom_page = pages['book-a-showroom']
+  if showroom_page == blank
+    assign showroom_page = pages['book-a-showroom-visit']
+  endif
+  if showroom_page != blank
+    assign showroom_url = showroom_page.url
   endif
 
   assign story_image = section.settings.story_image
@@ -60,7 +64,7 @@
 
         {%- if section.settings.button_label != blank -%}
           <a
-            href="{{ section.settings.button_link | default: contact_url }}"
+            href="{{ section.settings.button_link | default: showroom_url }}"
             class="edgewater-our-story__button"
           >
             {{ section.settings.button_label }}

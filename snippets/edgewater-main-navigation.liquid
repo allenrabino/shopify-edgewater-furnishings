@@ -27,12 +27,19 @@
     assign our_story_url = our_story_page.url
   endif
 
-  assign showroom_url = '/pages/contact'
-  if pages.contact != blank
-    assign showroom_url = pages.contact.url
+  assign showroom_url = '/pages/book-a-showroom'
+  assign showroom_page = pages['book-a-showroom']
+  if showroom_page == blank
+    assign showroom_page = pages['book-a-showroom-visit']
+  endif
+  if showroom_page != blank
+    assign showroom_url = showroom_page.url
   endif
 
-  assign contact_url = showroom_url
+  assign contact_url = '/pages/contact'
+  if pages.contact != blank
+    assign contact_url = pages.contact.url
+  endif
 
   assign collections_active = false
   if request.path == collections_url or template.name == 'list-collections' or template.name == 'collection'
@@ -45,6 +52,10 @@
   endif
 
   assign showroom_active = false
+  if showroom_page != blank and request.path == showroom_page.url
+    assign showroom_active = true
+  endif
+
   assign contact_active = false
   if pages.contact != blank and request.path == pages.contact.url
     assign contact_active = true

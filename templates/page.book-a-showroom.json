@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "book_showroom": {
+      "type": "edgewater-book-showroom",
+      "settings": {
+        "heading": "Book a Showroom Visit",
+        "intro": "Come give our sectionals the comfort test before you buy. Our showrooms are available by appointment only, so please call, text, or email to schedule a viewing.",
+        "appointment_notice": "Viewings are by appointment only.",
+        "locations_heading": "Showroom locations",
+        "locations": "<p>Main showroom: 20 minutes north of Airdrie<br>Secondary showroom: Edmonton, off Whitemud Drive and Calgary Trail NW</p>",
+        "contact_heading": "Contact details",
+        "phone_label": "Call or text:",
+        "phone": "403-671-6650",
+        "email_label": "Email:",
+        "email": "hello@edgewaterfurnishings.com",
+        "address_note": "The full showroom address",
+        "form_heading": "Request a Viewing",
+        "form_intro": "Fill out the form below and we'll follow up to confirm an appointment time.",
+        "name_placeholder": "Your name",
+        "email_placeholder": "you@example.com",
+        "phone_placeholder": "403-123-4567",
+        "time_placeholder": "Select a time",
+        "message_placeholder": "Tell us anything that will help us prepare for your visit...",
+        "submit_label": "Submit",
+        "success_message": "Thanks for your request. We'll be in touch shortly to confirm your appointment.",
+        "padding-block-start": 56,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "main",
+    "book_showroom"
+  ]
+}

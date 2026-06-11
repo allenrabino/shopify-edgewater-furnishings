@@ -105,6 +105,17 @@
       })();
     </script>
 
+    {%- liquid
+      assign render_book_showroom_section = false
+      if template.name == 'page'
+        if page.handle == 'book-a-showroom-visit' or page.handle == 'book-a-showroom'
+          if template.suffix == blank
+            assign render_book_showroom_section = true
+          endif
+        endif
+      endif
+    -%}
+
     <main
       id="MainContent"
       class="content-for-layout"
@@ -113,7 +124,11 @@
       data-product-transition="{{ settings.transition_to_main_product }}"
       data-template="{{ template }}"
     >
-      {{ content_for_layout }}
+      {%- if render_book_showroom_section -%}
+        {%- section 'edgewater-book-showroom' -%}
+      {%- else -%}
+        {{ content_for_layout }}
+      {%- endif -%}
     </main>
 
     {% sections 'footer-group' %}

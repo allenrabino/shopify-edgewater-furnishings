@@ -13,6 +13,15 @@
     assign our_story_url = our_story_page.url
   endif
 
+  assign showroom_url = '/pages/book-a-showroom'
+  assign showroom_page = pages['book-a-showroom']
+  if showroom_page == blank
+    assign showroom_page = pages['book-a-showroom-visit']
+  endif
+  if showroom_page != blank
+    assign showroom_url = showroom_page.url
+  endif
+
   assign contact_url = '/pages/contact'
   if pages.contact != blank
     assign contact_url = pages.contact.url
@@ -82,6 +91,7 @@
           <li><a href="{{ collections_url }}">Shop Collections</a></li>
           <li><a href="{{ shipping_url }}">Shipping &amp; Delivery</a></li>
           <li><a href="{{ our_story_url }}">Our Story</a></li>
+          <li><a href="{{ showroom_url }}">Book a Showroom Visit</a></li>
           <li><a href="{{ blog_url }}">Blog</a></li>
         </ul>
       </nav>
