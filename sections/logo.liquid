@@ -3,9 +3,20 @@
 {% liquid
   assign section_settings = section.settings
   assign image = settings.logo
+  assign use_edgewater_logo = false
+  assign edgewater_logo_aspect = 2.75
 
   if section_settings.inverse and settings.logo_inverse
     assign image = settings.logo_inverse
+  endif
+
+  if image == blank
+    assign use_edgewater_logo = true
+    assign edgewater_logo_variant = 'light-bg'
+    if section_settings.inverse
+      assign edgewater_logo_variant = 'inverse-white'
+    endif
+    assign edgewater_logo_height = section_settings.pixel_height | default: 48
   endif
 %}
 
@@ -41,6 +52,9 @@
       {% else %}
         {% if image %}
           --logo-width: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height }}px;
+        {% elsif use_edgewater_logo %}
+          --logo-width: {{ edgewater_logo_height | times: edgewater_logo_aspect }}px;
+          --logo-height: {{ edgewater_logo_height }}px;
         {% else %}
           --logo-width: {{ shop.name.size | times: 0.65 }}em;
           --logo-height: {{ section_settings.pixel_height }}px;
@@ -54,9 +68,12 @@
         {% else %}
           {% if image %}
             --logo-width-mobile: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height_mobile }}px;
-            {% else %}
-              --logo-width-mobile: {{ shop.name.size | times: 0.65 }}em;
-              --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
+          {% elsif use_edgewater_logo %}
+            --logo-width-mobile: {{ section_settings.pixel_height_mobile | times: edgewater_logo_aspect }}px;
+            --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
+          {% else %}
+            --logo-width-mobile: {{ shop.name.size | times: 0.65 }}em;
+            --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
           {% endif %}
         {% endif %}
       {% endif %}
@@ -67,6 +84,14 @@
     {% if logo_image %}
       <div class="logo-section__image-wrapper">
         {{ logo_image }}
+      </div>
+    {% elsif use_edgewater_logo %}
+      <div class="logo-section__image-wrapper">
+        {% render 'edgewater-logo-image',
+          variant: edgewater_logo_variant,
+          class: 'logo-section__image',
+          height: edgewater_logo_height
+        %}
       </div>
     {% else %}
       {% render 'jumbo-text', text: shop.name, block_settings: section.settings %}

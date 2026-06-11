@@ -9,9 +9,9 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/Edgewater_Furnishings_800x600_2.jpg",
-    "logo_height": 100,
-    "logo_height_mobile": 100,
+    "logo": "",
+    "logo_height": 48,
+    "logo_height_mobile": 40,
     "favicon": "shopify://shop_images/Transparent_-_Edgewater_Furnishings_Logo_White_NO_YEAR_-Photoroom.png",
     "type_body_font": "newsreader_n4",
     "type_subheading_font": "newsreader_n4",

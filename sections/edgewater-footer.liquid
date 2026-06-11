@@ -52,10 +52,8 @@
     assign terms_url = shop.policies.terms_of_service.url
   endif
 
-  assign logo_image = settings.logo
-  if settings.logo_inverse
-    assign logo_image = settings.logo_inverse
-  endif
+  assign logo_variant = 'inverse-beige'
+  assign logo_height = 48
 
   assign form_id = section.id | prepend: 'EdgewaterFooterEmail-'
 -%}
@@ -69,19 +67,12 @@
     <div class="edgewater-footer__main">
       <div class="edgewater-footer__brand">
         <a href="{{ routes.root_url }}" class="edgewater-footer__logo-link">
-          {%- if logo_image != blank -%}
-            {{
-              logo_image
-              | image_url: width: 600
-              | image_tag:
-                class: 'edgewater-footer__logo',
-                alt: shop.name,
-                widths: '120, 180, 240, 360, 480, 600',
-                sizes: '(min-width: 750px) 180px, 140px'
-            }}
-          {%- else -%}
-            <span class="edgewater-footer__logo-text">{{ shop.name }}</span>
-          {%- endif -%}
+          {% render 'edgewater-logo-image',
+            variant: logo_variant,
+            class: 'edgewater-footer__logo',
+            height: logo_height,
+            loading: 'lazy'
+          %}
         </a>
       </div>
 
@@ -379,13 +370,14 @@
   .edgewater-footer__logo {
     display: block;
     width: auto;
-    max-width: 9rem;
-    height: auto;
+    height: 48px;
+    max-width: 11rem;
   }
 
   @media screen and (min-width: 750px) {
     .edgewater-footer__logo {
-      max-width: 11rem;
+      height: 52px;
+      max-width: 12rem;
     }
   }
 

@@ -1,0 +1,50 @@
+{%- doc -%}
+  Renders the Edgewater Furnishings logo from theme assets.
+
+  @param {string} [variant] - 'default', 'light-bg', 'inverse-beige', or 'inverse-white'
+  @param {string} [class] - CSS class for the img element
+  @param {number} [height] - Image height in pixels
+  @param {string} [style] - Inline styles
+  @param {string} [alt] - Alt text
+  @param {string} [loading] - lazy or eager
+  @param {string} [widths] - Responsive widths attribute
+  @param {string} [sizes] - Sizes attribute
+{%- enddoc -%}
+
+{%- liquid
+  assign logo_variant = variant | default: 'default'
+
+  case logo_variant
+    when 'light-bg'
+      assign logo_asset = 'edgewater-logo-light-bg.png'
+    when 'inverse-beige'
+      assign logo_asset = 'edgewater-logo-inverse-beige.png'
+    when 'inverse-white'
+      assign logo_asset = 'edgewater-logo-inverse-white.png'
+    else
+      assign logo_asset = 'edgewater-logo-master.png'
+  endcase
+
+  assign logo_alt = alt | default: shop.name
+  assign logo_loading = loading | default: 'lazy'
+  assign logo_height = height | default: 48
+  assign logo_width = logo_height | times: 2.75 | ceil
+-%}
+
+<img
+  src="{{ logo_asset | asset_url }}"
+  class="{{ class }}"
+  alt="{{ logo_alt | escape }}"
+  width="{{ logo_width }}"
+  height="{{ logo_height }}"
+  {% if style != blank %}
+    style="{{ style }}"
+  {% endif %}
+  loading="{{ logo_loading }}"
+  {% if widths != blank %}
+    widths="{{ widths }}"
+  {% endif %}
+  {% if sizes != blank %}
+    sizes="{{ sizes }}"
+  {% endif %}
+>

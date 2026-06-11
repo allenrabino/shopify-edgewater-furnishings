@@ -121,16 +121,14 @@
         {%- if settings.logo != blank -%}
           {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
           {{ settings.logo | image_url: width: 324 | image_tag: class: 'gift-card__image', alt: logo_alt }}
-        {%- else %}
-          <img
-            class="gift-card__image gift-card__image-generic"
-            src="{{ 'gift-card/card.svg' | shopify_asset_url }}"
-            alt=""
-            height="200"
-            width="334"
-            loading="eager"
-          >
-        {%- endif %}
+        {%- else -%}
+          {% render 'edgewater-logo-image',
+            variant: 'light-bg',
+            class: 'gift-card__image',
+            height: 120,
+            loading: 'eager'
+          %}
+        {%- endif -%}
       </div>
       <div class="gift-card__price">
         <h2>
