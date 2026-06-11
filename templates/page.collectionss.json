@@ -155,7 +155,65 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "why_choose_edgewater": {
+      "type": "edgewater-why-choose",
+      "blocks": {
+        "benefit_alberta_family": {
+          "type": "benefit",
+          "settings": {
+            "icon": "alberta_family_owned",
+            "label": "Alberta-Based, Family-Owned"
+          }
+        },
+        "benefit_premium_comfort": {
+          "type": "benefit",
+          "settings": {
+            "icon": "premium_comfort",
+            "label": "Premium Comfort Without the Markups"
+          }
+        },
+        "benefit_performance_fabrics": {
+          "type": "benefit",
+          "settings": {
+            "icon": "performance_fabrics",
+            "label": "Performance Fabrics for Everyday Life"
+          }
+        },
+        "benefit_white_glove": {
+          "type": "benefit",
+          "settings": {
+            "icon": "white_glove_delivery",
+            "label": "White Glove Delivery & Assembly"
+          }
+        },
+        "benefit_happy_customers": {
+          "type": "benefit",
+          "settings": {
+            "icon": "happy_customers",
+            "show_reviews_link": true,
+            "label_prefix": "Hundreds of happy local customers with ",
+            "reviews_link_text": "5-star reviews"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_alberta_family",
+        "benefit_premium_comfort",
+        "benefit_performance_fabrics",
+        "benefit_white_glove",
+        "benefit_happy_customers"
+      ],
+      "settings": {
+        "heading": "Why Choose Edgewater?",
+        "reviews_link": "",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
-  "order": ["collections_hub"]
+  "order": [
+    "collections_hub",
+    "why_choose_edgewater"
+  ]
 }
