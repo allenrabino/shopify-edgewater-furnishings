@@ -61,8 +61,8 @@
     assign terms_url = shop.policies.terms_of_service.url
   endif
 
-  assign logo_variant = 'inverse-beige'
-  assign logo_height = 48
+  assign logo_variant = 'footer-brown-bg'
+  assign logo_height = 56
 
   assign form_id = section.id | prepend: 'EdgewaterFooterEmail-'
 -%}
@@ -380,14 +380,14 @@
   .edgewater-footer__logo {
     display: block;
     width: auto;
-    height: 48px;
-    max-width: 11rem;
+    height: 56px;
+    max-width: 14rem;
   }
 
   @media screen and (min-width: 750px) {
     .edgewater-footer__logo {
-      height: 52px;
-      max-width: 12rem;
+      height: 60px;
+      max-width: 15rem;
     }
   }
 

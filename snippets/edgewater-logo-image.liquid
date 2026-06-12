@@ -1,7 +1,7 @@
 {%- doc -%}
   Renders the Edgewater Furnishings logo from theme assets.
 
-  @param {string} [variant] - 'default', 'light-bg', 'inverse-beige', or 'inverse-white'
+  @param {string} [variant] - 'default', 'light-bg', 'inverse-beige', 'inverse-white', 'footer-brown-bg', or 'header-white-bg'
   @param {string} [class] - CSS class for the img element
   @param {number} [height] - Image height in pixels
   @param {string} [style] - Inline styles
@@ -15,12 +15,14 @@
   assign logo_variant = variant | default: 'default'
 
   case logo_variant
-    when 'light-bg'
-      assign logo_asset = 'edgewater-logo-light-bg.png'
+    when 'light-bg', 'header-white-bg'
+      assign logo_asset = 'edgewater-logo-header-white-bg.png'
     when 'inverse-beige'
       assign logo_asset = 'edgewater-logo-inverse-beige.png'
     when 'inverse-white'
       assign logo_asset = 'edgewater-logo-inverse-white.png'
+    when 'footer-brown-bg'
+      assign logo_asset = 'edgewater-logo-footer-brown-bg.png'
     else
       assign logo_asset = 'edgewater-logo-master.png'
   endcase
