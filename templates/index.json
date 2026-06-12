@@ -306,8 +306,10 @@
     "edgewater_split_image_home": {
       "type": "edgewater-split-image",
       "settings": {
+        "left_image": "shopify://shop_images/Performance_Fabric_Delivery_MAIN_PAGE_no_text-left.png",
         "left_heading": "Performance Fabrics for Everyday Life",
         "left_text": "Liquid-repelling, stain-resistant fabrics designed to handle everyday spills, family movie nights, kids, pets, and busy homes",
+        "right_image": "shopify://shop_images/Performance_Fabric_Delivery_MAIN_PAGE_no_text-right.png",
         "right_heading": "White Glove Delivery",
         "right_text": "Our local White Glove Delivery service includes delivery, assembly in your space, and packaging removal. You just open the door - we'll take care of the rest.",
         "panel_min_height": 28,
