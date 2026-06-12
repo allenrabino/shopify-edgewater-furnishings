@@ -1,0 +1,36 @@
+{%- doc -%}
+  Formats product prices with optional currency code and Dream Cloud whole-dollar formatting.
+
+  @param {number} price - Price in minor units (cents)
+  @param {boolean} [with_currency] - Use currency code when theme settings allow
+{%- enddoc -%}
+
+{%- liquid
+  capture dream_cloud_pricing_capture
+    render 'dream-cloud-pricing-active', product_resource: product_resource
+  endcapture
+
+  assign use_whole_dollars = false
+  if dream_cloud_pricing_capture == 'true'
+    assign use_whole_dollars = true
+  endif
+
+  assign price_value = price | default: 0
+  assign show_currency = with_currency | default: false
+
+  if show_currency
+    if use_whole_dollars
+      assign formatted_price = price_value | money_with_currency | replace: '.00', '' | replace: ',00', ''
+    else
+      assign formatted_price = price_value | money_with_currency
+    endif
+  else
+    if use_whole_dollars
+      assign formatted_price = price_value | money_without_trailing_zeros
+    else
+      assign formatted_price = price_value | money
+    endif
+  endif
+-%}
+
+{{- formatted_price -}}

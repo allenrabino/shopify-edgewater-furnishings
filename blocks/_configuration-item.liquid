@@ -40,7 +40,7 @@
       {%- if display_price != blank -%}
         <p class="configuration-card__price">{{ display_price }}</p>
       {%- elsif config_product.price > 0 -%}
-        <p class="configuration-card__price">{{ config_product.price | money_with_currency }}</p>
+        <p class="configuration-card__price">{% render 'money-product', price: config_product.price, with_currency: true %}</p>
       {%- endif -%}
     </div>
   </a>

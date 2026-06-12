@@ -1,0 +1,28 @@
+{%- doc -%}
+  Returns the shop money format string for client-side formatting on product pages.
+
+  @param {boolean} [with_currency] - Use currency-inclusive format
+  @param {object} [product_resource] - Product used for Dream Cloud detection
+{%- enddoc -%}
+
+{%- liquid
+  capture dream_cloud_pricing_capture
+    render 'dream-cloud-pricing-active', product_resource: product_resource
+  endcapture
+
+  assign use_whole_dollars = false
+  if dream_cloud_pricing_capture == 'true'
+    assign use_whole_dollars = true
+  endif
+
+  assign output_format = shop.money_format
+  if with_currency
+    assign output_format = shop.money_with_currency_format
+  endif
+
+  if use_whole_dollars
+    assign output_format = output_format | replace: '{{amount}}', '{{amount_no_decimals}}' | replace: '{{ amount }}', '{{ amount_no_decimals }}'
+  endif
+-%}
+
+{{- output_format -}}

@@ -16,10 +16,27 @@
 
   assign show_currency = settings.currency_code_enabled_product_pages
 
+  capture dream_cloud_pricing_capture
+    render 'dream-cloud-pricing-active'
+  endcapture
+
+  assign use_whole_dollars = false
+  if dream_cloud_pricing_capture == 'true'
+    assign use_whole_dollars = true
+  endif
+
   if show_currency
-    assign formatted_price = price_value | money_with_currency
+    if use_whole_dollars
+      assign formatted_price = price_value | money_with_currency | replace: '.00', '' | replace: ',00', ''
+    else
+      assign formatted_price = price_value | money_with_currency
+    endif
   else
-    assign formatted_price = price_value | money
+    if use_whole_dollars
+      assign formatted_price = price_value | money_without_trailing_zeros
+    else
+      assign formatted_price = price_value | money
+    endif
   endif
 
   if price_type == 'per_item'

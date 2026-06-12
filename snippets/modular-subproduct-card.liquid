@@ -51,7 +51,7 @@
 
   <div class="modular-subproduct-card__info">
     <p class="modular-subproduct-card__title">{{ display_label }}</p>
-    <p class="modular-subproduct-card__price">{{ piece_variant.price | money }}</p>
+    <p class="modular-subproduct-card__price">{% render 'money-product', price: piece_variant.price, product_resource: closest.product %}</p>
   </div>
 
   <div class="modular-add-piece__qty" data-qty-control>

@@ -1,4 +1,4 @@
-import { formatMoney } from '@theme/money-formatting';
+import { formatMoney, resolveProductMoneyFormat } from '@theme/money-formatting';
 
 /**
  * Keeps product page pricing in sync with the selected variant and Add a Piece quantities.
@@ -8,6 +8,27 @@ import { formatMoney } from '@theme/money-formatting';
 
 /** @type {AbortController | undefined} */
 let priceFetchController;
+
+/**
+ * @param {HTMLElement} productPrice
+ * @param {HTMLElement | null | undefined} [modular]
+ * @returns {{ moneyFormat: string, currency: string }}
+ */
+function getMoneyFormatContext(productPrice, modular) {
+  const wholeDollars = productPrice.dataset.wholeDollars === 'true';
+  const rawFormat =
+    (modular instanceof HTMLElement ? modular.dataset.moneyFormat : undefined) ||
+    productPrice.dataset.moneyFormat ||
+    '{{amount}}';
+
+  return {
+    moneyFormat: resolveProductMoneyFormat(rawFormat, wholeDollars),
+    currency:
+      (modular instanceof HTMLElement ? modular.dataset.currency : undefined) ||
+      productPrice.dataset.currency ||
+      'CAD',
+  };
+}
 
 /**
  * @param {HTMLElement | null | undefined} productDetails
@@ -35,8 +56,7 @@ export function syncConfigurationPrice(productDetails) {
 
     const display = modular.querySelector('[data-total-display]');
     if (display instanceof HTMLElement) {
-      const moneyFormat = modular.dataset.moneyFormat || productPrice.dataset.moneyFormat || '{{amount}}';
-      const currency = modular.dataset.currency || productPrice.dataset.currency || 'CAD';
+      const { moneyFormat, currency } = getMoneyFormatContext(productPrice, modular);
       display.textContent = formatMoney(totalCents, moneyFormat, currency);
     }
   }
@@ -263,8 +283,7 @@ function restoreVariantPriceDisplay(productPrice, variantBaseCents) {
  * @param {boolean} hideCompareAt
  */
 function applyConfigurationTotal(productDetails, productPrice, totalCents, hideCompareAt) {
-  const moneyFormat = productPrice.dataset.moneyFormat || '{{amount}}';
-  const currency = productPrice.dataset.currency || 'CAD';
+  const { moneyFormat, currency } = getMoneyFormatContext(productPrice);
   const formatted = formatMoney(totalCents, moneyFormat, currency);
 
   productPrice.querySelectorAll('[ref="priceContainer"] [role="group"]').forEach((group) => {
@@ -291,8 +310,7 @@ function applyConfigurationTotal(productDetails, productPrice, totalCents, hideC
  * @param {number} totalCents
  */
 function applyFinanceAndSticky(productDetails, productPrice, totalCents) {
-  const moneyFormat = productPrice.dataset.moneyFormat || '{{amount}}';
-  const currency = productPrice.dataset.currency || 'CAD';
+  const { moneyFormat, currency } = getMoneyFormatContext(productPrice);
   const formatted = formatMoney(totalCents, moneyFormat, currency);
 
   applyFinancePricing(productPrice, totalCents, moneyFormat, currency);

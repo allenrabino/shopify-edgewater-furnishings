@@ -4,19 +4,24 @@
   assign block_settings = block.settings
   assign product_resource = closest.product
   assign selected_variant = product_resource.selected_or_first_available_variant
-  assign money_format = shop.money_format
-  if settings.currency_code_enabled_product_pages
-    assign money_format = shop.money_with_currency_format
+  capture dream_cloud_pricing_capture
+    render 'dream-cloud-pricing-active', product_resource: product_resource
+  endcapture
+  assign use_whole_dollars = false
+  if dream_cloud_pricing_capture == 'true'
+    assign use_whole_dollars = true
   endif
+  capture money_format
+    render 'money-format-for-product', with_currency: settings.currency_code_enabled_product_pages, product_resource: product_resource
+  endcapture
   assign finance_months = block_settings.finance_term_months | default: 12
   if finance_months < 1
     assign finance_months = 12
   endif
   assign finance_monthly_cents = selected_variant.price | divided_by: finance_months
-  assign finance_amount = finance_monthly_cents | money
-  if settings.currency_code_enabled_product_pages
-    assign finance_amount = finance_monthly_cents | money_with_currency
-  endif
+  capture finance_amount
+    render 'money-product', price: finance_monthly_cents, with_currency: settings.currency_code_enabled_product_pages, product_resource: product_resource
+  endcapture
   assign finance_label_text = block_settings.finance_label | default: 'Starting at [amount]/month'
   assign finance_display_text = finance_label_text | replace: '[amount]', finance_amount | replace: '{{ amount }}', finance_amount
 -%}
@@ -60,7 +65,8 @@
   data-finance-label="{{ finance_label_text | escape }}"
   data-finance-months="{{ finance_months }}"
   data-variant-price-cents="{{ selected_variant.price }}"
-  data-money-format="{{ money_format | escape }}"
+  data-whole-dollars="{% if use_whole_dollars %}true{% else %}false{% endif %}"
+  data-money-format="{{ money_format | strip | escape }}"
   data-currency="{{ cart.currency.iso_code }}"
   style="
     {% render 'typography-style', settings: block_settings %}

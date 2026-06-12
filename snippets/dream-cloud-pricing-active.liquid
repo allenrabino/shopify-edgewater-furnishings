@@ -1,0 +1,43 @@
+{%- liquid
+  assign dream_cloud_pricing = false
+  assign template_suffix = template.suffix | downcase
+
+  if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
+    assign dream_cloud_pricing = true
+  endif
+
+  if template.name == 'collection' and template.suffix == 'dream-cloud'
+    assign dream_cloud_pricing = true
+  endif
+
+  if collection != blank
+    assign active_collection_handle = collection.handle | downcase
+    if active_collection_handle contains 'dream-cloud'
+      assign dream_cloud_pricing = true
+    endif
+  endif
+
+  unless dream_cloud_pricing
+    assign pricing_product = product
+    if pricing_product == blank and product_resource != blank
+      assign pricing_product = product_resource
+    endif
+    if pricing_product == blank and closest.product != blank
+      assign pricing_product = closest.product
+    endif
+
+    if pricing_product != blank
+      for pricing_collection in pricing_product.collections
+        assign pricing_collection_handle = pricing_collection.handle | downcase
+        if pricing_collection_handle contains 'dream-cloud'
+          assign dream_cloud_pricing = true
+          break
+        endif
+      endfor
+    endif
+  endunless
+
+  if dream_cloud_pricing
+    echo 'true'
+  endif
+-%}

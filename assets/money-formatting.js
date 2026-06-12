@@ -144,6 +144,29 @@ function formatCents(moneyValue, thousandsSeparator, decimalSeparator, precision
 }
 
 /**
+ * Uses whole-dollar formatting for Dream Cloud product pages.
+ * @param {string} moneyFormat
+ * @param {boolean} wholeDollars
+ * @returns {string}
+ */
+export function resolveProductMoneyFormat(moneyFormat, wholeDollars) {
+  if (!wholeDollars) return moneyFormat;
+  return moneyFormat.replace(/\{\{\s*amount\s*\}\}/g, '{{amount_no_decimals}}');
+}
+
+/**
+ * @param {HTMLElement | null | undefined} element
+ * @returns {boolean}
+ */
+export function usesWholeDollars(element) {
+  if (!(element instanceof HTMLElement)) return false;
+  if (element.dataset.wholeDollars === 'true') return true;
+
+  const productPrice = element.closest('.product-details')?.querySelector('product-price');
+  return productPrice instanceof HTMLElement && productPrice.dataset.wholeDollars === 'true';
+}
+
+/**
  * Formats money, replicating the implementation of the `money` liquid filters
  * @param {number} moneyValue - The money value in minor units
  * @param {string} format - The Shopify's money format template (e.g., '{{amount}}', '${{amount}}')

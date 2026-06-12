@@ -1,6 +1,6 @@
 import { Component } from '@theme/component';
 import { ThemeEvents } from '@theme/events';
-import { formatMoney } from '@theme/money-formatting';
+import { formatMoney, resolveProductMoneyFormat } from '@theme/money-formatting';
 import { calculateConfigurationTotalCents, syncConfigurationPrice } from '@theme/configuration-price';
 
 /**
@@ -9,10 +9,14 @@ import { calculateConfigurationTotalCents, syncConfigurationPrice } from '@theme
  * @extends {Component}
  */
 class ModularAddPiece extends Component {
+  /** @type {boolean} */
+  #wholeDollars = false;
+
   connectedCallback() {
     super.connectedCallback();
     this.#moneyFormat = this.dataset.moneyFormat || '{{amount}}';
     this.#currency = this.dataset.currency || 'CAD';
+    this.#wholeDollars = this.dataset.wholeDollars === 'true';
     this.#basePrice = Number(this.dataset.basePrice) || 0;
     this.#syncBasePriceFromProductPrice();
 
@@ -174,7 +178,8 @@ class ModularAddPiece extends Component {
    * @param {number} cents
    */
   #formatMoney(cents) {
-    return formatMoney(cents, this.#moneyFormat, this.#currency);
+    const moneyFormat = resolveProductMoneyFormat(this.#moneyFormat, this.#wholeDollars);
+    return formatMoney(cents, moneyFormat, this.#currency);
   }
 }
 

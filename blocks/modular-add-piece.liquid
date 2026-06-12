@@ -109,10 +109,16 @@
 
   assign display_total = base_price | plus: pieces_total
 
-  assign money_format = shop.money_format
-  if settings.currency_code_enabled_product_pages
-    assign money_format = shop.money_with_currency_format
+  capture dream_cloud_pricing_capture
+    render 'dream-cloud-pricing-active', product_resource: product_resource
+  endcapture
+  assign use_whole_dollars = false
+  if dream_cloud_pricing_capture == 'true'
+    assign use_whole_dollars = true
   endif
+  capture money_format
+    render 'money-format-for-product', with_currency: settings.currency_code_enabled_product_pages, product_resource: product_resource
+  endcapture
 -%}
 
 {%- if show_block -%}
@@ -121,7 +127,8 @@
     style="{% render 'spacing-style', settings: block_settings %}"
     data-base-price="{{ base_price }}"
     data-currency="{{ cart.currency.iso_code }}"
-    data-money-format="{{ money_format | escape }}"
+    data-whole-dollars="{% if use_whole_dollars %}true{% else %}false{% endif %}"
+    data-money-format="{{ money_format | strip | escape }}"
     {{ block.shopify_attributes }}
   >
     {% capture modular_add_piece_body %}
@@ -189,7 +196,7 @@
 
       <div class="modular-add-piece__total">
         <span>{{ block_settings.total_label }}</span>
-        <strong data-total-display>{{ display_total | money_with_currency }}</strong>
+        <strong data-total-display>{% render 'money-product', price: display_total, with_currency: settings.currency_code_enabled_product_pages, product_resource: product_resource %}</strong>
       </div>
     {% endcapture %}
 
