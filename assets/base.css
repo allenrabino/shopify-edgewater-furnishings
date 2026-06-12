@@ -977,14 +977,32 @@ a {
 }
 
 /* Add underline to text using our paragraph styles only. */
-p:not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-secondary)),
-.rte :is(p, ul, ol, table):not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-secondary)) {
+p:not(.h1, .h2, .h3, .h4, .h5, .h6)
+  a:where(:not(.button, .button-secondary, [href^='tel:'], [href^='sms:'])),
+.rte
+  :is(p, ul, ol, table):not(.h1, .h2, .h3, .h4, .h5, .h6)
+  a:where(:not(.button, .button-secondary, [href^='tel:'], [href^='sms:'])) {
   text-decoration-color: currentcolor;
 
   &:hover {
     text-decoration-color: transparent;
     color: var(--color-primary-hover);
   }
+}
+
+a:where([href^='tel:'], [href^='sms:']) {
+  text-decoration: none;
+  text-decoration-color: transparent;
+}
+
+.custom-color a:where([href^='tel:'], [href^='sms:']) {
+  color: inherit;
+}
+
+.custom-color a:where([href^='tel:'], [href^='sms:']):hover,
+.custom-color a:where([href^='tel:'], [href^='sms:']):focus-visible {
+  color: inherit;
+  text-decoration: none;
 }
 
 .container-background-image {
@@ -4710,6 +4728,16 @@ text-component {
   z-index: var(--layer-raised);
   transition: transform var(--hover-transition-duration) var(--hover-transition-timing),
     box-shadow var(--hover-transition-duration) var(--hover-transition-timing);
+}
+
+.card-hover-effect-none .product-card:hover,
+.card-hover-effect-none .collection-card:hover,
+.card-hover-effect-none .resource-card:hover,
+.card-hover-effect-none .predictive-search-results__card--product:hover,
+.card-hover-effect-none .predictive-search-results__card:hover {
+  z-index: var(--layer-flat);
+  transform: none;
+  box-shadow: none;
 }
 
 .header .product-card:hover,

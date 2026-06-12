@@ -61,6 +61,11 @@
       assign media_fit = block_settings.constrain_to_viewport
     endif
   endif
+
+  assign single_image_only = false
+  if settings.product_card_carousel == false and settings.show_second_image_on_hover == false
+    assign single_image_only = true
+  endif
 %}
 
 <div
@@ -83,6 +88,39 @@
   {{ block.shopify_attributes }}
 >
   {%- if product.media.size > 0 -%}
+    {% if single_image_only %}
+      {% liquid
+        assign single_media = product.featured_media
+        if single_media == blank
+          assign single_media = product.media.first
+        endif
+
+        assign loading = 'lazy'
+        if section.index == null or section.index < 5
+          assign loading = 'eager'
+        endif
+
+        assign class = 'product-media-container media-fit product-media-container--[media_type]' | replace: '[media_type]', single_media.media_type
+        if constrain_to_viewport
+          assign class = class | append: ' constrain-height'
+        endif
+      %}
+      <a
+        class="contents card-gallery__single-image"
+        ref="cardGalleryLink"
+        href="{{ product.selected_or_first_available_variant.url }}"
+        aria-label="{{- product.title -}}"
+      >
+        <div class="{{ class }}" style="{% if media_fit %}--product-media-fit: {{ media_fit }};{% endif %}">
+          {% render 'product-media',
+            media: single_media,
+            sizes: image_sizes,
+            loading: loading,
+            preview_image_only: true
+          %}
+        </div>
+      </a>
+    {% else %}
     {% liquid
       # Check if there are generic media that are not variant images
       assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
@@ -172,6 +210,7 @@
         attributes: slideshow_attributes
       %}
     </a>
+    {% endif %}
   {% elsif product != blank and product.media.size == 0 %}
     <product-title class="product-card-gallery__title-placeholder">
       <a
@@ -212,6 +251,11 @@
   .card-gallery__placeholder svg {
     height: 100%;
     width: 100%;
+  }
+
+  .card-gallery__single-image .product-media-container {
+    aspect-ratio: var(--gallery-aspect-ratio, var(--ratio));
+    overflow: hidden;
   }
 
   .card-gallery svg {

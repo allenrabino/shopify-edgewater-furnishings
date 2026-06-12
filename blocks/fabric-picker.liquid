@@ -161,6 +161,7 @@
 
 {%- unless use_variant_picker or show_picker == false -%}
   <fabric-picker
+    id="choose-fabric"
     class="fabric-picker spacing-style"
     style="{% render 'spacing-style', settings: block_settings %} --fabric-visible-per-page: {{ fabric_visible_per_page }}; --fabric-swatch-count: {{ fabric_swatch_count }}; --fabric-swatch-size: {{ block_settings.swatch_size }}px;"
     data-section-id="{{ section.id }}"

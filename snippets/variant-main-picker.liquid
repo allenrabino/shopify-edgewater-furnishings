@@ -215,6 +215,7 @@
           </fieldset>
           {%- endcapture -%}
           {%- if is_fabric_option and block_settings.use_fabric_disclosure != false -%}
+            <div id="choose-fabric">
             {% render 'product-step-disclosure',
               heading: block_settings.fabric_heading | default: '1. Choose Your Fabric',
               content: fieldset_markup,
@@ -222,6 +223,7 @@
               disclosure_id: block.id,
               class: 'variant-picker__fabric-disclosure'
             %}
+            </div>
           {%- else -%}
             {{ fieldset_markup }}
           {%- endif -%}

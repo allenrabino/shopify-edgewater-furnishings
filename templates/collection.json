@@ -202,7 +202,7 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<p>403-671-6650</p>",
+                "text": "<p><a href=\"tel:4036716650\">403-671-6650</a></p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",

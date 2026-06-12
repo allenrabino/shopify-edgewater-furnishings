@@ -1,7 +1,7 @@
 import { OverflowList } from '@theme/overflow-list';
 import VariantPicker from '@theme/variant-picker';
 import { Component } from '@theme/component';
-import { debounce, isDesktopBreakpoint, mediaQueryLarge, yieldToMainThread } from '@theme/utilities';
+import { debounce, yieldToMainThread } from '@theme/utilities';
 import { ThemeEvents, VariantSelectedEvent, VariantUpdateEvent, SlideshowSelectEvent } from '@theme/events';
 import { morph } from '@theme/morph';
 
@@ -43,10 +43,6 @@ export class ProductCard extends Component {
     return this.refs.productCardLink || null;
   }
 
-  #fetchProductPageHandler = () => {
-    this.refs.quickAdd?.fetchProductPage(this.productPageUrl);
-  };
-
   /**
    * Navigates to a URL link. Respects modifier keys for opening in new tab/window.
    * @param {Event} event - The event that triggered the navigation.
@@ -71,12 +67,10 @@ export class ProductCard extends Component {
 
     const link = this.refs.productCardLink;
     if (!(link instanceof HTMLAnchorElement)) throw new Error('Product card link not found');
-    this.#handleQuickAdd();
 
     this.addEventListener(ThemeEvents.variantUpdate, this.#handleVariantUpdate);
     this.addEventListener(ThemeEvents.variantSelected, this.#handleVariantSelected);
     this.addEventListener(SlideshowSelectEvent.eventName, this.#handleSlideshowSelect);
-    mediaQueryLarge.addEventListener('change', this.#handleQuickAdd);
 
     this.addEventListener('click', this.navigateToProduct);
 
@@ -97,19 +91,6 @@ export class ProductCard extends Component {
     const currentSlide = this.refs.slideshow?.slides?.[this.refs.slideshow?.current];
     currentSlide?.nextElementSibling?.querySelector('img[loading="lazy"]')?.removeAttribute('loading');
   }
-
-  /**
-   * Handles the quick add event.
-   */
-  #handleQuickAdd = () => {
-    this.removeEventListener('pointerenter', this.#fetchProductPageHandler);
-    this.removeEventListener('focusin', this.#fetchProductPageHandler);
-
-    if (isDesktopBreakpoint()) {
-      this.addEventListener('pointerenter', this.#fetchProductPageHandler);
-      this.addEventListener('focusin', this.#fetchProductPageHandler);
-    }
-  };
 
   /**
    * Handles the variant selected event.
