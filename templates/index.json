@@ -321,9 +321,16 @@
       "type": "edgewater-best-sellers",
       "settings": {
         "heading": "Our Best Sellers",
-        "products": [],
-        "collection": "",
-        "max_products": 10,
+        "products": [
+          "4pc-sofa-ottoman",
+          "5pc-l-shape-ottoman",
+          "6pc-corner-sectional-ottoman",
+          "3pc-sofa-ottoman",
+          "5pc-double-ottoman",
+          "6pc-pit"
+        ],
+        "collection": "dream-cloud-collection",
+        "max_products": 6,
         "columns": 3,
         "padding-block-start": 48,
         "padding-block-end": 48

@@ -5,15 +5,32 @@
   if products == blank or products.size == 0
     if section.settings.collection != blank
       assign products = section.settings.collection.products
+    else
+      assign default_handles = '4pc-sofa-ottoman,5pc-l-shape-ottoman,6pc-corner-sectional-ottoman,3pc-sofa-ottoman,5pc-double-ottoman,6pc-pit' | split: ','
     endif
   endif
 
-  assign slide_count = products.size
-  if slide_count == 0
-    assign slide_count = 6
+  assign use_default_handles = false
+  if products == blank or products.size == 0
+    if default_handles != blank
+      assign use_default_handles = true
+      assign slide_count = default_handles.size
+    endif
+  else
+    assign slide_count = products.size
   endif
 
-  if slide_count > max_products
+  unless use_default_handles
+    if slide_count == 0
+      assign slide_count = 6
+    endif
+
+    if slide_count > max_products
+      assign slide_count = max_products
+    endif
+  endunless
+
+  if use_default_handles and slide_count > max_products
     assign slide_count = max_products
   endif
 
@@ -34,7 +51,55 @@
 
     <div class="edgewater-best-sellers__carousel">
       {% capture product_slides %}
-        {%- if products != blank and products.size > 0 -%}
+        {%- if use_default_handles -%}
+          {%- for handle in default_handles limit: max_products -%}
+            {%- assign product = all_products[handle] -%}
+            {%- if product == blank -%}
+              {%- continue -%}
+            {%- endif -%}
+            {% capture product_card %}
+              <a href="{{ product.url }}" class="best-seller-card">
+                <div class="best-seller-card__media">
+                  {%- if product.featured_media != blank -%}
+                    {{
+                      product.featured_media
+                      | image_url: width: 900
+                      | image_tag:
+                        class: 'best-seller-card__image',
+                        alt: product.featured_media.alt | default: product.title,
+                        widths: '300, 400, 500, 600, 750, 900',
+                        sizes: '(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 85vw',
+                        loading: 'lazy'
+                    }}
+                  {%- else -%}
+                    <div class="best-seller-card__placeholder" aria-hidden="true">
+                      {{ 'product-apparel-2' | placeholder_svg_tag: 'best-seller-card__placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <h3 class="best-seller-card__title">{{ product.title }}</h3>
+
+                <div class="best-seller-card__price">
+                  {%- assign card_variant = product.selected_or_first_available_variant -%}
+                  <span class="best-seller-card__price-current">
+                    {%- render 'money-product', price: card_variant.price, product_resource: product -%}
+                  </span>
+                  {%- if card_variant.compare_at_price > card_variant.price -%}
+                    <s class="best-seller-card__price-compare">
+                      {%- render 'money-product', price: card_variant.compare_at_price, product_resource: product -%}
+                    </s>
+                  {%- endif -%}
+                </div>
+              </a>
+            {% endcapture %}
+            {% render 'slideshow-slide',
+              index: forloop.index0,
+              children: product_card,
+              class: 'best-sellers__slide'
+            %}
+          {%- endfor -%}
+        {%- elsif products != blank and products.size > 0 -%}
           {%- for product in products limit: max_products -%}
             {% capture product_card %}
               <a href="{{ product.url }}" class="best-seller-card">
@@ -61,9 +126,13 @@
 
                 <div class="best-seller-card__price">
                   {%- assign card_variant = product.selected_or_first_available_variant -%}
-                  <span class="best-seller-card__price-current">{{ card_variant.price | money }}</span>
+                  <span class="best-seller-card__price-current">
+                    {%- render 'money-product', price: card_variant.price, product_resource: product -%}
+                  </span>
                   {%- if card_variant.compare_at_price > card_variant.price -%}
-                    <s class="best-seller-card__price-compare">{{ card_variant.compare_at_price | money }}</s>
+                    <s class="best-seller-card__price-compare">
+                      {%- render 'money-product', price: card_variant.compare_at_price, product_resource: product -%}
+                    </s>
                   {%- endif -%}
                 </div>
               </a>
