@@ -48,8 +48,67 @@
       {% assign products_per_page = section.settings.products_per_page %}
     {% endif %}
 
+    {% liquid
+      assign use_dream_cloud_order = false
+      assign collection_handle = collection.handle | downcase
+      if collection_handle contains 'dream-cloud' or template.suffix == 'dream-cloud'
+        assign use_dream_cloud_order = true
+      endif
+    %}
+
     {% paginate collection.products by products_per_page %}
       {% capture children %}
+        {% if use_dream_cloud_order %}
+          {% capture dream_cloud_handles_string %}
+            {% render 'dream-cloud-collection-product-handles' %}
+          {% endcapture %}
+          {% assign dream_cloud_handles = dream_cloud_handles_string | strip | split: ',' %}
+          {% assign dream_cloud_index = 0 %}
+          {% for ordered_handle in dream_cloud_handles %}
+            {% assign ordered_handle = ordered_handle | strip %}
+            {% for product in collection.products %}
+              {% if product.handle == ordered_handle %}
+                <li
+                  id="{{ section.id }}-{{ product.id }}"
+                  class="product-grid__item product-grid__item--{{ dream_cloud_index }}"
+                  data-page="{{ paginate.current_page }}"
+                  data-product-id="{{ product.id }}"
+                  ref="cards[]"
+                >
+                  {% # theme-check-disable %}
+                  {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+                  {% # theme-check-enable %}
+                </li>
+                {% assign dream_cloud_index = dream_cloud_index | plus: 1 %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          {% for product in collection.products %}
+            {% assign product_in_dream_cloud_order = false %}
+            {% for ordered_handle in dream_cloud_handles %}
+              {% assign ordered_handle = ordered_handle | strip %}
+              {% if product.handle == ordered_handle %}
+                {% assign product_in_dream_cloud_order = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            {% unless product_in_dream_cloud_order %}
+              <li
+                id="{{ section.id }}-{{ product.id }}"
+                class="product-grid__item product-grid__item--{{ dream_cloud_index }}"
+                data-page="{{ paginate.current_page }}"
+                data-product-id="{{ product.id }}"
+                ref="cards[]"
+              >
+                {% # theme-check-disable %}
+                {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+                {% # theme-check-enable %}
+              </li>
+              {% assign dream_cloud_index = dream_cloud_index | plus: 1 %}
+            {% endunless %}
+          {% endfor %}
+        {% else %}
         {% for product in collection.products %}
           <li
             id="{{ section.id }}-{{ product.id }}"
@@ -63,6 +122,7 @@
             {% # theme-check-enable %}
           </li>
         {% endfor %}
+        {% endif %}
       {% endcapture %}
 
       {% render 'product-grid',
