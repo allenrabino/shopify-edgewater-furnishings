@@ -195,7 +195,7 @@
 
 {% stylesheet %}
   .shopify-section:has(.edgewater-best-sellers) {
-    background-color: #f4efe8;
+    background-color: #fafafc;
   }
 
   .edgewater-best-sellers {
@@ -243,12 +243,12 @@
     position: relative;
     display: block;
     background-color: transparent;
-    padding-inline: 2.5rem;
+    padding-inline: 4rem;
   }
 
   @media screen and (min-width: 768px) {
     .best-sellers-carousel slideshow-container {
-      padding-inline: 3rem;
+      padding-inline: 4.5rem;
     }
   }
 
@@ -273,6 +273,7 @@
     margin: 0;
     padding: 0;
     pointer-events: none;
+    mix-blend-mode: normal;
   }
 
   .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control {
@@ -282,31 +283,47 @@
     animation: none !important;
     pointer-events: auto;
     flex-shrink: 0;
-    min-height: 2.5rem;
-    min-width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4rem;
+    min-width: 4rem;
     padding: 0;
+    border: none;
     border-radius: 0;
     background: transparent;
-    color: rgb(67 54 37 / 0.55);
+    color: #433625;
   }
 
   .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control:hover,
   .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control:focus-visible {
+    background: transparent;
     color: #433625;
+    opacity: 0.75 !important;
   }
 
   .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control[disabled] {
-    opacity: 0.25 !important;
+    opacity: 0.35 !important;
   }
 
   .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control .svg-wrapper {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   @media screen and (max-width: 767px) {
     .best-sellers-carousel slideshow-container {
-      padding-inline: 2rem;
+      padding-inline: 3.5rem;
+    }
+
+    .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control {
+      min-height: 3.5rem;
+      min-width: 3.5rem;
+    }
+
+    .best-sellers-carousel slideshow-container > slideshow-arrows .slideshow-control .svg-wrapper {
+      width: 1.625rem;
+      height: 1.625rem;
     }
   }
 
