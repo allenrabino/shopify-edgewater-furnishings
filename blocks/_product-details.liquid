@@ -1,10 +1,20 @@
 
 
-{%- assign block_settings = block.settings -%}
+{%- liquid
+  assign block_settings = block.settings
+  capture xl_cloud_product_capture
+    render 'xl-cloud-product-active', product_resource: closest.product
+  endcapture
+  assign is_xl_cloud_product = false
+  if xl_cloud_product_capture == 'true'
+    assign is_xl_cloud_product = true
+  endif
+-%}
 <div
   id="ProductInformation-{{ section.id }}"
   class="
     product-details
+    {% if is_xl_cloud_product %} product-details--xl-cloud{% endif %}
     {% if block_settings.sticky_details_desktop %} sticky-content--desktop{% endif %}
     {% if block_settings.height == 'fill' -%} full-height--desktop{% endif -%}
   "
@@ -81,24 +91,30 @@
     margin-top: var(--gap-xs);
   }
 
-  .product-details:has(modular-add-piece) .quantity-selector-wrapper {
+  .product-details:has(modular-add-piece) .quantity-selector-wrapper,
+  .product-details--xl-cloud .quantity-selector-wrapper {
     display: none;
   }
 
-  .product-details:has(modular-add-piece) .product-form-buttons {
+  .product-details:has(modular-add-piece) .product-form-buttons,
+  .product-details--xl-cloud .product-form-buttons {
     flex-direction: column;
     gap: var(--gap-sm);
   }
 
   .product-details:has(modular-add-piece) .add-to-cart-button,
-  .product-details:has(modular-add-piece) .product-form-buttons > add-to-cart-component {
+  .product-details:has(modular-add-piece) .product-form-buttons > add-to-cart-component,
+  .product-details--xl-cloud .add-to-cart-button,
+  .product-details--xl-cloud .product-form-buttons > add-to-cart-component {
     flex: 1 1 100%;
     width: 100%;
     min-width: 100%;
   }
 
   .product-details:has(modular-add-piece) accelerated-checkout-block,
-  .product-details:has(modular-add-piece) shopify-accelerated-checkout {
+  .product-details:has(modular-add-piece) shopify-accelerated-checkout,
+  .product-details--xl-cloud accelerated-checkout-block,
+  .product-details--xl-cloud shopify-accelerated-checkout {
     display: none;
   }
 

@@ -41,6 +41,13 @@
     assign effective_hide_variants = true
   endif
 
+  assign disable_fabric_filter = use_variant_fabric_gallery
+  assign west_coast_fixed_handles = 'pacific-l-shape-ottoman,juniper-l-shape-ottoman,cove-reversible-chaise-sofa' | split: ','
+  if west_coast_fixed_handles contains selected_product.handle
+    assign disable_fabric_filter = true
+    assign effective_hide_variants = false
+  endif
+
   if effective_hide_variants
     assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
@@ -125,6 +132,12 @@
       render 'resolve-media-fabric-key', media: media, product: selected_product
     endcapture
     assign fabric_key = fabric_key | strip
+    if fabric_key == blank
+      capture fabric_key
+        render 'fabric-key-from-media', media: media
+      endcapture
+      assign fabric_key = fabric_key | strip
+    endif
     if fabric_key != blank
       unless fabric_keys_delimited contains fabric_key
         if fabric_keys_delimited != blank
@@ -395,7 +408,7 @@
     style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px; --product-media-max-height: min(480px, 58vh);{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
     data-presentation="{{ media_presentation }}"
     data-adapt-slide-height="{% if block_settings.aspect_ratio == 'adapt' %}true{% else %}false{% endif %}"
-    {% if use_variant_fabric_gallery %}
+    {% if disable_fabric_filter %}
       data-fabric-filter="off"
     {% elsif default_fabric_key != blank %}
       data-default-fabric="{{ default_fabric_key }}"
@@ -446,6 +459,12 @@
           {% render 'resolve-media-fabric-key', media: media, product: selected_product %}
         {% endcapture %}
         {% assign fabric_key = fabric_key | strip %}
+        {% if fabric_key == blank %}
+          {% capture fabric_key %}
+            {% render 'fabric-key-from-media', media: media %}
+          {% endcapture %}
+          {% assign fabric_key = fabric_key | strip %}
+        {% endif %}
         {% capture attributes %}
           {{ slide_attributes }} data-fabric-key="{{ fabric_key }}"
         {% endcapture %}

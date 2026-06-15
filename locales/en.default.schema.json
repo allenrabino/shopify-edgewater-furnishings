@@ -241,7 +241,7 @@
     "configuration_title": "Optional. Uses product title when empty.",
     "configuration_price": "Display price, e.g. $1,900 CAD",
     "configuration_image": "Optional Cream Oatmeal no-background render. Uses product image when empty.",
-    "hide_modular_xl_cloud": "Hides on XL Cloud products. Assign the xlcloud product template in admin.",
+    "hide_modular_xl_cloud": "Hides on XL Cloud products (xlcloud template, xl-cloud collection, or matching product handle).",
     "allowed_fabric_keys": "Comma-separated fabric keys (e.g. cream,sage-green,mocha,grey). Leave blank to show all fabrics from product media.",
     "fabric_key": "Must match the fabric key in product image filenames (e.g. cream-oatmeal) so the gallery updates when selected.",
     "default_fabric_type_fallback": "Used only when no fabric color blocks are added and colors are detected from images.",

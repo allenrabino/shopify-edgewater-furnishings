@@ -1,0 +1,44 @@
+{%- doc -%}
+  Resolves a normalized fabric key for a product media item.
+  Checks variant attachment first, then filename patterns.
+
+  @param {object} media - Product media
+  @param {object} product - Product object
+{%- enddoc -%}
+
+{%- liquid
+  assign fabric_key = ''
+  assign product = product | default: closest.product
+
+  if media != blank and product != blank
+    if media.attached_to_variant?
+      for variant in product.variants
+        if variant.featured_media.id == media.id
+          capture variant_fabric_key
+            render 'fabric-key-from-variant', variant: variant, product: product
+          endcapture
+          assign variant_fabric_key = variant_fabric_key | strip | downcase
+          if variant_fabric_key != blank
+            assign fabric_key = variant_fabric_key
+            break
+          endif
+        endif
+      endfor
+    endif
+
+    if fabric_key == blank
+      capture media_fabric_key
+        render 'fabric-key-from-media', media: media
+      endcapture
+      assign fabric_key = media_fabric_key | strip | downcase
+    endif
+
+    if fabric_key == blank and media.alt != blank
+      assign alt_normalized = media.alt | downcase | strip
+      if alt_normalized contains 'fabric' or alt_normalized contains 'color' or alt_normalized contains 'colour' or alt_normalized contains 'performance'
+        assign fabric_key = media.alt | handleize
+      endif
+    endif
+  endif
+-%}
+{{- fabric_key -}}

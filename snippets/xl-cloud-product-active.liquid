@@ -1,0 +1,60 @@
+{%- liquid
+  assign xl_cloud_product = false
+  assign template_suffix = template.suffix | downcase
+
+  assign xl_product = product_resource
+  if xl_product == blank
+    assign xl_product = product
+  endif
+  if xl_product == blank and closest.product != blank
+    assign xl_product = closest.product
+  endif
+
+  if template_suffix contains 'xlcloud' or template_suffix contains 'xl-cloud'
+    assign xl_cloud_product = true
+  endif
+
+  unless xl_cloud_product
+    if xl_product != blank
+      assign product_handle = xl_product.handle | downcase
+      assign xl_cloud_handles = '4pc-sofa-ottoman-configuration' | split: ','
+      if product_handle contains 'xl-cloud' or product_handle contains 'xlcloud' or xl_cloud_handles contains xl_product.handle
+        assign xl_cloud_product = true
+      endif
+    endif
+  endunless
+
+  unless xl_cloud_product
+    if xl_product != blank
+      assign product_title = xl_product.title | downcase
+      if product_title contains 'xl cloud'
+        assign xl_cloud_product = true
+      endif
+    endif
+  endunless
+
+  unless xl_cloud_product
+    if xl_product != blank
+      for xl_collection in xl_product.collections
+        assign xl_collection_handle = xl_collection.handle | downcase
+        if xl_collection_handle contains 'xl-cloud' or xl_collection_handle contains 'xlcloud'
+          assign xl_cloud_product = true
+          break
+        endif
+      endfor
+    endif
+  endunless
+
+  unless xl_cloud_product
+    if collection != blank
+      assign active_collection_handle = collection.handle | downcase
+      if active_collection_handle contains 'xl-cloud' or active_collection_handle contains 'xlcloud'
+        assign xl_cloud_product = true
+      endif
+    endif
+  endunless
+
+  if xl_cloud_product
+    echo 'true'
+  endif
+-%}

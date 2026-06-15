@@ -1,6 +1,18 @@
 
+{%- liquid
+  assign product_resource = closest.product
+  if product_resource == blank
+    assign product_resource = product
+  endif
 
-{% render 'quantity-selector', product: closest.product %}
+  capture xl_cloud_product_capture
+    render 'xl-cloud-product-active', product_resource: product_resource
+  endcapture
+-%}
+
+{%- unless xl_cloud_product_capture == 'true' -%}
+  {% render 'quantity-selector', product: product_resource %}
+{%- endunless -%}
 
 {% schema %}
 {

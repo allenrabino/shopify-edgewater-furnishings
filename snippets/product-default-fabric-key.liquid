@@ -34,6 +34,12 @@
         render 'resolve-media-fabric-key', media: media, product: product
       endcapture
       assign media_fabric_key = media_fabric_key | strip
+      if media_fabric_key == blank
+        capture media_fabric_key
+          render 'fabric-key-from-media', media: media
+        endcapture
+        assign media_fabric_key = media_fabric_key | strip
+      endif
       if media_fabric_key != blank
         assign default_key = media_fabric_key
         break

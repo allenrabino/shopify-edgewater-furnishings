@@ -2,19 +2,27 @@
 {%- liquid
   assign block_settings = block.settings
   assign product_resource = closest.product
+  if product_resource == blank
+    assign product_resource = product
+  endif
   assign show_block = true
 
-  assign template_suffix = template.suffix | downcase
   assign fixed_config_handles = 'pacific-l-shape-ottoman,juniper-l-shape-ottoman,cove-reversible-chaise-sofa,4pc-sofa-ottoman-configuration' | split: ','
 
   if fixed_config_handles contains product_resource.handle
     assign show_block = false
   endif
 
-  if block_settings.hide_on_collection_templates
-    if template_suffix == 'xlcloud' or template_suffix == 'xl-cloud' or template_suffix == 'westcoastcloud' or template_suffix == 'west-coast'
-      assign show_block = false
-    endif
+  capture xl_cloud_product_capture
+    render 'xl-cloud-product-active', product_resource: product_resource
+  endcapture
+  assign is_xl_cloud_product = false
+  if xl_cloud_product_capture == 'true'
+    assign is_xl_cloud_product = true
+  endif
+
+  if is_xl_cloud_product and block_settings.hide_on_collection_templates != false
+    assign show_block = false
   endif
 
   assign metafield_namespace = block_settings.metafield_namespace | default: 'custom'
