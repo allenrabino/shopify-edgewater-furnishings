@@ -1,0 +1,339 @@
+<edgewater-faq
+  class="edgewater-faq spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="edgewater-faq__inner">
+    {%- if section.settings.heading != blank -%}
+      <header class="edgewater-faq__header">
+        <h1 class="edgewater-faq__title">{{ section.settings.heading }}</h1>
+      </header>
+    {%- endif -%}
+
+    <div class="edgewater-faq__list">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'faq_item' -%}
+            <div {{ block.shopify_attributes }}>
+              {%- render 'edgewater-faq-item',
+                question: block.settings.question,
+                answer: block.settings.answer,
+                item_id: block.id,
+                open_by_default: forloop.first
+              -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- render 'edgewater-faq-default-items' -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_cta -%}
+      <div class="edgewater-faq__cta">
+        {%- if section.settings.cta_heading != blank -%}
+          <p class="edgewater-faq__cta-heading">{{ section.settings.cta_heading }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.cta_lead_in != blank or section.settings.phone != blank or section.settings.cta_closing != blank -%}
+          <p class="edgewater-faq__cta-text">
+            {%- if section.settings.cta_lead_in != blank -%}
+              {{ section.settings.cta_lead_in }}
+            {%- endif -%}
+            {%- if section.settings.phone != blank -%}
+              <a href="tel:{{ section.settings.phone | replace: '-', '' | replace: ' ', '' }}">{{ section.settings.phone }}</a>
+            {%- endif -%}
+            {%- if section.settings.cta_closing != blank -%}
+              {{ section.settings.cta_closing }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</edgewater-faq>
+
+<script src="{{ 'edgewater-faq.js' | asset_url }}" defer></script>
+
+{% stylesheet %}
+  .shopify-section:has(.edgewater-faq),
+  .shopify-section:has(.edgewater-faq) .section-background {
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-faq {
+    display: block;
+    width: 100%;
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-faq__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 2.75rem);
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding-inline: max(1rem, var(--page-margin, 16px));
+  }
+
+  .edgewater-faq__header {
+    width: 100%;
+    text-align: center;
+  }
+
+  .edgewater-faq__title {
+    margin: 0;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #433625;
+  }
+
+  .edgewater-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .edgewater-faq__accordion {
+    display: block;
+    width: 100%;
+  }
+
+  .edgewater-faq__accordion.accordion--caret .icon-plus {
+    display: none;
+  }
+
+  .edgewater-faq__item {
+    border: 1px solid #ddd7d0;
+    border-radius: 0.5rem;
+    background: #fbf9f7;
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-group-height, 80px) + 1rem);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .edgewater-faq__item:hover {
+    border-color: #cfc7be;
+  }
+
+  .edgewater-faq__item[open] {
+    border-color: #b9ab9a;
+    background: #fff;
+    box-shadow: 0 10px 24px rgb(47 39 34 / 0.06);
+  }
+
+  .edgewater-faq__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(1rem, 2.5vw, 1.125rem) clamp(1.125rem, 3vw, 1.375rem);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    color: #433625;
+  }
+
+  .edgewater-faq__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .edgewater-faq__summary:focus-visible {
+    outline: 2px solid #8a6d5b;
+    outline-offset: -2px;
+  }
+
+  .edgewater-faq__question {
+    flex: 1;
+    text-align: left;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(1.0625rem, 2.1vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: #433625;
+  }
+
+  .edgewater-faq__summary .icon-caret {
+    flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    color: #8a6d5b;
+    transition: transform 0.25s ease;
+  }
+
+  .edgewater-faq__item[open] .edgewater-faq__summary .icon-caret {
+    transform: rotate(180deg);
+  }
+
+  .edgewater-faq__answer {
+    padding: 0 clamp(1.125rem, 3vw, 1.375rem) clamp(1rem, 2.5vw, 1.25rem);
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #74675d;
+    text-align: left;
+  }
+
+  .edgewater-faq__answer > *:first-child {
+    margin-top: 0;
+  }
+
+  .edgewater-faq__answer > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .edgewater-faq__answer p + p {
+    margin-top: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .edgewater-faq__item,
+    .edgewater-faq__summary .icon-caret {
+      transition: none;
+    }
+  }
+
+  .edgewater-faq__cta {
+    width: 100%;
+    padding: clamp(1.25rem, 3vw, 1.5rem) clamp(1.5rem, 4vw, 2rem);
+    border-radius: 0.5rem;
+    background: #fbf9f7;
+    border: 1px solid #ddd7d0;
+    text-align: center;
+  }
+
+  .edgewater-faq__cta-heading {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(1.125rem, 2.2vw, 1.3125rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: #433625;
+  }
+
+  .edgewater-faq__cta-text {
+    margin: 0;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #74675d;
+  }
+
+  .edgewater-faq__cta-text a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .edgewater-faq__cta-text a:hover,
+  .edgewater-faq__cta-text a:focus-visible {
+    color: #403730;
+    text-decoration: underline;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Edgewater FAQ",
+  "class": "section-edgewater-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "header",
+      "content": "Bottom callout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show bottom callout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Callout heading",
+      "default": "Still have questions?"
+    },
+    {
+      "type": "text",
+      "id": "cta_lead_in",
+      "label": "Text before phone number",
+      "default": "Call or text us at "
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "403-671-6650"
+    },
+    {
+      "type": "text",
+      "id": "cta_closing",
+      "label": "Text after phone number",
+      "default": ". We're happy to provide additional information."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question heading"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer text goes here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Edgewater FAQ"
+    }
+  ]
+}
+{% endschema %}

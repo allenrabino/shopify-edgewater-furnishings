@@ -32,6 +32,7 @@
     "type_letter_spacing_h6": "heading-loose",
     "type_case_h6": "uppercase",
     "page_width": "normal",
+    "card_hover_effect": "none",
     "badge_corner_radius": 0,
     "badge_sale_color_scheme": "scheme-2",
     "badge_sold_out_color_scheme": "scheme-4",
@@ -47,12 +48,102 @@
     "popover_border": "none",
     "currency_code_enabled_product_pages": true,
     "currency_code_enabled_product_cards": false,
-    "card_hover_effect": "none",
     "show_second_image_on_hover": false,
     "product_card_carousel": false,
     "variant_swatch_radius": 0,
     "variant_button_radius": 0,
     "variant_button_width": "default-width-buttons",
+    "sections": {
+      "edgewater-faq": {
+        "type": "edgewater-faq",
+        "blocks": {
+          "faq_item_9C3hiC": {
+            "type": "faq_item",
+            "name": "Where are your showrooms located?",
+            "settings": {
+              "question": "Where are your showrooms located?",
+              "answer": "<p>Our main showroom is located approximately 20 minutes north of Airdrie. This is our largest showroom and has all of our sofa models on display.<br/>We also have a smaller secondary showroom in Edmonton, located off Whitemud Drive and Gateway Boulevard NW. This location currently has our Dream Cloud model on the showroom floor for viewing.<br/>Showroom addresses are provided once an appointment booking is confirmed. Because our showrooms are appointment-only and our team may be away on deliveries, this helps ensure someone is available to meet you and that you are not disappointed by arriving when no one is on site.<br/></p>"
+            }
+          },
+          "faq_item_BLHG9K": {
+            "type": "faq_item",
+            "name": "Do you only offer showings by appointment, or do you have walk-in hours?",
+            "settings": {
+              "question": "Do you only offer showings by appointment, or do you have walk-in hours?",
+              "answer": "<p>At this time, showroom visits are by appointment only. This helps us keep overhead costs lower because we do not staff our showrooms full time, and those savings allow us to offer better pricing on high-quality furniture.<br/>To schedule a viewing, call or text us at 403-671-6650, or send us a message through our website. We’ll help find a time that works for you.</p>"
+            }
+          },
+          "faq_item_YPEBQf": {
+            "type": "faq_item",
+            "name": "How does delivery work?",
+            "settings": {
+              "question": "How does delivery work?",
+              "answer": "<p>If you place an order online, we will contact you within 48 hours to review the delivery details. We will provide available delivery dates and time windows, then work with you to choose an option that fits your schedule.<br/>If you place your order in person, we can usually arrange the delivery date and time with you before you leave the showroom. Our goal is to make the delivery process smooth, clear, and convenient.</p>"
+            }
+          },
+          "faq_item_yrcgVD": {
+            "type": "faq_item",
+            "name": "Do you deliver outside Calgary, Red Deer, and Edmonton?",
+            "settings": {
+              "question": "Do you deliver outside Calgary, Red Deer, and Edmonton?",
+              "answer": "<p>Yes. In addition to Calgary, Red Deer, and Edmonton, we also service many surrounding communities including: Banff, Canmore, Cochrane, Medicine Hat, Lethbridge, Nanton, High River, Okotoks, Chestermere, Airdrie, Sylvan Lake, Spruce Grove, St. Albert, Sherwood Park, and more.<br/>For a delivery quote in your area, call or text us at 403-671-6650.</p>"
+            }
+          },
+          "faq_item_zDeMzK": {
+            "type": "faq_item",
+            "name": "How does shipping work?",
+            "settings": {
+              "question": "How does shipping work?",
+              "answer": "<p>We can ship our Dream Cloud model to most major Canadian cities. To provide an accurate shipping quote and estimated timeline, we will need your delivery address.<br/>Please call or text us at 403-671-6650 with your address, and we’ll provide the available shipping options for your location.</p>"
+            }
+          },
+          "faq_item_ATeExf": {
+            "type": "faq_item",
+            "name": "Can I pick up my order?",
+            "settings": {
+              "question": "Can I pick up my order?",
+              "answer": "<p>Yes. All sofa models are available for pickup from our main showroom north of Airdrie.<br/>Certain Dream Cloud colours may also be available for pickup from our Edmonton showroom. Please call or text us before ordering if you would like to confirm pickup availability.</p>"
+            }
+          },
+          "faq_item_qQ3gLX": {
+            "type": "faq_item",
+            "name": "Can I customize or change the configuration?",
+            "settings": {
+              "question": "Can I customize or change the configuration?",
+              "answer": "<p>Yes! If you need a custom size, layout, or configuration, please contact us before placing your order. We can help you choose the right pieces for your space and confirm what options are available.</p>"
+            }
+          },
+          "faq_item_aMpFtr": {
+            "type": "faq_item",
+            "name": "Return policy?",
+            "settings": {
+              "question": "Return policy?",
+              "answer": "<p>All sales are final. We do not offer returns at this time.</p>"
+            }
+          }
+        },
+        "block_order": [
+          "faq_item_9C3hiC",
+          "faq_item_BLHG9K",
+          "faq_item_YPEBQf",
+          "faq_item_yrcgVD",
+          "faq_item_zDeMzK",
+          "faq_item_ATeExf",
+          "faq_item_qQ3gLX",
+          "faq_item_aMpFtr"
+        ],
+        "settings": {
+          "heading": "FAQ",
+          "show_cta": true,
+          "cta_heading": "Still have questions?",
+          "cta_lead_in": "Call or text us at",
+          "phone": "403-671-6650",
+          "cta_closing": ". We're happy to provide additional information.",
+          "padding-block-start": 56,
+          "padding-block-end": 72
+        }
+      }
+    },
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {

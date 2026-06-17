@@ -1,0 +1,45 @@
+{%- doc -%}
+  Renders a single FAQ accordion row.
+
+  @param {string} question - FAQ question text
+  @param {string} answer - FAQ answer HTML (richtext)
+  @param {string} [item_id] - Optional anchor id for deep links
+  @param {boolean} [open_by_default] - Whether the row starts expanded
+{%- enddoc -%}
+
+{%- liquid
+  assign open_by_default = open_by_default | default: false, allow_false: true
+  assign item_id = item_id | default: ''
+-%}
+
+<accordion-custom
+  class="edgewater-faq__accordion accordion--caret"
+  {% if open_by_default %}
+    open-by-default-on-desktop
+    open-by-default-on-mobile
+  {% endif %}
+>
+  <details
+    class="details edgewater-faq__item"
+    {% if item_id != blank %}
+      id="{{ item_id }}"
+    {% endif %}
+    {% if open_by_default %}
+      open
+    {% endif %}
+  >
+    <summary class="details__header edgewater-faq__summary">
+      <span class="edgewater-faq__question">{{ question }}</span>
+      <span class="svg-wrapper icon-caret icon-animated" aria-hidden="true">
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </span>
+      <span class="svg-wrapper icon-plus" aria-hidden="true">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
+      </span>
+    </summary>
+
+    <div class="details-content edgewater-faq__answer rte">
+      {{ answer }}
+    </div>
+  </details>
+</accordion-custom>

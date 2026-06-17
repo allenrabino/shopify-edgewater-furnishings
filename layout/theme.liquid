@@ -108,6 +108,7 @@
     {%- liquid
       assign render_book_showroom_section = false
       assign render_delivery_section = false
+      assign render_faq_section = false
       if template.name == 'page'
         if page.handle == 'book-a-showroom-visit' or page.handle == 'book-a-showroom'
           if template.suffix == blank
@@ -117,6 +118,11 @@
         if page.handle == 'delivery-shipping'
           if template.suffix == blank
             assign render_delivery_section = true
+          endif
+        endif
+        if page.handle == 'faq'
+          if template.suffix == blank
+            assign render_faq_section = true
           endif
         endif
       endif
@@ -134,6 +140,8 @@
         {%- section 'edgewater-book-showroom' -%}
       {%- elsif render_delivery_section -%}
         {%- section 'edgewater-delivery' -%}
+      {%- elsif render_faq_section -%}
+        {%- section 'edgewater-faq' -%}
       {%- else -%}
         {{ content_for_layout }}
       {%- endif -%}

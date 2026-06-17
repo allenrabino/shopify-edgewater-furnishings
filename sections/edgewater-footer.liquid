@@ -36,11 +36,6 @@
     assign shipping_url = pages.shipping.url
   endif
 
-  assign assembly_url = '/pages/assembly'
-  if pages.assembly != blank
-    assign assembly_url = pages.assembly.url
-  endif
-
   assign faq_url = '/pages/faq'
   if pages.faq != blank
     assign faq_url = pages.faq.url
@@ -102,7 +97,6 @@
         <h2 class="edgewater-footer__heading">{{ section.settings.support_heading }}</h2>
         <ul class="edgewater-footer__links list-unstyled">
           <li><a href="{{ contact_url }}">Contact Us</a></li>
-          <li><a href="{{ assembly_url }}">Assembly</a></li>
           <li><a href="{{ faq_url }}">FAQ</a></li>
         </ul>
       </nav>
