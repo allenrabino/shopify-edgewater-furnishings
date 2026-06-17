@@ -27,8 +27,10 @@
     assign contact_url = pages.contact.url
   endif
 
-  assign shipping_url = '/pages/shipping-delivery'
-  if pages['shipping-delivery'] != blank
+  assign shipping_url = '/pages/delivery-shipping'
+  if pages['delivery-shipping'] != blank
+    assign shipping_url = pages['delivery-shipping'].url
+  elsif pages['shipping-delivery'] != blank
     assign shipping_url = pages['shipping-delivery'].url
   elsif pages.shipping != blank
     assign shipping_url = pages.shipping.url

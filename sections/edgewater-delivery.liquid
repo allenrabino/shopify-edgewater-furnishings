@@ -1,0 +1,269 @@
+<div
+  class="edgewater-delivery spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="edgewater-delivery__inner">
+    {%- if section.settings.heading != blank -%}
+      <header class="edgewater-delivery__header">
+        <h1 class="edgewater-delivery__title">{{ section.settings.heading }}</h1>
+      </header>
+    {%- endif -%}
+
+    <div class="edgewater-delivery__content">
+      {%- if section.settings.delivery_heading != blank -%}
+        <section class="edgewater-delivery__section">
+          <h2 class="edgewater-delivery__section-heading">{{ section.settings.delivery_heading }}</h2>
+
+          {%- if section.settings.delivery_text != blank -%}
+            <div class="edgewater-delivery__text rte">{{ section.settings.delivery_text }}</div>
+          {%- endif -%}
+        </section>
+      {%- endif -%}
+
+      {%- if section.settings.shipping_heading != blank -%}
+        <section class="edgewater-delivery__section">
+          <h2 class="edgewater-delivery__section-heading">{{ section.settings.shipping_heading }}</h2>
+
+          {%- if section.settings.shipping_text != blank -%}
+            <div class="edgewater-delivery__text rte">{{ section.settings.shipping_text }}</div>
+          {%- endif -%}
+        </section>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.phone != blank or section.settings.email != blank -%}
+      <div class="edgewater-delivery__contact">
+        {%- if section.settings.phone != blank -%}
+          <p>
+            <span class="edgewater-delivery__contact-label">{{ section.settings.phone_label }}</span>
+            <a href="tel:{{ section.settings.phone | replace: '-', '' | replace: ' ', '' }}">{{ section.settings.phone }}</a>
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.email != blank -%}
+          <p>
+            <span class="edgewater-delivery__contact-label">{{ section.settings.email_label }}</span>
+            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .shopify-section:has(.edgewater-delivery),
+  .shopify-section:has(.edgewater-delivery) .section-background {
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-delivery {
+    width: 100%;
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-delivery__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3rem);
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding-inline: max(1rem, var(--page-margin, 16px));
+  }
+
+  .edgewater-delivery__header {
+    width: 100%;
+    text-align: center;
+  }
+
+  .edgewater-delivery__title {
+    margin: 0;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #403730;
+  }
+
+  .edgewater-delivery__content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 4vw, 2.75rem);
+    width: 100%;
+    text-align: center;
+  }
+
+  .edgewater-delivery__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .edgewater-delivery__section-heading {
+    margin: 0;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8a6d5b;
+  }
+
+  .edgewater-delivery__text {
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #74675d;
+  }
+
+  .edgewater-delivery__text > *:first-child {
+    margin-top: 0;
+  }
+
+  .edgewater-delivery__text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .edgewater-delivery__text p + p {
+    margin-top: 1rem;
+  }
+
+  .edgewater-delivery__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    max-width: 28rem;
+    padding: clamp(1.25rem, 3vw, 1.5rem) clamp(1.5rem, 4vw, 2rem);
+    border-radius: 0.5rem;
+    background: #fbf9f7;
+    border: 1px solid #ddd7d0;
+    text-align: center;
+  }
+
+  .edgewater-delivery__contact p {
+    margin: 0;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #74675d;
+  }
+
+  .edgewater-delivery__contact a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .edgewater-delivery__contact a:hover,
+  .edgewater-delivery__contact a:focus-visible {
+    color: #403730;
+    text-decoration: underline;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Edgewater delivery",
+  "class": "section-edgewater-delivery",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Delivery & Shipping"
+    },
+    {
+      "type": "header",
+      "content": "Delivery"
+    },
+    {
+      "type": "text",
+      "id": "delivery_heading",
+      "label": "Delivery heading",
+      "default": "Delivery"
+    },
+    {
+      "type": "richtext",
+      "id": "delivery_text",
+      "label": "Delivery text",
+      "default": "<p>White glove delivery options are available within Calgary, Red Deer and Edmonton, as well as many surrounding communities.</p><p>This service includes delivery to your home, unboxing, assembly in your space, and removal of empty packaging.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping"
+    },
+    {
+      "type": "text",
+      "id": "shipping_heading",
+      "label": "Shipping heading",
+      "default": "Shipping"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text",
+      "label": "Shipping text",
+      "default": "<p>Please call, text, or email with your delivery address so we can provide a shipping quote and estimated timeline.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone label",
+      "default": "Call or text:"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "403-671-6650"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email:"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "hello@edgewaterfurnishings.com"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Edgewater delivery"
+    }
+  ]
+}
+{% endschema %}

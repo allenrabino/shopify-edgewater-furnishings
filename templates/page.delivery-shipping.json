@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "delivery_shipping": {
+      "type": "edgewater-delivery",
+      "settings": {
+        "heading": "Delivery & Shipping",
+        "delivery_heading": "Delivery",
+        "delivery_text": "<p>White glove delivery options are available within Calgary, Red Deer and Edmonton, as well as many surrounding communities.</p><p>This service includes delivery to your home, unboxing, assembly in your space, and removal of empty packaging.</p>",
+        "shipping_heading": "Shipping",
+        "shipping_text": "<p>Please call, text, or email with your delivery address so we can provide a shipping quote and estimated timeline.</p>",
+        "phone_label": "Call or text:",
+        "phone": "403-671-6650",
+        "email_label": "Email:",
+        "email": "hello@edgewaterfurnishings.com",
+        "padding-block-start": 56,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "main",
+    "delivery_shipping"
+  ]
+}
