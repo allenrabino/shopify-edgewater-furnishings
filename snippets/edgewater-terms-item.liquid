@@ -1,0 +1,49 @@
+{%- doc -%}
+  Renders a single terms section accordion row.
+
+  @param {string} language - Language code (en or fr)
+  @param {string} section_number - Section number
+  @param {string} title - Section title
+  @param {string} content - Section body HTML
+  @param {string} [item_id] - Anchor id for deep links
+  @param {boolean} [open_by_default] - Whether the row starts expanded
+{%- enddoc -%}
+
+{%- liquid
+  assign open_by_default = open_by_default | default: false, allow_false: true
+  assign item_id = item_id | default: ''
+-%}
+
+<accordion-custom
+  class="edgewater-terms__accordion accordion--caret"
+  {% if open_by_default %}
+    open-by-default-on-desktop
+    open-by-default-on-mobile
+  {% endif %}
+>
+  <details
+    class="details edgewater-terms__item"
+    {% if item_id != blank %}
+      id="{{ item_id }}"
+    {% endif %}
+    {% if open_by_default %}
+      open
+    {% endif %}
+    data-language="{{ language }}"
+    data-section-number="{{ section_number }}"
+  >
+    <summary class="details__header edgewater-terms__summary">
+      <span class="edgewater-terms__summary-label">
+        <span class="edgewater-terms__section-num">{{ section_number }}.</span>
+        <span class="edgewater-terms__section-title">{{ title }}</span>
+      </span>
+      <span class="svg-wrapper icon-caret icon-animated" aria-hidden="true">
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </span>
+    </summary>
+
+    <div class="details-content edgewater-terms__body rte">
+      {{ content }}
+    </div>
+  </details>
+</accordion-custom>

@@ -1,8 +1,26 @@
 
+{%- if page.handle == 'terms-conditions' -%}
+  {%- if request.design_mode -%}
+    <p class="edgewater-terms__admin-note">
+      Assign the <strong>terms-conditions</strong> page template for editable Terms blocks in the theme editor.
+    </p>
+  {%- endif -%}
 
-<rte-formatter>
-  {{ page.content }}
-</rte-formatter>
+  {{ 'edgewater-terms.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'edgewater-terms.js' | asset_url }}" defer></script>
+
+  <edgewater-terms class="edgewater-terms edgewater-terms--embedded" data-default-language="en">
+    <div class="edgewater-terms__inner">
+      <div class="edgewater-terms__content edgewater-terms__content--legacy">
+        {% render 'edgewater-terms-conditions-content' %}
+      </div>
+    </div>
+  </edgewater-terms>
+{%- else -%}
+  <rte-formatter>
+    {{ page.content }}
+  </rte-formatter>
+{%- endif -%}
 
 {% schema %}
 {

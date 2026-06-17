@@ -53,9 +53,9 @@
     assign privacy_url = shop.policies.privacy_policy.url
   endif
 
-  assign terms_url = '/policies/terms-of-service'
-  if shop.policies.terms_of_service != blank
-    assign terms_url = shop.policies.terms_of_service.url
+  assign terms_url = '/pages/terms-conditions'
+  if pages['terms-conditions'] != blank
+    assign terms_url = pages['terms-conditions'].url
   endif
 
   assign logo_variant = 'footer-brown-bg'

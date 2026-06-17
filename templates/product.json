@@ -343,7 +343,7 @@
                 "accordion_row_HUWbDi": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Dimensions +",
+                    "heading": "Dimensions",
                     "open_by_default": false,
                     "icon": "none",
                     "width": 20
@@ -377,45 +377,6 @@
                   },
                   "block_order": [
                     "text_wMFRAi"
-                  ]
-                },
-                "accordion_row_GTWFgP": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Assembly Instructions +",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_Nrxfg8": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p>Local white glove delivery is optional and includes: delivery, unboxing, assembly, and empty box haul away.</p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-primary--family)",
-                        "font_size": "",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_Nrxfg8"
                   ]
                 },
                 "accordion_row_why_choose": {
@@ -500,7 +461,6 @@
               "block_order": [
                 "accordion_row_P46NdC",
                 "accordion_row_HUWbDi",
-                "accordion_row_GTWFgP",
                 "accordion_row_why_choose",
                 "accordion_row_z4qcPU"
               ]
