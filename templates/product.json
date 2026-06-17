@@ -23,7 +23,7 @@
             "icons_style": "arrow",
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "left",
+            "thumbnail_position": "bottom",
             "thumbnail_width": 72,
             "thumbnail_radius": 0,
             "aspect_ratio": "adapt",
@@ -200,6 +200,14 @@
                 "open_by_default": true,
                 "subheading": "Choose your pieces and quantity to build your perfect configuration.",
                 "total_label": "Configuration total",
+                "metafield_namespace": "custom",
+                "metafield_key": "modular_pieces",
+                "single_corner_label": "Single Corner",
+                "armless_chair_label": "Armless Chair",
+                "ottoman_label": "Ottoman",
+                "single_corner_product": "",
+                "armless_chair_product": "",
+                "ottoman_product": "",
                 "hide_on_collection_templates": true,
                 "padding-block-start": 16,
                 "padding-block-end": 0,
@@ -212,21 +220,24 @@
                   "settings": {
                     "product": "1pc-corner",
                     "label": "Single Corner"
-                  }
+                  },
+                  "blocks": {}
                 },
                 "subproduct_armless": {
                   "type": "_modular-subproduct",
                   "settings": {
                     "product": "1pc-armless-chair",
                     "label": "Armless Chair"
-                  }
+                  },
+                  "blocks": {}
                 },
                 "subproduct_ottoman": {
                   "type": "_modular-subproduct",
                   "settings": {
                     "product": "1pc-ottoman",
                     "label": "Ottoman"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -650,6 +661,10 @@
                   "type": "price",
                   "settings": {
                     "show_sale_price_first": true,
+                    "update_from_add_piece": true,
+                    "show_finance_pricing": true,
+                    "finance_label": "Starting at [amount]/month",
+                    "finance_term_months": 12,
                     "show_installments": false,
                     "show_tax_info": false,
                     "type_preset": "h6",
@@ -829,6 +844,10 @@
                       "type": "price",
                       "settings": {
                         "show_sale_price_first": true,
+                        "update_from_add_piece": true,
+                        "show_finance_pricing": true,
+                        "finance_label": "Starting at [amount]/month",
+                        "finance_term_months": 12,
                         "show_installments": false,
                         "show_tax_info": false,
                         "type_preset": "",

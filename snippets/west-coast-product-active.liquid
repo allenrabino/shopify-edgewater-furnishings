@@ -1,0 +1,60 @@
+{%- liquid
+  assign west_coast_product = false
+  assign template_suffix = template.suffix | downcase
+
+  assign wc_product = product_resource
+  if wc_product == blank
+    assign wc_product = product
+  endif
+  if wc_product == blank and closest.product != blank
+    assign wc_product = closest.product
+  endif
+
+  if template_suffix contains 'westcoast' or template_suffix contains 'west-coast'
+    assign west_coast_product = true
+  endif
+
+  unless west_coast_product
+    if wc_product != blank
+      assign product_handle = wc_product.handle | downcase
+      assign west_coast_handles = 'pacific-l-shape-ottoman,juniper-l-shape-ottoman,cove-reversible-chaise-sofa,coastal-chaise-sectional' | split: ','
+      if product_handle contains 'west-coast' or product_handle contains 'westcoast' or west_coast_handles contains wc_product.handle
+        assign west_coast_product = true
+      endif
+    endif
+  endunless
+
+  unless west_coast_product
+    if wc_product != blank
+      assign product_title = wc_product.title | downcase
+      if product_title contains 'west coast'
+        assign west_coast_product = true
+      endif
+    endif
+  endunless
+
+  unless west_coast_product
+    if wc_product != blank
+      for wc_collection in wc_product.collections
+        assign wc_collection_handle = wc_collection.handle | downcase
+        if wc_collection_handle contains 'west-coast' or wc_collection_handle contains 'westcoast'
+          assign west_coast_product = true
+          break
+        endif
+      endfor
+    endif
+  endunless
+
+  unless west_coast_product
+    if collection != blank
+      assign active_collection_handle = collection.handle | downcase
+      if active_collection_handle contains 'west-coast' or active_collection_handle contains 'westcoast'
+        assign west_coast_product = true
+      endif
+    endif
+  endunless
+
+  if west_coast_product
+    echo 'true'
+  endif
+-%}
