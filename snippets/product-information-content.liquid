@@ -81,6 +81,9 @@
   class="product-information section section--{{ content_width }} spacing-style color-{{ settings.color_scheme }} relative"
   style="{% render 'spacing-style', settings: settings %} --gap: {{ settings.gap }}px;"
   data-testid="product-information"
+  {% if product_has_media and request.page_type == 'product' %}
+    data-sticky-media
+  {% endif %}
 >
   {% if settings.desktop_media_position == 'left' and product_has_media and request.page_type == 'product' %}
     {% assign product_href = '#ProductInformation-' | append: section_id %}
@@ -390,9 +393,42 @@
     max-width: var(--product-details-max-width, 420px);
   }
 
-  /* If the header is sticky, make product details content stick underneath the header */
+  /* If the header is sticky, offset sticky product page columns below the header */
+  body:has(#header-group #header-component[sticky]) .product-information__media media-gallery.sticky-content--desktop,
+  body:has(#header-group #header-component[data-sticky-state='active']) .product-information__media media-gallery.sticky-content--desktop {
+    --sticky-header-offset: var(--header-height);
+  }
+
   body:has(#header-group #header-component[data-sticky-state='active']) .product-details.sticky-content--desktop {
     --sticky-header-offset: var(--header-height);
+  }
+
+  @media screen and (min-width: 750px) {
+    /* Stretch the media column to the details height so sticky media scrolls with product info */
+    .product-information[data-sticky-media] .product-information__grid:not(.product-information--media-none),
+    .product-information[data-sticky-media].section--page-width > .product-information__grid,
+    .product-information[data-sticky-media].section--page-width
+      > .product-information__grid.product-information__grid--half,
+    .product-information[data-sticky-media].section--page-width
+      > .product-information__grid.product-information__grid--half:has(.media-gallery--extend) {
+      align-items: stretch;
+    }
+
+    .product-information[data-sticky-media] .product-information__media {
+      align-self: stretch;
+    }
+
+    /* Media sticky takes priority over sticky details when both columns are present */
+    .product-information:has(.product-information__media) .product-details.sticky-content--desktop {
+      position: relative;
+      top: auto;
+    }
+
+    .product-information[data-sticky-media] .product-information__media media-gallery.sticky-content--desktop {
+      position: sticky;
+      top: var(--sticky-header-offset, 0);
+      width: 100%;
+    }
   }
 
   .product-details .rating-wrapper {
