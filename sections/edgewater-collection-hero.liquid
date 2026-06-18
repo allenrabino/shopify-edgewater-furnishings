@@ -1,0 +1,311 @@
+{%- liquid
+  assign hero_image = blank
+  assign hero_image_alt = collection.title
+
+  if section.settings.image != blank
+    assign hero_image = section.settings.image
+    assign hero_image_alt = section.settings.image.alt | default: collection.title
+  endif
+
+  if hero_image == blank
+    for block in section.blocks
+      if block.type == 'collection_hero' and block.settings.image != blank
+        assign block_collection = block.settings.collection
+        assign block_matches = false
+
+        if block_collection != blank
+          if block_collection.id == collection.id or block_collection.handle == collection.handle
+            assign block_matches = true
+          endif
+        endif
+
+        if block_matches
+          assign hero_image = block.settings.image
+          assign hero_image_alt = block.settings.image.alt | default: collection.title
+          break
+        endif
+      endif
+    endfor
+  endif
+
+  if hero_image == blank and collection.metafields.custom.hero_image != blank
+    assign hero_image = collection.metafields.custom.hero_image
+    assign hero_image_alt = hero_image.alt | default: collection.title
+  endif
+
+  if hero_image == blank and collection.image != blank
+    assign hero_image = collection.image
+    assign hero_image_alt = collection.image.alt | default: collection.title
+  endif
+
+  if hero_image == blank and section.settings.default_image != blank
+    assign hero_image = section.settings.default_image
+    assign hero_image_alt = section.settings.default_image.alt | default: collection.title
+  endif
+-%}
+
+<div
+  class="edgewater-collection-hero color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="edgewater-collection-hero__inner">
+    <div class="edgewater-collection-hero__media">
+      {%- if hero_image != blank -%}
+        {{
+          hero_image
+          | image_url: width: 2560
+          | image_tag:
+            widths: '750, 1100, 1500, 1920, 2560',
+            sizes: '(min-width: 960px) 65vw, 100vw',
+            alt: hero_image_alt,
+            class: 'edgewater-collection-hero__image',
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
+      {%- else -%}
+        <div class="edgewater-collection-hero__placeholder" aria-hidden="true">
+          {{ 'detailed-apparel-1' | placeholder_svg_tag }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="edgewater-collection-hero__panel">
+      <h1 class="edgewater-collection-hero__title">{{ collection.title }}</h1>
+
+      {%- if section.settings.show_divider -%}
+        <hr class="edgewater-collection-hero__divider" aria-hidden="true">
+      {%- endif -%}
+
+      {%- if section.settings.subtext != blank -%}
+        <p class="edgewater-collection-hero__subtext">{{ section.settings.subtext }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.phone != blank -%}
+        <p class="edgewater-collection-hero__phone">
+          <a href="tel:{{ section.settings.phone | replace: '-', '' | replace: ' ', '' }}">{{ section.settings.phone }}</a>
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .shopify-section:has(.edgewater-collection-hero),
+  .shopify-section:has(.edgewater-collection-hero) .section-background {
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-collection-hero {
+    width: 100%;
+    background-color: #f3f0ec;
+  }
+
+  .edgewater-collection-hero__inner {
+    display: flex;
+    flex-direction: column;
+    min-height: clamp(18rem, 38svh, 28rem);
+  }
+
+  .edgewater-collection-hero__media {
+    position: relative;
+    width: 100%;
+    min-height: clamp(14rem, 32vw, 22rem);
+    overflow: hidden;
+    background: #e8e2db;
+  }
+
+  .edgewater-collection-hero__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .edgewater-collection-hero__placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    color: #cfc7be;
+  }
+
+  .edgewater-collection-hero__placeholder svg {
+    width: min(12rem, 40%);
+    height: auto;
+  }
+
+  .edgewater-collection-hero__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem);
+    text-align: center;
+    background: #f3f0ec;
+  }
+
+  .edgewater-collection-hero__title {
+    margin: 0;
+    font-family: var(--font-cormorant-garamond--family);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #403730;
+  }
+
+  .edgewater-collection-hero__divider {
+    width: min(8rem, 45%);
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #cfc7be;
+  }
+
+  .edgewater-collection-hero__subtext {
+    margin: 0;
+    max-width: 20rem;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #74675d;
+  }
+
+  .edgewater-collection-hero__phone {
+    margin: 0;
+    font-family: Montserrat, 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .edgewater-collection-hero__phone a {
+    color: #7d5449;
+    text-decoration: none;
+  }
+
+  .edgewater-collection-hero__phone a:hover,
+  .edgewater-collection-hero__phone a:focus-visible {
+    text-decoration: underline;
+    outline: none;
+  }
+
+  @media (min-width: 960px) {
+    .edgewater-collection-hero__inner {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .edgewater-collection-hero__media {
+      flex: 0 0 65%;
+      min-height: clamp(18rem, 38svh, 28rem);
+    }
+
+    .edgewater-collection-hero__panel {
+      flex: 0 0 35%;
+      padding-inline: clamp(1.5rem, 3vw, 2rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Edgewater collection hero",
+  "class": "section-edgewater-collection-hero",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Set a hero image here for this template, or add Collection hero blocks below for the default collection template. Image priority: template image → matching block → collection metafield → collection image → default image."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image",
+      "info": "Use this on collection-specific templates (dream-cloud, west-coast, xl-cloud)."
+    },
+    {
+      "type": "image_picker",
+      "id": "default_image",
+      "label": "Default hero image",
+      "info": "Used when no collection block or collection image is set."
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Need a custom configuration? Call or text us to discuss."
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "403-671-6650"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_hero",
+      "name": "Collection hero image",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Hero image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Edgewater collection hero",
+      "blocks": [
+        {
+          "type": "collection_hero"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

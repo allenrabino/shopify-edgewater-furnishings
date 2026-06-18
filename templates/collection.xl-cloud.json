@@ -9,6 +9,47 @@
  */
 {
   "sections": {
+    "collection_hero": {
+      "type": "edgewater-collection-hero",
+      "blocks": {
+        "hero_dream_cloud": {
+          "type": "collection_hero",
+          "settings": {
+            "collection": "dream-cloud-collection",
+            "image": "shopify://shop_images/Dream_Cloud_Top_of_Page.png"
+          }
+        },
+        "hero_west_coast": {
+          "type": "collection_hero",
+          "settings": {
+            "collection": "the-west-coast-collection",
+            "image": ""
+          }
+        },
+        "hero_xl_cloud": {
+          "type": "collection_hero",
+          "settings": {
+            "collection": "xl-cloud-collection",
+            "image": "shopify://shop_images/XL_GREEN_BANNER_IMAGE.png"
+          }
+        }
+      },
+      "block_order": [
+        "hero_dream_cloud",
+        "hero_west_coast",
+        "hero_xl_cloud"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/XL_GREEN_BANNER_IMAGE.png",
+        "default_image": "",
+        "subtext": "Need a custom configuration? Call or text us to discuss.",
+        "phone": "403-671-6650",
+        "show_divider": true,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "configurations": {
       "type": "collection-configurations",
       "blocks": {
@@ -33,5 +74,5 @@
       }
     }
   },
-  "order": ["configurations"]
+  "order": ["collection_hero", "configurations"]
 }
