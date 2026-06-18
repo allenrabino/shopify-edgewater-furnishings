@@ -1,0 +1,50 @@
+{%- doc -%}
+  Renders a product dimension image from metafield with optional fallback.
+
+  @param {object} product - Product object
+  @param {string} [metafield_namespace] - Metafield namespace
+  @param {string} [metafield_key] - Metafield key
+  @param {object} [fallback_image] - Theme fallback image
+  @param {string} [image_class] - CSS class for the image
+  @param {boolean} [use_metafield_tag] - Use metafield_tag for metafield images
+{%- enddoc -%}
+
+{%- liquid
+  assign metafield_namespace = metafield_namespace | default: 'custom'
+  assign metafield_key = metafield_key | default: 'dimension_image'
+  assign image_class = image_class | default: 'product-dimension-image__image'
+  assign dimension_image = blank
+  assign dimension_image_alt = product.title | append: ' dimensions'
+  assign use_metafield_image = false
+  assign product_dimension_metafield = blank
+
+  if product != blank
+    assign product_dimension_metafield = product.metafields[metafield_namespace][metafield_key]
+    if product_dimension_metafield != blank and product_dimension_metafield.value != blank
+      assign dimension_image = product_dimension_metafield.value
+      assign dimension_image_alt = dimension_image.alt | default: dimension_image_alt
+      assign use_metafield_image = true
+    endif
+  endif
+
+  if dimension_image == blank and fallback_image != blank
+    assign dimension_image = fallback_image
+    assign dimension_image_alt = fallback_image.alt | default: dimension_image_alt
+    assign use_metafield_image = false
+  endif
+-%}
+
+{%- if use_metafield_image and use_metafield_tag != false -%}
+  {{ product_dimension_metafield | metafield_tag: class: image_class }}
+{%- elsif dimension_image != blank -%}
+  {{
+    dimension_image
+    | image_url: width: 3840
+    | image_tag:
+      class: image_class,
+      alt: dimension_image_alt,
+      widths: '750, 960, 1200, 1600, 1920, 2560, 3840',
+      sizes: '(min-width: 990px) min(1200px, 90vw), 100vw',
+      loading: 'lazy'
+  }}
+{%- endif -%}

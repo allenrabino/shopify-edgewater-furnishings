@@ -255,7 +255,11 @@
     "modular_subproducts_fallback": "Used only when the product metafield is empty. Add Subproduct blocks below, or set the legacy default products.",
     "modular_subproducts_blocks": "Add Subproduct blocks below — one card per piece. Pick the product, optional custom image, and label for each. Reorder, add, or remove blocks in the theme editor.",
     "modular_subproduct_label": "Optional. Uses the product title when empty.",
-    "modular_subproduct_image": "Optional. Uses the product image when empty."
+    "modular_subproduct_image": "Optional. Uses the product image when empty.",
+    "product_dimension_image_metafield": "On each product, add a Dimension image metafield (custom.dimension_image) — type File (Image). Upload a unique dimensions diagram per product. The section hides when empty unless a fallback image is set below.",
+    "product_dimension_image_fallback": "Shown when a product has no dimension image metafield. Leave blank to hide the section for products without their own image.",
+    "product_dimension_accordion": "Shows the product dimension image from the same metafield used by the Dimension image section below. Add custom.dimension_image on each product.",
+    "product_dimension_section_anchor": "Must match the id on the Dimension image section (default: product-dimension-image)."
   },
   "names": {
     "column": "Column",
@@ -1096,6 +1100,11 @@
     "total_label": "Total label",
     "metafield_namespace": "Metafield namespace",
     "metafield_key": "Metafield key",
+    "fallback_dimension_image": "Fallback dimension image",
+    "hide_when_empty": "Hide when no image",
+    "show_full_size_dimension_link": "Link to full-size diagram section",
+    "full_size_dimension_link_label": "Full-size link label",
+    "dimension_section_anchor": "Dimension section anchor id",
     "custom_label": "Custom label",
     "subheading": "Subheading",
     "hide_on_xl_cloud": "Hide on XL Cloud template",

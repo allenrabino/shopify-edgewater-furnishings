@@ -1,0 +1,195 @@
+{%- liquid
+  assign metafield_namespace = section.settings.metafield_namespace | default: 'custom'
+  assign metafield_key = section.settings.metafield_key | default: 'dimension_image'
+  assign dimension_image = blank
+  assign has_dimension_image = false
+
+  assign product_dimension_metafield = product.metafields[metafield_namespace][metafield_key]
+  if product_dimension_metafield != blank and product_dimension_metafield.value != blank
+    assign dimension_image = product_dimension_metafield.value
+    assign has_dimension_image = true
+  endif
+
+  if dimension_image == blank and section.settings.fallback_image != blank
+    assign dimension_image = section.settings.fallback_image
+    assign has_dimension_image = true
+  endif
+
+  assign hide_section = false
+  if has_dimension_image == false and section.settings.hide_when_empty and request.design_mode == false
+    assign hide_section = true
+  endif
+-%}
+
+{%- unless hide_section -%}
+  <div
+    id="product-dimension-image"
+    class="section section--{{ section.settings.section_width }} edgewater-product-dimension-image spacing-style{% if section.settings.color_scheme != blank %} color-{{ section.settings.color_scheme }}{% endif %}"
+    style="{% render 'spacing-style', settings: section.settings %}"
+    {{ section.shopify_attributes }}
+  >
+    <div class="edgewater-product-dimension-image__inner">
+      {%- if has_dimension_image -%}
+        {% render 'product-dimension-image-content',
+          product: product,
+          metafield_namespace: metafield_namespace,
+          metafield_key: metafield_key,
+          fallback_image: section.settings.fallback_image,
+          image_class: 'edgewater-product-dimension-image__image'
+        %}
+      {%- else -%}
+        <div class="edgewater-product-dimension-image__placeholder" aria-hidden="true">
+          {{ 'detailed-apparel-1' | placeholder_svg_tag: 'edgewater-product-dimension-image__placeholder-svg' }}
+        </div>
+        {%- if request.design_mode -%}
+          <p class="edgewater-product-dimension-image__editor-note">
+            Add a dimension image on this product (metafield: {{ metafield_namespace }}.{{ metafield_key }}) or set a fallback image in section settings.
+          </p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endunless -%}
+
+{% stylesheet %}
+  #product-dimension-image {
+    scroll-margin-top: calc(var(--header-height, 0px) + 1.5rem);
+  }
+
+  .edgewater-product-dimension-image__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .edgewater-product-dimension-image__image,
+  .product-dimension-image__image {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .edgewater-product-dimension-image__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    aspect-ratio: 16 / 9;
+    background: rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .edgewater-product-dimension-image__placeholder-svg {
+    width: min(100%, 20rem);
+    height: auto;
+    opacity: 0.35;
+  }
+
+  .edgewater-product-dimension-image__editor-note {
+    margin: 1rem 0 0;
+    max-width: 36rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: rgb(var(--color-foreground-rgb) / 0.72);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Dimension image",
+  "class": "section-edgewater-product-dimension-image",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.product_dimension_image_metafield"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "t:settings.metafield_namespace",
+      "default": "custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "t:settings.metafield_key",
+      "default": "dimension_image"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "t:settings.fallback_dimension_image",
+      "info": "t:info.product_dimension_image_fallback"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_when_empty",
+      "label": "t:settings.hide_when_empty",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dimension image"
+    }
+  ]
+}
+{% endschema %}

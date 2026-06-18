@@ -1,0 +1,168 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  assign metafield_namespace = block_settings.metafield_namespace | default: 'custom'
+  assign metafield_key = block_settings.metafield_key | default: 'dimension_image'
+  assign section_anchor = block_settings.section_anchor | default: 'product-dimension-image'
+  assign has_dimension_image = false
+  assign product_dimension_metafield = blank
+
+  if product != blank
+    assign product_dimension_metafield = product.metafields[metafield_namespace][metafield_key]
+    if product_dimension_metafield != blank and product_dimension_metafield.value != blank
+      assign has_dimension_image = true
+    endif
+  endif
+-%}
+
+<div class="product-dimension spacing-style" style="{% render 'spacing-style', settings: block_settings %}" {{ block.shopify_attributes }}>
+  {%- if block_settings.text != blank -%}
+    <div class="product-dimension__text rte">{{ block_settings.text }}</div>
+  {%- endif -%}
+
+  {%- if has_dimension_image -%}
+    <div class="product-dimension__image-wrap">
+      {% render 'product-dimension-image-content',
+        product: product,
+        metafield_namespace: metafield_namespace,
+        metafield_key: metafield_key,
+        image_class: 'product-dimension__image'
+      %}
+    </div>
+  {%- endif -%}
+
+  {%- if block_settings.show_full_size_link -%}
+    <p class="product-dimension__link-wrap">
+      <a class="product-dimension__link" href="#{{ section_anchor | escape }}">
+        {{ block_settings.link_label | default: 'View full dimension diagram' }}
+      </a>
+    </p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .product-dimension__text {
+    margin-block-end: 0.75rem;
+  }
+
+  .product-dimension__image-wrap {
+    margin-block: 0.75rem 0.5rem;
+  }
+
+  .product-dimension__image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .product-dimension__link-wrap {
+    margin: 0.5rem 0 0;
+  }
+
+  .product-dimension__link {
+    font-size: 0.9375rem;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product dimensions",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.product_dimension_accordion"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:settings.text",
+      "info": "Optional text shown above the dimension diagram."
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "t:settings.metafield_namespace",
+      "default": "custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "t:settings.metafield_key",
+      "default": "dimension_image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_full_size_link",
+      "label": "t:settings.show_full_size_dimension_link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "t:settings.full_size_dimension_link_label",
+      "default": "View full dimension diagram"
+    },
+    {
+      "type": "text",
+      "id": "section_anchor",
+      "label": "t:settings.dimension_section_anchor",
+      "default": "product-dimension-image",
+      "info": "t:info.product_dimension_section_anchor"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product dimensions",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
