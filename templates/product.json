@@ -313,7 +313,7 @@
                       "type": "product-description",
                       "name": "t:names.product_description",
                       "settings": {
-                        "text": "",
+                        "text": "<p>The Pacific is our most elevated modular sectional, designed for those who want generous scale, refined styling, and a more supportive sit. With its clean lines, tailored silhouette, and substantial presence, it brings a polished, designer-inspired look to a room while still offering the comfort needed for everyday living.<br/>Built with a more structured feel than a typical sink-in sectional, the Pacific delivers a balanced sit that feels plush, supportive, and substantial. Upholstered in performance liquid-resistant fabrics and finished with washable covers, it is designed to handle busy homes without sacrificing its premium look. A durable wood frame and thoughtful construction make the Pacific a long-term piece for customers who want comfort, quality, and a more elevated furniture feel.</p>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -749,10 +749,11 @@
       "settings": {
         "metafield_namespace": "custom",
         "metafield_key": "dimension_image",
+        "fallback_image": "shopify://shop_images/Detailed_Dimensions_-_Sofa_3pc.png",
         "hide_when_empty": true,
         "section_width": "page-width",
         "color_scheme": "",
-        "padding-block-start": 0,
+        "padding-block-start": 32,
         "padding-block-end": 0
       }
     },

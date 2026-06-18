@@ -32,9 +32,32 @@
     endif
   endif
 
-  assign description_text = linked_collection.description
-  if description_text == blank and product != blank
-    assign description_text = product.description
+  capture west_coast_product_capture
+    render 'west-coast-product-active', product_resource: product
+  endcapture
+  assign is_west_coast_product = false
+  if west_coast_product_capture == 'true'
+    assign is_west_coast_product = true
+  endif
+
+  if is_west_coast_product and product != blank
+    capture theme_description
+      render 'west-coast-product-description', product: product
+    endcapture
+    assign theme_description = theme_description | strip
+
+    if theme_description != blank
+      assign description_text = theme_description
+    elsif product.description != blank
+      assign description_text = product.description
+    else
+      assign description_text = linked_collection.description
+    endif
+  else
+    assign description_text = linked_collection.description
+    if description_text == blank and product != blank
+      assign description_text = product.description
+    endif
   endif
 
   if request.visual_preview_mode and description_text == blank
@@ -45,7 +68,7 @@
   endif
 %}
 
-{% render 'text', fallback_text: description_text, block: block %}
+{% render 'text', fallback_text: description_text, block: block, force_fallback: is_west_coast_product %}
 
 {% schema %}
 {
@@ -56,7 +79,7 @@
       "type": "richtext",
       "id": "text",
       "label": "t:settings.text",
-      "info": "Leave empty to show the linked collection description (falls back to product description)."
+      "info": "West Coast products show each model's description from the theme (or Shopify admin if set). Other products: leave empty to show the linked collection description, or enter custom text."
     },
     {
       "type": "header",

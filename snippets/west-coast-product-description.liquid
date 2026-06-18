@@ -1,0 +1,81 @@
+{%- comment -%} West Coast product descriptions from Description and Features by model.docx {%- endcomment -%}
+{%- liquid
+  assign product_handle = product.handle | default: '' | downcase
+-%}
+
+{%- case product_handle -%}
+  {%- when 'pacific-l-shape-ottoman' -%}
+    {%- capture description_html -%}
+      <p>The Pacific is our most elevated modular sectional, designed for those who want generous scale, refined styling, and a more supportive sit. With its clean lines, tailored silhouette, and substantial presence, it brings a polished, designer-inspired look to a room while still offering the comfort needed for everyday living.</p>
+      <p>Built with a more structured feel than a typical sink-in sectional, the Pacific delivers a balanced sit that feels plush, supportive, and substantial. Upholstered in performance liquid-resistant fabrics and finished with washable covers, it is designed to handle busy homes without sacrificing its premium look. A durable wood frame and thoughtful construction make the Pacific a long-term piece for customers who want comfort, quality, and a more elevated furniture feel.</p>
+      <p><strong>Features</strong></p>
+      <ul>
+        <li>Large-scale modular sectional with a clean, elevated design</li>
+        <li>More supportive seat cushions for a structured, premium sit</li>
+        <li>Generous proportions designed to anchor larger living spaces</li>
+        <li>Tailored silhouette with a refined, modern look</li>
+        <li>Durable wood frame built for long-term use</li>
+        <li>Performance liquid-resistant fabric options suited to busy homes</li>
+        <li>Washable cushion covers for easier care and maintenance</li>
+        <li>Supportive base system designed for everyday comfort</li>
+        <li>Modular pieces connect securely to help prevent shifting or sliding</li>
+        <li>White glove delivery options include professional in-home setup, full assembly, and packaging removal</li>
+      </ul>
+    {%- endcapture -%}
+
+  {%- when 'coastal-chaise-sectional' -%}
+    {%- capture description_html -%}
+      <p>The Coastal is a modern chaise sectional designed with clean lines, soft structure, and an inviting feel. With its low profile, tailored shape, and solid oak block legs, it brings a more refined, design-forward look to a space while still delivering the comfort expected from an everyday lounging sofa.</p>
+      <p>Its soft but supportive down-filled cushions create a relaxed sit that feels plush without losing shape, while the chaise layout offers a natural spot to stretch out and unwind. Finished with removable cushions and practical, easy-care materials, the Coastal is built for real homes that want comfort, simplicity, and a more elevated, modern aesthetic.</p>
+      <p><strong>Features</strong></p>
+      <ul>
+        <li>Two-piece chaise sectional available in left-hand or right-hand facing</li>
+        <li>Soft but supportive down-filled cushions for a plush, balanced sit</li>
+        <li>Clean-lined silhouette with a refined, modern look</li>
+        <li>Chaise design offers comfortable room to stretch out and lounge</li>
+        <li>Removable seat and back cushions for easier care and maintenance</li>
+        <li>Durable wood frame built for long-term use</li>
+        <li>Solid oak block legs add warmth and a furniture-grade finish</li>
+        <li>White glove delivery options include professional in-home setup, full assembly, and packaging removal</li>
+      </ul>
+    {%- endcapture -%}
+
+  {%- when 'juniper-l-shape-ottoman' -%}
+    {%- capture description_html -%}
+      <p>The Juniper is a clean, modern modular sectional designed for everyday comfort with a more upright, easy-living sit. With its balanced proportions, regular seat depth, and supportive cushions, it offers a more tailored feel than an oversized lounge sectional while still providing plenty of room to relax. Its streamlined profile gives it a polished, contemporary look that works especially well in spaces where you want comfort without an overly deep or bulky footprint.</p>
+      <p>Designed for practical living as much as visual appeal, the Juniper pairs supportive comfort with functional details that make it easy to live with every day. The storage ottoman adds flexibility and hidden storage, while the overall design delivers a comfortable sit that feels approachable, supportive, and refined. With its durable construction, washable covers, and modern silhouette, the Juniper is a strong fit for busy homes that want both function and style.</p>
+      <p><strong>Features</strong></p>
+      <ul>
+        <li>Modular sectional with a clean, modern design</li>
+        <li>Regular seat depth and height for a more supportive, upright sit</li>
+        <li>Supportive cushions designed for everyday comfort</li>
+        <li>Storage ottoman adds flexibility and hidden storage</li>
+        <li>Modular pieces connect securely to help prevent shifting or sliding</li>
+        <li>Streamlined silhouette with a refined, contemporary look</li>
+        <li>Durable wood frame built for long-term use</li>
+        <li>Washable cushion covers for easier care and maintenance</li>
+        <li>Family-friendly fabric options suited to busy homes</li>
+        <li>White glove delivery options include professional in-home setup, full assembly, and packaging removal</li>
+      </ul>
+    {%- endcapture -%}
+
+  {%- when 'cove-reversible-chaise-sofa' -%}
+    {%- capture description_html -%}
+      <p>The Cove is a compact chaise sectional designed to bring comfort, flexibility, and everyday function to smaller living spaces. With its clean lines, balanced proportions, and versatile layout, it is an easy fit for rooms where making the most of your space matters. The reversible chaise allows you to adapt the setup to your room, while the storage ottoman adds practical function without sacrificing a clean, modern look.</p>
+      <p>Built for comfortable daily living, the Cove features loose seat and back cushions that create a relaxed, approachable feel. Reversible back cushions help extend the life and appearance of the sofa, while the overall design keeps the look streamlined and easy to style. With its smart proportions, flexible layout, and built-in storage, the Cove is a strong choice for homes that need comfort and function in one well-designed piece.</p>
+      <p><strong>Features</strong></p>
+      <ul>
+        <li>Reversible chaise design offers flexible setup for different room layouts</li>
+        <li>Storage ottoman adds practical hidden storage</li>
+        <li>Compact sectional design makes efficient use of your space</li>
+        <li>Clean-lined silhouette with a modern, versatile look</li>
+        <li>Removable seat and back cushions for easier care and upkeep</li>
+        <li>Reversible back cushions help extend the life and look of the sofa</li>
+        <li>Supportive cushions designed for everyday comfort</li>
+        <li>Durable wood frame built for long-term use</li>
+        <li>White glove delivery options include professional in-home setup, full assembly, and packaging removal</li>
+      </ul>
+    {%- endcapture -%}
+{%- endcase -%}
+
+{{- description_html | strip -}}

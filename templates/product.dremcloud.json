@@ -23,7 +23,7 @@
             "icons_style": "arrow",
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "right",
+            "thumbnail_position": "bottom",
             "thumbnail_width": 72,
             "thumbnail_radius": 0,
             "aspect_ratio": "adapt",
@@ -182,6 +182,7 @@
                 "open_by_default": true,
                 "default_fabric_type": "Performance Velvet",
                 "allowed_fabric_keys": "",
+                "hidden_product_handles": "",
                 "columns": "4",
                 "swatch_size": 56,
                 "padding-block-start": 0,
@@ -216,6 +217,23 @@
                 "fabric_black"
               ]
             },
+            "variant_picker_R3rGDr": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "buttons",
+                "show_swatches": true,
+                "default_fabric_type": "Performance Velvet",
+                "fabric_heading": "1. Choose Your Fabric",
+                "use_fabric_disclosure": true,
+                "open_by_default": true,
+                "alignment": "left",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "modular_add_piece": {
               "type": "modular-add-piece",
               "settings": {
@@ -224,6 +242,14 @@
                 "open_by_default": true,
                 "subheading": "Choose your pieces and quantity to build your perfect configuration.",
                 "total_label": "Configuration total",
+                "metafield_namespace": "custom",
+                "metafield_key": "modular_pieces",
+                "single_corner_label": "Single Corner",
+                "armless_chair_label": "Armless Chair",
+                "ottoman_label": "Ottoman",
+                "single_corner_product": "",
+                "armless_chair_product": "",
+                "ottoman_product": "",
                 "hide_on_collection_templates": true,
                 "padding-block-start": 16,
                 "padding-block-end": 0,
@@ -236,21 +262,24 @@
                   "settings": {
                     "product": "1pc-corner",
                     "label": "Single Corner"
-                  }
+                  },
+                  "blocks": {}
                 },
                 "subproduct_armless": {
                   "type": "_modular-subproduct",
                   "settings": {
                     "product": "1pc-armless-chair",
                     "label": "Armless Chair"
-                  }
+                  },
+                  "blocks": {}
                 },
                 "subproduct_ottoman": {
                   "type": "_modular-subproduct",
                   "settings": {
                     "product": "1pc-ottoman",
                     "label": "Ottoman"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -437,23 +466,6 @@
                 "accordion_row_HUWbDi",
                 "accordion_row_GTWFgP"
               ]
-            },
-            "variant_picker_R3rGDr": {
-              "type": "variant-picker",
-              "settings": {
-                "variant_style": "buttons",
-                "show_swatches": true,
-                "default_fabric_type": "Performance Velvet",
-                "fabric_heading": "1. Choose Your Fabric",
-                "use_fabric_disclosure": true,
-                "open_by_default": true,
-                "alignment": "left",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
             }
           },
           "block_order": [
@@ -479,6 +491,103 @@
         "enable_sticky_add_to_cart": true,
         "color_scheme": "",
         "padding-block-start": 30,
+        "padding-block-end": 0
+      }
+    },
+    "section_w6aFLF": {
+      "type": "section",
+      "blocks": {
+        "image_HUhB9j": {
+          "type": "image",
+          "name": "Cushion",
+          "settings": {
+            "image": "shopify://shop_images/Product_Attribute_2_-_Removable_Cushion_Covers.png",
+            "link": "",
+            "image_ratio": "adapt",
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "image_8akViY": {
+          "type": "image",
+          "name": "Comfort",
+          "settings": {
+            "image": "shopify://shop_images/Product_Attribute_1_-_Deep_Seat_Comfy.png",
+            "link": "",
+            "image_ratio": "adapt",
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "image_HUhB9j",
+        "image_8akViY"
+      ],
+      "name": "Product attach images",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "edgewater_product_dimension_image_YV6AVH": {
+      "type": "edgewater-product-dimension-image",
+      "name": "Dimension image",
+      "settings": {
+        "metafield_namespace": "custom",
+        "metafield_key": "dimension_image",
+        "fallback_image": "shopify://shop_images/Detailed_Dimensions_-_Sofa_Ottoman_4pc.png",
+        "hide_when_empty": true,
+        "section_width": "page-width",
+        "color_scheme": "",
+        "padding-block-start": 32,
         "padding-block-end": 0
       }
     },
@@ -612,6 +721,10 @@
                   "type": "price",
                   "settings": {
                     "show_sale_price_first": true,
+                    "update_from_add_piece": true,
+                    "show_finance_pricing": true,
+                    "finance_label": "Starting at [amount]/month",
+                    "finance_term_months": 12,
                     "show_installments": false,
                     "show_tax_info": false,
                     "type_preset": "h6",
@@ -665,229 +778,12 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
-    },
-    "media_with_content_9rDKpN": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "link": "",
-            "video_loop": true,
-            "video_autoplay": false,
-            "image_position": "cover",
-            "video_position": "cover"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 24
-          },
-          "blocks": {
-            "product_card_KR93DH": {
-              "type": "product-card",
-              "name": "t:names.product_card",
-              "settings": {
-                "product": "",
-                "product_card_gap": 16,
-                "inherit_color_scheme": true,
-                "color_scheme": "",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "product_card_gallery_mwMkXB": {
-                  "type": "_product-card-gallery",
-                  "settings": {
-                    "image_ratio": "portrait",
-                    "border": "none",
-                    "border_width": 1,
-                    "border_opacity": 100,
-                    "border_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "group_Hxjm3h": {
-                  "type": "_product-card-group",
-                  "settings": {
-                    "content_direction": "column",
-                    "vertical_on_mobile": true,
-                    "horizontal_alignment": "flex-start",
-                    "vertical_alignment": "center",
-                    "align_baseline": false,
-                    "horizontal_alignment_flex_direction_column": "center",
-                    "vertical_alignment_flex_direction_column": "center",
-                    "gap": 12,
-                    "width": "fill",
-                    "custom_width": 100,
-                    "width_mobile": "fill",
-                    "custom_width_mobile": 100,
-                    "height": "fit",
-                    "custom_height": 100,
-                    "inherit_color_scheme": true,
-                    "color_scheme": "",
-                    "background_media": "none",
-                    "video_position": "cover",
-                    "background_image_position": "cover",
-                    "border": "none",
-                    "border_width": 1,
-                    "border_opacity": 100,
-                    "border_radius": 0,
-                    "toggle_overlay": false,
-                    "overlay_color": "#00000026",
-                    "overlay_style": "solid",
-                    "gradient_direction": "to top",
-                    "link": "",
-                    "open_in_new_tab": false,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {
-                    "product_title_cJY6KQ": {
-                      "type": "product-title",
-                      "name": "t:names.product_title",
-                      "settings": {
-                        "width": "fit-content",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "h5",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "var(--color-foreground)",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    },
-                    "price_JM9QjE": {
-                      "type": "price",
-                      "settings": {
-                        "show_sale_price_first": true,
-                        "show_installments": false,
-                        "show_tax_info": false,
-                        "type_preset": "",
-                        "width": "100%",
-                        "alignment": "center",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "color": "var(--color-foreground)",
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "product_title_cJY6KQ",
-                    "price_JM9QjE"
-                  ]
-                }
-              },
-              "block_order": [
-                "product_card_gallery_mwMkXB",
-                "group_Hxjm3h"
-              ]
-            }
-          },
-          "block_order": [
-            "product_card_KR93DH"
-          ]
-        }
-      },
-      "name": "t:names.media_with_text",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "50svh",
-        "section_width": "full-width",
-        "extend_media": true,
-        "color_scheme": "scheme-5",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
-    "177993864007e52a00": {
-      "type": "_blocks",
-      "blocks": {
-        "judge_me_reviews_review_widget_Ea6aPk": {
-          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-            "review_data": "sample_data",
-            "max_width": 1200,
-            "show_shop_reviews": false,
-            "empty_state": "empty_widget"
-          }
-        }
-      },
-      "block_order": [
-        "judge_me_reviews_review_widget_Ea6aPk"
-      ],
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
     }
   },
   "order": [
     "main",
-    "product_recommendations_xmXAhw",
-    "media_with_content_9rDKpN",
-    "177993864007e52a00"
+    "section_w6aFLF",
+    "edgewater_product_dimension_image_YV6AVH",
+    "product_recommendations_xmXAhw"
   ]
 }

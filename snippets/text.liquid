@@ -3,6 +3,7 @@
 
   @param {string} [class] - custom class to define in addition to text-block classes
   @param {string} [fallback_text] - fallback text if settings.text does not exist
+  @param {boolean} [force_fallback] - when true, always render fallback_text and ignore block text
   @param {object} [block] - The block object
   @param {string} [width] - width of the text block
 {%- enddoc -%}
@@ -83,7 +84,11 @@
   endif
 %}
 
-{% if fallback_text != blank and visible_text == blank %}
+{% if force_fallback and fallback_text != blank %}
+  <div {{ attributes | strip_newlines | strip }}>
+    {{ fallback_text }}
+  </div>
+{% elsif fallback_text != blank and visible_text == blank %}
   <div {{ attributes | strip_newlines | strip }}>
     {{ fallback_text }}
   </div>
