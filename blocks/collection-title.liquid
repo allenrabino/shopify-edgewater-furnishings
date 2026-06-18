@@ -1,33 +1,18 @@
 
 {%- liquid
-  assign linked_collection = closest.collection
+  capture linked_collection_handle_capture
+    render 'product-linked-collection', product: closest.product
+  endcapture
+  assign linked_collection_handle = linked_collection_handle_capture | strip
+  assign linked_collection = blank
+  if linked_collection_handle != blank
+    assign linked_collection = collections[linked_collection_handle]
+  endif
+  if linked_collection == blank
+    assign linked_collection = closest.collection
+  endif
   if linked_collection == blank
     assign linked_collection = collection
-  endif
-  if linked_collection == blank and closest.product != blank and closest.product.collections.size > 0
-    assign template_suffix = template.suffix | downcase
-    for coll in closest.product.collections
-      assign coll_handle = coll.handle | downcase
-      if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
-        if coll_handle contains 'dream-cloud'
-          assign linked_collection = coll
-          break
-        endif
-      elsif template_suffix contains 'xlcloud' or template_suffix contains 'xl-cloud'
-        if coll_handle contains 'xl-cloud'
-          assign linked_collection = coll
-          break
-        endif
-      elsif template_suffix contains 'westcoast' or template_suffix contains 'west-coast'
-        if coll_handle contains 'west-coast'
-          assign linked_collection = coll
-          break
-        endif
-      endif
-    endfor
-    if linked_collection == blank
-      assign linked_collection = closest.product.collections.first
-    endif
   endif
 -%}
 

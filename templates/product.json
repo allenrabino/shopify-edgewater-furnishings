@@ -246,7 +246,7 @@
                 "subproduct_ottoman"
               ]
             },
-            "buy_buttons_eYQEYi": {
+            "buy_buttons_G9rMAz": {
               "type": "buy-buttons",
               "settings": {
                 "stacking": true,
@@ -281,7 +281,7 @@
               },
               "block_order": []
             },
-            "accordion_Yd4U4w": {
+            "accordion_AFN9zA": {
               "type": "accordion",
               "name": "Accordion",
               "settings": {
@@ -300,7 +300,7 @@
                 "padding-inline-end": 0
               },
               "blocks": {
-                "accordion_row_P46NdC": {
+                "accordion_row_zUFQpr": {
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Description",
@@ -309,11 +309,11 @@
                     "width": 20
                   },
                   "blocks": {
-                    "product_description_TH8Net": {
+                    "product_description_6Cx9pK": {
                       "type": "product-description",
                       "name": "t:names.product_description",
                       "settings": {
-                        "text": "<p>The Pacific is our most elevated modular sectional, designed for those who want generous scale, refined styling, and a more supportive sit. With its clean lines, tailored silhouette, and substantial presence, it brings a polished, designer-inspired look to a room while still offering the comfort needed for everyday living.<br/>Built with a more structured feel than a typical sink-in sectional, the Pacific delivers a balanced sit that feels plush, supportive, and substantial. Upholstered in performance liquid-resistant fabrics and finished with washable covers, it is designed to handle busy homes without sacrificing its premium look. A durable wood frame and thoughtful construction make the Pacific a long-term piece for customers who want comfort, quality, and a more elevated furniture feel.</p>",
+                        "text": "",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -337,10 +337,10 @@
                     }
                   },
                   "block_order": [
-                    "product_description_TH8Net"
+                    "product_description_6Cx9pK"
                   ]
                 },
-                "accordion_row_HUWbDi": {
+                "accordion_row_UQF99b": {
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Dimensions",
@@ -349,7 +349,7 @@
                     "width": 20
                   },
                   "blocks": {
-                    "product_dimension_HUWbDi": {
+                    "product_dimension_d9yirG": {
                       "type": "product-dimension",
                       "settings": {
                         "text": "<p>All dimensions are approximate. Refer to the diagram below for product measurements.</p>",
@@ -367,10 +367,10 @@
                     }
                   },
                   "block_order": [
-                    "product_dimension_HUWbDi"
+                    "product_dimension_d9yirG"
                   ]
                 },
-                "accordion_row_why_choose": {
+                "accordion_row_t6YrnE": {
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Why choose us?",
@@ -379,7 +379,7 @@
                     "width": 20
                   },
                   "blocks": {
-                    "text_why_choose": {
+                    "text_kH47ct": {
                       "type": "text",
                       "settings": {
                         "text": "<p>At Edgewater Furnishings, we’re a locally owned Alberta business focused on offering premium, comfortable sectionals without the inflated showroom prices or commissioned sales pressure.<br/>Every piece is selected with real families in mind — deep seating, durable fabrics, modular layouts, and practical features like washable cushion covers on select models.<br/>We keep the buying experience simple with honest pricing, personal service, and the ability to view many of our sectionals in person before you buy. <br/>From helping you choose the right configuration to offering white-glove delivery, assembly, and box removal, we aim to make the entire process easy from start to finish.​</p>",
@@ -406,10 +406,10 @@
                     }
                   },
                   "block_order": [
-                    "text_why_choose"
+                    "text_kH47ct"
                   ]
                 },
-                "accordion_row_z4qcPU": {
+                "accordion_row_HGETd3": {
                   "type": "_accordion-row",
                   "settings": {
                     "heading": "Delivery/ turnaround times",
@@ -418,7 +418,7 @@
                     "width": 20
                   },
                   "blocks": {
-                    "text_dLgGPE": {
+                    "text_pMDWJa": {
                       "type": "text",
                       "settings": {
                         "text": "<p>Local delivery is 2-5 days depending on location</p>",
@@ -445,15 +445,15 @@
                     }
                   },
                   "block_order": [
-                    "text_dLgGPE"
+                    "text_pMDWJa"
                   ]
                 }
               },
               "block_order": [
-                "accordion_row_P46NdC",
-                "accordion_row_HUWbDi",
-                "accordion_row_why_choose",
-                "accordion_row_z4qcPU"
+                "accordion_row_zUFQpr",
+                "accordion_row_UQF99b",
+                "accordion_row_t6YrnE",
+                "accordion_row_HGETd3"
               ]
             }
           },
@@ -465,8 +465,8 @@
             "white_glove_delivery",
             "variant_picker_R3rGDr",
             "modular_add_piece",
-            "buy_buttons_eYQEYi",
-            "accordion_Yd4U4w"
+            "buy_buttons_G9rMAz",
+            "accordion_AFN9zA"
           ]
         }
       },

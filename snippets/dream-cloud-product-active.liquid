@@ -1,0 +1,55 @@
+{%- liquid
+  assign dream_cloud_product = false
+  assign template_suffix = template.suffix | downcase
+
+  assign dc_product = product_resource
+  if dc_product == blank
+    assign dc_product = product
+  endif
+  if dc_product == blank and closest.product != blank
+    assign dc_product = closest.product
+  endif
+
+  if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
+    assign dream_cloud_product = true
+  endif
+
+  if template.name == 'collection' and template.suffix == 'dream-cloud'
+    assign dream_cloud_product = true
+  endif
+
+  if collection != blank
+    assign active_collection_handle = collection.handle | downcase
+    if active_collection_handle contains 'dream-cloud'
+      assign dream_cloud_product = true
+    endif
+  endif
+
+  unless dream_cloud_product
+    if dc_product != blank
+      capture dream_cloud_handles_capture
+        render 'dream-cloud-collection-product-handles'
+      endcapture
+      assign dream_cloud_handles = dream_cloud_handles_capture | strip | split: ','
+      if dream_cloud_handles contains dc_product.handle
+        assign dream_cloud_product = true
+      endif
+    endif
+  endunless
+
+  unless dream_cloud_product
+    if dc_product != blank
+      for dc_collection in dc_product.collections
+        assign dc_collection_handle = dc_collection.handle | downcase
+        if dc_collection_handle contains 'dream-cloud'
+          assign dream_cloud_product = true
+          break
+        endif
+      endfor
+    endif
+  endunless
+
+  if dream_cloud_product
+    echo 'true'
+  endif
+-%}

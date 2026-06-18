@@ -2,34 +2,19 @@
 {% liquid
   assign product = closest.product
 
-  assign linked_collection = closest.collection
+  capture linked_collection_handle_capture
+    render 'product-linked-collection', product: product
+  endcapture
+  assign linked_collection_handle = linked_collection_handle_capture | strip
+  assign linked_collection = blank
+  if linked_collection_handle != blank
+    assign linked_collection = collections[linked_collection_handle]
+  endif
+  if linked_collection == blank
+    assign linked_collection = closest.collection
+  endif
   if linked_collection == blank
     assign linked_collection = collection
-  endif
-  if linked_collection == blank and product != blank and product.collections.size > 0
-    assign template_suffix = template.suffix | downcase
-    for coll in product.collections
-      assign coll_handle = coll.handle | downcase
-      if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
-        if coll_handle contains 'dream-cloud'
-          assign linked_collection = coll
-          break
-        endif
-      elsif template_suffix contains 'xlcloud' or template_suffix contains 'xl-cloud'
-        if coll_handle contains 'xl-cloud'
-          assign linked_collection = coll
-          break
-        endif
-      elsif template_suffix contains 'westcoast' or template_suffix contains 'west-coast'
-        if coll_handle contains 'west-coast'
-          assign linked_collection = coll
-          break
-        endif
-      endif
-    endfor
-    if linked_collection == blank
-      assign linked_collection = product.collections.first
-    endif
   endif
 
   capture west_coast_product_capture
@@ -38,6 +23,14 @@
   assign is_west_coast_product = false
   if west_coast_product_capture == 'true'
     assign is_west_coast_product = true
+  endif
+
+  capture dream_cloud_product_capture
+    render 'dream-cloud-product-active', product_resource: product
+  endcapture
+  assign is_dream_cloud_product = false
+  if dream_cloud_product_capture == 'true'
+    assign is_dream_cloud_product = true
   endif
 
   if is_west_coast_product and product != blank
@@ -68,7 +61,7 @@
   endif
 %}
 
-{% render 'text', fallback_text: description_text, block: block, force_fallback: is_west_coast_product %}
+{% render 'text', fallback_text: description_text, block: block, force_fallback: is_west_coast_product or is_dream_cloud_product %}
 
 {% schema %}
 {

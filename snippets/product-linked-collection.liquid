@@ -1,0 +1,76 @@
+{%- doc -%}
+  Outputs the handle of the best matching collection for a product.
+
+  @param {object} [product] - Product object (falls back to closest.product)
+{%- enddoc -%}
+
+{%- liquid
+  assign target_product = product
+  if target_product == blank
+    assign target_product = closest.product
+  endif
+
+  assign resolved_handle = blank
+
+  if closest.collection != blank
+    assign resolved_handle = closest.collection.handle
+  elsif collection != blank
+    assign resolved_handle = collection.handle
+  endif
+
+  if resolved_handle == blank and target_product != blank
+    assign template_suffix = template.suffix | downcase
+    assign preferred_line = blank
+
+    if template_suffix contains 'dremcloud' or template_suffix contains 'dream-cloud'
+      assign preferred_line = 'dream-cloud'
+    elsif template_suffix contains 'xlcloud' or template_suffix contains 'xl-cloud'
+      assign preferred_line = 'xl-cloud'
+    elsif template_suffix contains 'westcoast' or template_suffix contains 'west-coast'
+      assign preferred_line = 'west-coast'
+    endif
+
+    unless preferred_line != blank
+      capture dream_cloud_capture
+        render 'dream-cloud-product-active', product_resource: target_product
+      endcapture
+      if dream_cloud_capture == 'true'
+        assign preferred_line = 'dream-cloud'
+      endif
+    endunless
+
+    unless preferred_line != blank
+      capture xl_cloud_capture
+        render 'xl-cloud-product-active', product_resource: target_product
+      endcapture
+      if xl_cloud_capture == 'true'
+        assign preferred_line = 'xl-cloud'
+      endif
+    endunless
+
+    unless preferred_line != blank
+      capture west_coast_capture
+        render 'west-coast-product-active', product_resource: target_product
+      endcapture
+      if west_coast_capture == 'true'
+        assign preferred_line = 'west-coast'
+      endif
+    endunless
+
+    if preferred_line != blank
+      for coll in target_product.collections
+        assign coll_handle = coll.handle | downcase
+        if coll_handle contains preferred_line
+          assign resolved_handle = coll.handle
+          break
+        endif
+      endfor
+    endif
+
+    if resolved_handle == blank and target_product.collections.size > 0
+      assign resolved_handle = target_product.collections.first.handle
+    endif
+  endif
+
+  echo resolved_handle
+-%}
